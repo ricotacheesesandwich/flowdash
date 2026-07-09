@@ -76,105 +76,111 @@
     <!-- 스크린 리더기용 라벨 추가 -->
     <main id="dashboard" class="page-body">
       <aside class="calendar-panel" aria-label="달력과 발간 정보">
-        <section
-          id="calendar"
-          class="calendar-card"
-          aria-labelledby="calendarTitle"
-        >
-          <header class="card-header">
-            <h2 id="calendarTitle">CALENDAR</h2>
-          </header>
-          <nav class="month-nav" aria-label="월 이동">
-            <button
-              id="prevMonth"
-              type="button"
-              class="nav-arrow"
-              aria-label="이전 달 보기"
-            >
-              <!-- 추후 svg삽입 -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-chevron-left"
-                viewBox="0 0 16 16"
+        <!--전체를 담는 section태그 추가-->
+        <section class="calendar-all">
+          <section
+            id="calendar"
+            class="calendar-card"
+            aria-labelledby="calendarTitle"
+          >
+            <header class="card-header">
+              <h2 id="calendarTitle">CALENDAR</h2>
+            </header>
+            <nav class="month-nav" aria-label="월 이동">
+              <button
+                id="prevMonth"
+                type="button"
+                class="nav-arrow"
+                aria-label="이전 달 보기"
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                />
-              </svg>
-            </button>
-            <strong id="monthLabel">2026년 7월</strong>
-            <button
-              id="nextMonth"
-              type="button"
-              class="nav-arrow"
-              aria-label="다음 달 보기"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-chevron-right"
-                viewBox="0 0 16 16"
+                <!-- 김양왕, svg 삽입 -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chevron-left"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                  />
+                </svg>
+              </button>
+              <strong id="monthLabel">2026년 7월</strong>
+              <button
+                id="nextMonth"
+                type="button"
+                class="nav-arrow"
+                aria-label="다음 달 보기"
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
-                />
-              </svg>
-            </button>
-          </nav>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chevron-right"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
+                  />
+                </svg>
+              </button>
+            </nav>
 
-          <div class="weekday-row" aria-label="요일">
-            <span>일</span>
-            <span>월</span>
-            <span>화</span>
-            <span>수</span>
-            <span>목</span>
-            <span>금</span>
-            <span>토</span>
-          </div>
-          <!-- 날짜를 선택하는 달력 그리드임을 감안하여
+            <div class="weekday-row" aria-label="요일">
+              <span>일</span>
+              <span>월</span>
+              <span>화</span>
+              <span>수</span>
+              <span>목</span>
+              <span>금</span>
+              <span>토</span>
+            </div>
+            <!-- 날짜를 선택하는 달력 그리드임을 감안하여
   role="grid" 속성을 추가하고 aria-label로 설명을 추가함 -->
-          <div
-            id="dateGrid"
-            class="date-grid"
-            role="grid"
-            aria-label="날짜 선택"
-          ></div>
-        </section>
+            <div
+              id="dateGrid"
+              class="date-grid"
+              role="grid"
+              aria-label="날짜 선택"
+            ></div>
+          </section>
 
-        <!-- 1.js 용 aria-label 추가
+          <!-- 1.js 용 aria-label 추가
         2. 스크린 리더기용 라벨 추가
         3. 날짜 부분 p 대신 time 으로 변경 -->
-        <section class="summary-card" aria-labelledby="selectedDateTitle">
-          <p id="selectedDateTitle" class="summary-label">SELECTED DATE</p>
-          <time id="selectedDateText" class="summary-date" datetime="2026-07-09"
-            >2026.07.09 (THU)</time
-          >
-          <ul class="status-list">
-            <li>
-              <span><span class="status-dot todo"></span>할일 (TO DO)</span>
-              <strong id="summaryTodo">0</strong>
-            </li>
-            <li>
-              <span><span class="status-dot progress"></span>진행중</span>
-              <strong id="summaryProgress">0</strong>
-            </li>
-            <li>
-              <span><span class="status-dot done"></span>완료</span>
-              <strong id="summaryDone">0</strong>
-            </li>
-          </ul>
+          <section class="summary-card" aria-labelledby="selectedDateTitle">
+            <p id="selectedDateTitle" class="summary-label">SELECTED DATE</p>
+            <time
+              id="selectedDateText"
+              class="summary-date"
+              datetime="2026-07-09"
+              >2026.07.09 (THU)</time
+            >
+            <ul class="status-list">
+              <li>
+                <span><span class="status-dot todo"></span>할일 (TO DO)</span>
+                <strong id="summaryTodo">0</strong>
+              </li>
+              <li>
+                <span><span class="status-dot progress"></span>진행중</span>
+                <strong id="summaryProgress">0</strong>
+              </li>
+              <li>
+                <span><span class="status-dot done"></span>완료</span>
+                <strong id="summaryDone">0</strong>
+              </li>
+            </ul>
 
-          <footer class="summary-footer">
-            <span>전체 일정</span>
-            <strong id="summaryTotal">0</strong>
-          </footer>
+            <footer class="summary-footer">
+              <span>전체 일정</span>
+              <strong id="summaryTotal">0</strong>
+            </footer>
+          </section>
         </section>
 
         <section class="publication-card">
