@@ -1,13 +1,13 @@
 /* 혹시몰라서 맥 폰트 위주로 추가. */
 
 /*프리텐다드 글꼴*/
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
 
 body {
   margin: 0;
   padding: 0 40px;
   background-color: #f4f4f4;
-  font-family: 'Pretendard' ;
+  font-family: "Pretendard";
   color: #000000;
   letter-spacing: -0.3px;
 }
@@ -17,7 +17,7 @@ body {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #BD3131;
+  color: #bd3131;
 }
 
 .site-header {
@@ -42,15 +42,14 @@ body {
   border-bottom: 2px solid #111111;
 }
 
-
 .masthead-side {
   flex: 0.5;
 }
 
 .masthead-left {
-  position: relative; 
+  position: relative;
   text-align: left;
-  padding-right: 30px; 
+  padding-right: 30px;
 }
 
 .masthead-left::after {
@@ -58,29 +57,28 @@ body {
   position: absolute;
   top: 44%;
   right: 0;
-  transform: translateY(-50%); 
-  width: 1px; 
-  height: 190px; 
-  background-color: #D9D9D9;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 190px;
+  background-color: #d9d9d9;
   opacity: 0.77;
 }
-
 
 .masthead-right {
   position: relative;
   text-align: right;
-  padding-left: 30px; 
+  padding-left: 30px;
 }
 
-.masthead-right::before{
+.masthead-right::before {
   content: "";
   position: absolute;
   top: 44%;
   left: 0;
-  transform: translateY(-50%); 
+  transform: translateY(-50%);
   width: 1px; /* 선 두께 */
-  height: 190px; 
-  background-color: #D9D9D9;
+  height: 190px;
+  background-color: #d9d9d9;
   opacity: 0.77;
 }
 
@@ -119,7 +117,7 @@ body {
 
 .masthead-title h1 {
   margin: 10px 0;
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-size: 3.5rem;
   font-weight: 900;
   letter-spacing: -1px;
@@ -164,9 +162,9 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 24px;          
-  margin-left: 33px;  
-  margin-right: auto; 
+  gap: 24px;
+  margin-left: 33px;
+  margin-right: auto;
 }
 
 .nav-links li a {
@@ -178,7 +176,7 @@ body {
   transition: color 0.2s;
 }
 
-.nav-links li a:hover{
+.nav-links li a:hover {
   color: #111111;
   border-bottom: 2px solid #000000;
   padding-bottom: 4px;
@@ -190,24 +188,33 @@ body {
   gap: 10px;
 }
 
-.circle1, .circle2 {
+.circle1,
+.circle2 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid #111111; 
+  border: 2px solid #111111;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
 }
 
-.circle1 { background-color: #111111; }
-.circle2 { background-color: #ffffff; } 
+.circle1 {
+  background-color: #111111;
+}
+.circle2 {
+  background-color: #ffffff;
+}
 
-.circle1:hover, .circle2:hover {
+.circle1:hover,
+.circle2:hover {
   transform: scale(1.1);
 }
 
-.circle1:active, .circle2:active {
+.circle1:active,
+.circle2:active {
   transform: scale(0.9);
 }
 
@@ -216,26 +223,26 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 40px 0;
-  border-bottom: 1px solid #e5e5e5; 
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .main-content {
   margin-left: 430px;
   margin-right: 460px;
-  
-  min-width: 600px; 
+
+  min-width: 600px;
   box-sizing: border-box;
 }
 
 .greeting-text {
-  flex: 4; 
-  padding-right: 40px; 
+  flex: 4;
+  padding-right: 40px;
   align-items: center;
 }
 
 .greeting-label {
   display: block;
-  color: #c23535; 
+  color: #c23535;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -243,11 +250,11 @@ body {
 }
 
 .greeting-text h2 {
-  font-size: 2.5rem; 
-  font-weight: 800; 
+  font-size: 2.5rem;
+  font-weight: 800;
   color: #111111;
   margin: 0 0 12px 0;
-  letter-spacing: -1px; 
+  letter-spacing: -1px;
 }
 
 .greeting-text p {
@@ -259,15 +266,15 @@ body {
 }
 
 .word {
-  flex: 0 0 45%; 
-  border-left: 4px solid #111111; 
-  padding: 15px 0 15px 30px; 
-  margin: 0; 
-  
+  flex: 0 0 45%;
+  border-left: 4px solid #111111;
+  padding: 15px 0 15px 30px;
+  margin: 0;
+
   font-size: 1.15rem;
   color: #666666;
-  line-height: 1.7; 
-  text-align: center; 
+  line-height: 1.7;
+  text-align: center;
   font-weight: 400;
   letter-spacing: -0.5px;
 }
@@ -285,23 +292,23 @@ body {
 }
 
 .stats-cards {
-  display: flex; 
+  display: flex;
   width: 100%;
-  background-color: #ffffff; 
+  background-color: #ffffff;
   border-top: 1px solid #e5e5e5;
-  border-bottom: 1px solid #e5e5e5; 
-  margin: 0; 
-  padding: 0; 
+  border-bottom: 1px solid #e5e5e5;
+  margin: 0;
+  padding: 0;
 }
 
 .stat-card {
-  flex: 1; 
+  flex: 1;
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  padding: 35px 0; 
-  border-right: 1px solid #e5e5e5; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 35px 0;
+  border-right: 1px solid #e5e5e5;
 }
 
 .stat-card:last-child {
@@ -313,15 +320,15 @@ body {
   color: #111111;
   font-weight: 500;
   letter-spacing: -0.3px;
-  margin-bottom: 12px; 
+  margin-bottom: 12px;
 }
 
 .stat-card-value {
-  font-size: 2.5rem; 
-  font-weight: 800; 
+  font-size: 2.5rem;
+  font-weight: 800;
   color: #111111;
-  line-height: 1; 
-  margin: 0; 
+  line-height: 1;
+  margin: 0;
 }
 
 body {
@@ -624,6 +631,61 @@ table {
   font-size: 15px;
   font-weight: 700;
 }
+
+.publication-card {
+  width: 290px;
+  padding: 18px;
+  margin-top: 22px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+.publication-card p {
+  margin: 0;
+}
+
+.publication-label {
+  display: block;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #111;
+  border-bottom: 1px solid #ececec;
+}
+
+.publication-text {
+  margin-bottom: 18px;
+  line-height: 1.6;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.publication-text strong {
+  font-weight: 700;
+}
+
+.publication-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #ececec;
+  gap: 10px;
+  color: #555;
+  font-size: 0.92rem;
+}
+
+.publication-cta strong {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #111;
+}
+
 /* ------------------------newspaper-------------------------- */
 
 .edition-card-container {
@@ -794,4 +856,20 @@ table {
 }
 .view-newspaper-btn:hover {
   background: #8f2320;
+}
+
+/* ------------------footer----------------------- */
+.site-footer {
+  margin-top: 36px;
+  padding: 22px 0;
+  text-align: center;
+  border-top: 1px solid #e8e8e8;
+  color: #8b8b8b;
+  background: #f9f9f9;
+}
+
+.site-footer small {
+  display: inline-block;
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
 }
