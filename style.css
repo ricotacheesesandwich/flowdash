@@ -222,29 +222,51 @@ body {
 .circle2:active {
   transform: scale(0.9);
 }
+
+/* 전체 3단 레이아웃 */
+.page-body {
+  width: 100%;
+  margin: 28px 0 0;
+
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr) 310px;
+  gap: 24px;
+  align-items: start;
+
+  box-sizing: border-box;
+}
+
+.calendar-panel {
+  grid-column: 1;
+  width: 290px;
+  min-width: 0;
+  margin: 0;
+}
 /* ==========================
    main .greeting-area
 ========================== */
 .greeting-area {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 32px;
   align-items: center;
-  padding: 40px 0;
+  width: 100%;
+  padding: 28px 0;
   border-bottom: 1px solid #e5e5e5;
+  box-sizing: border-box;
 }
 
 .main-content {
-  margin-left: 430px;
-  margin-right: 460px;
-
-  min-width: 600px;
+  grid-column: 2;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
 .greeting-text {
-  flex: 4;
-  padding-right: 40px;
-  align-items: center;
+  min-width: 0;
+  padding-right: 0;
 }
 
 .greeting-label {
@@ -273,10 +295,11 @@ body {
 }
 
 .word {
-  flex: 0 0 45%;
-  border-left: 4px solid #111111;
-  padding: 15px 0 15px 30px;
+  min-width: 0;
   margin: 0;
+  padding: 15px 0 15px 30px;
+
+  border-left: 4px solid #111111;
 
   font-size: 1.15rem;
   color: #666666;
@@ -284,6 +307,7 @@ body {
   text-align: center;
   font-weight: 400;
   letter-spacing: -0.5px;
+  word-break: keep-all;
 }
 
 .sr-only {
@@ -651,58 +675,64 @@ table {
    DATE GRID
 ========================== */
 
-.date-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  row-gap: 12px;
-}
-
-.date-grid button {
+.month-picker-wrap {
   position: relative;
-
-  width: 34px;
-  height: 34px;
-  margin: auto;
-
-  border: none;
-  border-radius: 50%;
-
-  background: transparent;
-
-  color: #222;
-  font-size: 15px;
-
-  cursor: pointer;
-
-  transition: background-color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.date-grid button:hover {
+.month-picker-button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 110px;
+  min-height: 32px;
+  padding: 4px 22px 4px 10px;
+
+  color: #111;
+  font-size: 15px;
+  font-weight: 700;
+  background: transparent;
+  border-radius: 4px;
+}
+
+.month-picker-button::after {
+  content: "";
+  position: absolute;
+  right: 7px;
+  top: 50%;
+
+  width: 6px;
+  height: 6px;
+
+  border-right: 1px solid #111;
+  border-bottom: 1px solid #111;
+
+  transform: translateY(-70%) rotate(45deg);
+}
+
+.month-picker-button:hover {
   background: #f1f1f1;
 }
 
-.date-grid button.other-month {
-  color: #d5d5d5;
+.month-picker-button:focus-visible {
+  outline: 2px solid #3d5f98;
+  outline-offset: 2px;
 }
 
-.date-grid button.today {
-  background: #3d5f98;
-  color: #fff;
-  font-weight: 700;
-}
-
-.date-grid button.has-todo::after {
-  content: "";
+.month-picker-input {
   position: absolute;
   left: 50%;
-  bottom: 3px;
-  transform: translateX(-50%);
+  bottom: 0;
 
-  width: 5px;
-  height: 5px;
+  width: 1px;
+  height: 1px;
 
-  border-radius: 50%;
-  background: #ef9417;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ==========================
@@ -859,18 +889,25 @@ table {
 /* ------------------------newspaper-------------------------- */
 
 .edition-card-container {
+  grid-column: 3;
+
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 22px;
+
   background: #fff;
   border: 1px solid #e5e5e5;
   border-radius: 20px;
-  padding: 22px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  /* place in right column and keep visible while scrolling */
-  grid-column: 3;
-  width: 260px;
-  justify-self: end;
+
+  justify-self: stretch;
   align-self: start;
+
   position: sticky;
   top: 32px;
+
+  box-sizing: border-box;
 }
 .edition-card-container .card-header {
   gap: 12px;
