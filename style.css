@@ -19,7 +19,7 @@ body {
 .page-body,
 .site-footer {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1800px;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -82,7 +82,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   min-width: 0;
 }
 
@@ -184,7 +183,6 @@ body {
   flex-direction: column;
   gap: 6px;
   padding: 5px;
-
   background: none;
   border: 0;
   cursor: pointer;
@@ -234,15 +232,11 @@ body {
   position: absolute;
   left: 50%;
   bottom: 0;
-
   width: calc(100% + 24px);
   height: 3px;
-
   background-color: #bd3131;
-
   transform: translateX(-50%);
   clip-path: inset(0 50% 0 50%);
-
   transition: clip-path 0.25s ease;
   pointer-events: none;
 }
@@ -250,7 +244,6 @@ body {
 /* 호버한 메뉴만 글씨 변경 */
 .nav-links li a:hover {
   color: #bd3131;
-
   font-weight: 700;
 }
 
@@ -263,7 +256,6 @@ body {
 .nav-actions {
   position: absolute;
   right: 0;
-
   display: flex;
   gap: 10px;
 }
@@ -305,10 +297,10 @@ body {
   margin: 28px auto 0;
 
   display: grid;
-  grid-template-columns: minmax(250px, 290px) minmax(0, 1fr) minmax(
-      260px,
-      310px
-    );
+  grid-template-columns:
+    minmax(250px, 290px)
+    minmax(0, 1fr)
+    minmax(280px, 310px);
   gap: 24px;
   align-items: start;
 
@@ -326,7 +318,7 @@ body {
 /* main .greeting-area */
 .greeting-area {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(380px, 1fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr);
   gap: 32px;
   align-items: center;
   width: 100%;
@@ -338,7 +330,6 @@ body {
 .greeting-text {
   min-width: 0;
   padding-right: 10px;
-
   align-self: start;
   padding-top: 8px;
 }
@@ -363,7 +354,6 @@ body {
 
 .greeting-text p {
   margin: 0;
-
   color: #555555;
   font-size: 1rem;
   font-weight: 600;
@@ -372,30 +362,22 @@ body {
 
 .word {
   position: relative;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 100%;
   min-width: 0;
   min-height: 156px;
-
   margin: 0;
   padding: 18px 54px;
-
-  /* 사라진 굵은 세로선 */
   border-left: 4px solid #111111;
-
   color: #666666;
-
   font-family: "KoPubBatang", "KoPub Batang", serif;
   font-size: 1.7rem;
   font-weight: 300;
   line-height: 1.7;
   letter-spacing: 1px;
   text-align: center;
-
   word-break: keep-all;
   box-sizing: border-box;
 }
@@ -503,18 +485,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-
   position: relative;
   top: -2px;
-
   margin-right: 10px;
-
   color: #718096;
   font-size: 24px;
-
   transform: scaleX(-1);
   transform-origin: center;
-
   user-select: none;
 }
 
@@ -585,17 +562,6 @@ body {
   background-color: #1a1a1a;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
 /* .kanban-board */
 .kanban-board {
   display: flex;
@@ -654,64 +620,12 @@ body {
   gap: 12px;
 }
 
-body {
-  padding: 0 40px;
-  letter-spacing: -0.3px;
-}
-
-ul {
-  list-style: none;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-/* 1.마우스 올릴때 손가락 모양으로 바뀌게 함. */
-button {
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-/* 기본 테두리 제거 */
-fieldset {
-  border: 0;
-}
-
-[hidden] {
-  display: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
 /* CALENDAR CARD */
 .calendar-all {
   width: 290px;
-
   background: #fff;
-
   border: 1px solid #dcdcdc;
-
   border-radius: 2px;
-
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.08),
     0 6px 18px rgba(0, 0, 0, 0.08);
@@ -721,14 +635,12 @@ table {
   width: 290px;
   padding: 18px;
   background: #fff;
-
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
 /* HEADER */
-
 .card-header {
   padding-bottom: 10px;
   border-bottom: 2px solid #111;
@@ -741,7 +653,6 @@ table {
 }
 
 /* MONTH NAVIGATION */
-
 .month-nav {
   display: flex;
   justify-content: space-between;
@@ -758,11 +669,9 @@ table {
   height: 28px;
   border: none;
   background: transparent;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   cursor: pointer;
 }
 
@@ -772,7 +681,6 @@ table {
 }
 
 /* WEEKDAY */
-
 .weekday-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -786,7 +694,6 @@ table {
 }
 
 /* DATE GRID */
-
 .month-picker-wrap {
   position: relative;
   display: flex;
@@ -799,11 +706,9 @@ table {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-
   min-width: 110px;
   min-height: 32px;
   padding: 4px 22px 4px 10px;
-
   color: #111;
   font-size: 15px;
   font-weight: 700;
@@ -816,13 +721,10 @@ table {
   position: absolute;
   right: 7px;
   top: 50%;
-
   width: 6px;
   height: 6px;
-
   border-right: 1px solid #111;
   border-bottom: 1px solid #111;
-
   transform: translateY(-70%) rotate(45deg);
 }
 
@@ -839,16 +741,13 @@ table {
   position: absolute;
   left: 50%;
   bottom: 0;
-
   width: 1px;
   height: 1px;
-
   opacity: 0;
   pointer-events: none;
 }
 
 /* SUMMARY CARD */
-
 .summary-card {
   width: 290px;
   padding: 18px;
@@ -858,7 +757,6 @@ table {
 .summary-label {
   padding-top: 14px;
   border-top: 1px solid #ececec;
-
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -866,18 +764,14 @@ table {
 
 .summary-date {
   display: block;
-
   margin: 6px 0 16px;
   padding-bottom: 14px;
-
   border-bottom: 1px solid #ececec;
-
   font-size: 15px;
   font-weight: 800;
 }
 
 /* STATUS */
-
 .status-list {
   list-style: none;
 }
@@ -886,9 +780,7 @@ table {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 7px 0;
-
   font-size: 13px;
 }
 
@@ -900,9 +792,7 @@ table {
 .status-dot {
   width: 6px;
   height: 6px;
-
   margin-right: 8px;
-
   border-radius: 50%;
 }
 
@@ -919,17 +809,13 @@ table {
 }
 
 /* FOOTER */
-
 .summary-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-top: 18px;
   padding-top: 16px;
-
   border-top: 1px solid #ececec;
-
   font-size: 13px;
 }
 
@@ -956,20 +842,17 @@ table {
   display: block;
   margin: 0;
   padding: 6px 0 12px;
-
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #111111;
-
   border-bottom: 1px solid #ececec;
 }
 
 .publication-text {
   margin: 0;
   padding: 15px 0 13px;
-
   line-height: 1.6;
   color: #333333;
   font-size: 0.95rem;
@@ -979,12 +862,9 @@ table {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 10px;
   padding: 12px 0 8px;
-
   border-top: 1px solid #ececec;
-
   color: #555555;
   font-size: 0.92rem;
 }
@@ -995,63 +875,36 @@ table {
   color: #111;
 }
 
-/* 전체 레이아웃*/
-
-.page-body {
-  width: 100%;
-  margin: 28px 0 0;
-
-  display: grid;
-  grid-template-columns:
-    290px
-    minmax(0, 1fr)
-    clamp(310px, 19vw, 360px);
-
-  gap: 24px;
-  align-items: start;
-
-  box-sizing: border-box;
-}
-
-/* 기사 상단*/
-
+/* 기사 상단 */
 .edition-card-container {
   grid-column: 3;
-
   position: sticky;
   top: 20px;
   height: fit-content;
-
   width: 100%;
   min-width: 0;
   max-width: none;
   margin: 0;
   padding: 0 14px 14px;
-
   background-color: #ffffff;
   border: 1px solid #d8d8d8;
   border-radius: 0;
-
   box-shadow:
     0 2px 7px rgba(0, 0, 0, 0.12),
     0 8px 20px rgba(0, 0, 0, 0.06);
-
   justify-self: stretch;
   align-self: start;
   box-sizing: border-box;
 }
 
 /* 카드상단 문구 */
-
 .edition-card-container > .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-
   margin: 0 -14px 14px;
   padding: 16px 16px 14px;
-
   border-bottom: 1px solid #555555;
 }
 
@@ -1063,7 +916,6 @@ table {
 
 .edition-card-container .header-title h2 {
   margin: 0;
-
   color: #111111;
   font-size: 1.1rem;
   font-weight: 500;
@@ -1074,47 +926,37 @@ table {
 /* 자정 자동 발간 */
 .edition-card-container .badge {
   flex: 0 0 78px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   min-width: 78px;
   max-width: 78px;
   min-height: 46px;
   padding: 6px 8px;
-
   background-color: #dddddd;
   border-radius: 999px;
-
   color: #222222;
   font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.25;
   text-align: center;
-
   box-sizing: border-box;
 }
 
-/* 안쪽 신문*/
-
+/* 안쪽 신문 */
 .edition-card-container .content-box {
   margin: 0;
   padding: 18px 12px 20px;
-
   background-color: #ffffff;
   border: 1px solid #dddddd;
-
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.1),
     0 4px 12px rgba(0, 0, 0, 0.05);
-
   box-sizing: border-box;
 }
 
-/* Flow Dash Daily*/
-
+/* Flow Dash Daily */
 .edition-card-container .content-header {
   padding: 0;
   text-align: center;
@@ -1122,7 +964,6 @@ table {
 
 .edition-card-container .content-header h2 {
   margin: 0;
-
   color: #111111;
   font-size: 1.25rem;
   font-weight: 700;
@@ -1132,7 +973,6 @@ table {
 
 .edition-card-container .content-header .sub-text {
   margin: 8px 0 0;
-
   color: #222222;
   font-size: 0.82rem;
   font-weight: 400;
@@ -1142,13 +982,11 @@ table {
 /* 이중선 */
 .edition-card-container .double-divider {
   margin: 14px 0;
-
   border: 0;
   border-top: 3px double #444444;
 }
 
 /* 회색 기사 영역 */
-
 .edition-card-container .layout-grid {
   display: block;
   margin-bottom: 14px;
@@ -1157,7 +995,6 @@ table {
 .edition-card-container .grid-left {
   width: 100%;
   min-height: 210px;
-
   background-color: #dddddd;
   border-radius: 0;
 }
@@ -1169,13 +1006,11 @@ table {
 .edition-card-container .grid-right-top,
 .edition-card-container .grid-right-bottom {
   min-height: 0;
-
   background-color: #dddddd;
   border-radius: 0;
 }
 
-/* 기록 대기 안내*/
-
+/* 기록 대기 안내 */
 .edition-card-container .status-message {
   margin: 0 0 14px;
   padding: 0 5px;
@@ -1183,7 +1018,6 @@ table {
 
 .edition-card-container .status-message h3 {
   margin: 0 0 9px;
-
   color: #111111;
   font-size: 1.35rem;
   font-weight: 700;
@@ -1193,7 +1027,6 @@ table {
 
 .edition-card-container .status-message p {
   margin: 0;
-
   color: #222222;
   font-size: 0.82rem;
   font-weight: 400;
@@ -1201,13 +1034,11 @@ table {
   word-break: keep-all;
 }
 
-/* 발행 정보*/
-
+/* 발행 정보 */
 .edition-card-container .data-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-
   margin: 0;
   padding: 0 5px;
 }
@@ -1216,10 +1047,8 @@ table {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 12px;
   padding: 8px 0;
-
   border: 0;
 }
 
@@ -1236,30 +1065,24 @@ table {
   white-space: nowrap;
 }
 
-/* 신문 보기 버튼*/
-
+/* 신문 보기 버튼 */
 .edition-card-container > .card-footer {
   display: flex;
   justify-content: center;
-
   margin-top: 14px;
 }
 
 .edition-card-container .view-newspaper-btn {
   width: 100%;
   padding: 16px 0;
-
   background-color: #c52e1f;
   border: 0;
   border-radius: 10px;
-
   color: #ffffff;
   font-size: 1.05rem;
   font-weight: 700;
-
   cursor: pointer;
   transition: background-color 0.2s ease;
-
   box-sizing: border-box;
 }
 
@@ -1267,7 +1090,7 @@ table {
   background-color: #a82419;
 }
 
-/* ------------------footer----------------------- */
+/* footer */
 .site-footer {
   margin-top: 36px;
   padding: 22px 0;
@@ -1346,70 +1169,5 @@ table {
   .nav-links {
     flex-wrap: wrap;
     gap: 14px 20px;
-  }
-}
-
-@media (max-width: 760px) {
-  body {
-    padding: 0 16px;
-  }
-
-  .site-header {
-    padding-top: 20px;
-  }
-
-  .masthead {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 18px;
-  }
-
-  .masthead-side {
-    text-align: center;
-    padding: 0;
-  }
-
-  .masthead-left::after,
-  .masthead-right::before {
-    display: none;
-  }
-
-  .masthead-title h1 {
-    font-size: clamp(3rem, 12vw, 4.75rem);
-  }
-
-  .header-nav {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .nav-links {
-    width: 100%;
-    margin-left: 0;
-    justify-content: space-between;
-  }
-
-  .stats-cards {
-    flex-wrap: wrap;
-  }
-
-  .stat-card {
-    flex: 1 1 50%;
-    border-bottom: 1px solid #e5e5e5;
-  }
-
-  .stat-card:nth-child(2n) {
-    border-right: none;
-  }
-
-  .kanban-board {
-    flex-direction: column;
-  }
-
-  .edition-card-container {
-    position: static;
-    width: 100%;
-    grid-column: 1 / -1;
-    justify-self: stretch;
   }
 }
