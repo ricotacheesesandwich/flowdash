@@ -1288,7 +1288,8 @@ table {
   .menu-btn {
     display: none;
   }
-  
+}
+
 /*  1200px 데스크탑 */
 @media (max-width: 1200px) {
   body {
