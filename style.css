@@ -6,13 +6,9 @@
 
 /* header */
 body {
-  margin: 0;
   padding: 0 clamp(16px, 2.4vw, 40px);
-  background-color: #f4f4f4;
-  font-family: "Pretendard";
   color: #000000;
   letter-spacing: -0.3px;
-  box-sizing: border-box;
 }
 
 .site-header,
@@ -21,7 +17,6 @@ body {
   width: 100%;
   max-width: 1800px;
   margin: 0 auto;
-  box-sizing: border-box;
 }
 
 .site-header {
@@ -106,7 +101,6 @@ body {
 }
 
 .today-label {
-  margin: 0;
   font-size: 0.9rem;
   font-weight: 700;
   color: #000000;
@@ -122,7 +116,6 @@ body {
 }
 
 .header-sub {
-  margin: 0;
   font-size: 0.8rem;
   color: #858585;
   font-weight: 700;
@@ -145,8 +138,6 @@ body {
 
 .masthead-title h1 {
   display: inline-block;
-  margin: 0;
-  padding: 0;
   line-height: 0.85;
   font-family: "Playfair Display", Georgia, serif;
   font-size: 6rem;
@@ -183,9 +174,6 @@ body {
   flex-direction: column;
   gap: 6px;
   padding: 5px;
-  background: none;
-  border: 0;
-  cursor: pointer;
 }
 
 .menu-btn span {
@@ -202,9 +190,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 50px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 /* 글씨 굵기가 바뀌어도 메뉴 위치가 흔들리지 않게 고정 */
@@ -295,7 +280,6 @@ body {
 .page-body {
   width: 100%;
   margin: 28px auto 0;
-
   display: grid;
   grid-template-columns:
     minmax(250px, 290px)
@@ -303,8 +287,6 @@ body {
     minmax(280px, 310px);
   gap: 24px;
   align-items: start;
-
-  box-sizing: border-box;
 }
 
 .calendar-panel {
@@ -324,7 +306,6 @@ body {
   width: 100%;
   padding: 28px;
   border-bottom: 1px solid #e5e5e5;
-  box-sizing: border-box;
 }
 
 .greeting-text {
@@ -379,7 +360,6 @@ body {
   letter-spacing: 1px;
   text-align: center;
   word-break: keep-all;
-  box-sizing: border-box;
 }
 
 .word::before,
@@ -462,23 +442,66 @@ body {
 .controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  max-width: 1200px;
   margin: 20px auto;
-  box-sizing: border-box;
 }
 
 .search-bar {
-  flex: 1.3;
+  flex: 1;
   display: flex;
   align-items: center;
+  height: 62px;
+  padding: 0 18px;
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 0 16px;
-  height: 48px;
-  box-sizing: border-box;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+}
+
+.search-bar input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 18px;
+}
+
+.control-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.filter-btn {
+  width: 68px;
+  height: 62px;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 24px;
+}
+
+.add-btn {
+  min-width: 230px;
+  height: 62px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.reset-btn {
+  min-width: 230px;
+  height: 62px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background-color: #c9331e;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .search-icon {
@@ -495,67 +518,8 @@ body {
   user-select: none;
 }
 
-.search-bar input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 14px;
-  color: #1a202c;
-  background: transparent;
-}
-
 .search-bar input::placeholder {
   color: #a0aec0;
-}
-
-.control-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 3.7;
-}
-
-.filter-select,
-.time-select {
-  flex: 1;
-  height: 48px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 0 36px 0 16px;
-  font-size: 14px;
-  color: #1a202c;
-  font-weight: 500;
-  cursor: pointer;
-  box-sizing: border-box;
-
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-}
-
-.filter-select:focus,
-.time-select:focus {
-  outline: none;
-  border-color: #cbd5e0;
-}
-
-.add-btn {
-  flex: 1;
-  height: 48px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background-color 0.2s;
-  box-sizing: border-box;
 }
 
 .add-btn:hover {
@@ -620,6 +584,45 @@ body {
   gap: 12px;
 }
 
+.kanban-empty {
+  flex: 1;
+  min-height: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #999999;
+  text-align: center;
+}
+
+.kanban-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 18px;
+  color: #b5b5b5;
+}
+
+.kanban-empty-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.kanban-empty-title {
+  margin: 0;
+  color: #777777;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.kanban-empty-description {
+  margin: 8px 0 0;
+  color: #999999;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 /* CALENDAR CARD */
 .calendar-all {
   width: 290px;
@@ -638,6 +641,320 @@ body {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+/* ==========================
+   일정 카드 디자인
+========================== */
+
+.kanban-board .task-card {
+  width: 100%;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 0;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.kanban-board .task-card article {
+  padding: 22px 20px 18px;
+}
+
+/* ==========================
+   카드 상단 정보
+========================== */
+
+.kanban-board .task-top {
+  display: grid;
+  grid-template-columns: 28px auto minmax(0, 1fr) 28px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+/* 참고 이미지에는 분류 태그가 없으므로 숨김 */
+
+.kanban-board .task-category-tag {
+  display: none;
+}
+
+/* 체크박스 */
+
+.kanban-board .task-checkbox {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
+  border: 1px solid #c7c7c7;
+  border-radius: 0;
+  background-color: #ffffff;
+  box-shadow: none;
+}
+
+/* 중요도 */
+
+.kanban-board .task-priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: start;
+  min-width: 54px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #c7c7c7;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #111111;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.kanban-board .task-priority.priority-low,
+.kanban-board .task-priority.priority-normal,
+.kanban-board .task-priority.priority-high {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+/* 시간 */
+
+.kanban-board .task-time {
+  position: relative;
+  justify-self: end;
+  margin: 0;
+  padding-left: 20px;
+  color: #222222;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.kanban-board .task-time::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  border: 1px solid #bcbcbc;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.kanban-board .task-time::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  width: 4px;
+  height: 1px;
+  background-color: #bcbcbc;
+  box-shadow: 0 -3px 0 -0.2px #bcbcbc;
+  transform: translateY(-50%);
+}
+
+/* 삭제 버튼 */
+
+.kanban-board .task-close {
+  position: relative;
+  justify-self: end;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+}
+
+.kanban-board .task-close::before,
+.kanban-board .task-close::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 3px;
+  width: 22px;
+  height: 2px;
+  background-color: #111111;
+}
+
+.kanban-board .task-close::before {
+  transform: rotate(45deg);
+}
+
+.kanban-board .task-close::after {
+  transform: rotate(-45deg);
+}
+
+/* ==========================
+   제목과 메모
+========================== */
+
+.kanban-board .task-title {
+  margin: 16px 0 0 40px;
+  color: #111111;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: -0.5px;
+  text-align: left;
+}
+
+.kanban-board .task-desc {
+  margin: 8px 0 0 40px;
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+/* ==========================
+   상태 선택 박스
+========================== */
+
+.kanban-board .task-footer {
+  margin-top: 16px;
+}
+
+.kanban-board .task-dropdown {
+  width: 100%;
+  height: 54px;
+  padding: 0 46px 0 16px;
+  border: 1px solid #c5c5c5;
+  border-radius: 5px;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #bbbbbb 50%),
+    linear-gradient(135deg, #bbbbbb 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 23px,
+    calc(100% - 13px) 23px;
+  background-repeat: no-repeat;
+  background-size: 6px 6px;
+  color: #111111;
+  font-size: 17px;
+  font-weight: 800;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+}
+
+.kanban-board .task-dropdown:focus {
+  border-color: #111111;
+}
+
+/* ==========================
+   완료 일정 카드
+========================== */
+
+.kanban-board .task-card.is-done {
+  opacity: 1;
+}
+
+.kanban-board .task-card.is-done article {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 28px;
+  grid-template-rows: auto auto;
+  column-gap: 16px;
+  padding: 22px 20px;
+}
+
+.kanban-board .task-card.is-done .task-top {
+  display: contents;
+}
+
+.kanban-board .task-card.is-done .task-category-tag,
+.kanban-board .task-card.is-done .task-priority,
+.kanban-board .task-card.is-done .task-time,
+.kanban-board .task-card.is-done .task-footer {
+  display: none;
+}
+
+/* 완료 체크박스 */
+
+.kanban-board .task-card.is-done .task-checkbox {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: start;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 0;
+  background-color: #5778a5;
+  box-shadow: none;
+}
+
+.kanban-board .task-card.is-done .task-checkbox::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* 완료 제목 */
+
+.kanban-board .task-card.is-done .task-title {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  margin: 0;
+  color: #111111;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: left;
+  text-decoration: none;
+}
+
+/* 완료 메모 */
+
+.kanban-board .task-card.is-done .task-desc {
+  grid-column: 2 / 4;
+  grid-row: 2;
+  margin: 8px 0 0;
+  color: #333333;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* 완료 삭제 버튼 */
+
+.kanban-board .task-card.is-done .task-close {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+}
+
+/* ==========================
+   완료 체크박스 중요도별 색상
+========================== */
+
+/* 낮음 - 주황색 */
+.kanban-board .task-card.is-done.priority-low .task-checkbox {
+  background-color: #eea32e;
+}
+
+/* 보통 - 파란색 */
+.kanban-board .task-card.is-done.priority-normal .task-checkbox {
+  background-color: #5c7faf;
+}
+
+/* 높음 - 붉은색 */
+.kanban-board .task-card.is-done.priority-high .task-checkbox {
+  background-color: #c75b50;
 }
 
 /* HEADER */
@@ -691,60 +1008,6 @@ body {
   font-size: 13px;
   font-weight: 600;
   color: #555;
-}
-
-/* DATE GRID */
-.month-picker-wrap {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.month-picker-button {
-  position: relative;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 110px;
-  min-height: 32px;
-  padding: 4px 22px 4px 10px;
-  color: #111;
-  font-size: 15px;
-  font-weight: 700;
-  background: transparent;
-  border-radius: 4px;
-}
-
-.month-picker-button::after {
-  content: "";
-  position: absolute;
-  right: 7px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-right: 1px solid #111;
-  border-bottom: 1px solid #111;
-  transform: translateY(-70%) rotate(45deg);
-}
-
-.month-picker-button:hover {
-  background: #f1f1f1;
-}
-
-.month-picker-button:focus-visible {
-  outline: 2px solid #3d5f98;
-  outline-offset: 2px;
-}
-
-.month-picker-input {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
 }
 
 /* SUMMARY CARD */
@@ -894,7 +1157,6 @@ body {
     0 8px 20px rgba(0, 0, 0, 0.06);
   justify-self: stretch;
   align-self: start;
-  box-sizing: border-box;
 }
 
 /* 카드상단 문구 */
@@ -941,7 +1203,6 @@ body {
   font-weight: 500;
   line-height: 1.25;
   text-align: center;
-  box-sizing: border-box;
 }
 
 /* 안쪽 신문 */
@@ -953,7 +1214,6 @@ body {
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.1),
     0 4px 12px rgba(0, 0, 0, 0.05);
-  box-sizing: border-box;
 }
 
 /* Flow Dash Daily */
@@ -1083,7 +1343,6 @@ body {
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  box-sizing: border-box;
 }
 
 .edition-card-container .view-newspaper-btn:hover {
@@ -1104,6 +1363,749 @@ body {
   display: inline-block;
   font-size: 0.92rem;
   letter-spacing: -0.02em;
+}
+
+/* =========================================================
+   달력 날짜
+========================================================= */
+
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.date-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 34px;
+  border-radius: 50%;
+  color: #222222;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.date-cell:hover {
+  background-color: #eeeeee;
+}
+
+.date-cell.other-month {
+  color: #b8b8b8;
+}
+
+.date-cell.is-today {
+  outline: 1px solid #c83220;
+  outline-offset: -2px;
+}
+
+.date-cell.selected {
+  background-color: #111111;
+  color: #ffffff;
+}
+
+.date-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  display: flex;
+  gap: 2px;
+  transform: translateX(-50%);
+}
+
+.date-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+}
+
+.date-dot.todo {
+  background-color: #ef9417;
+}
+
+.date-dot.progress {
+  background-color: #d36a52;
+}
+
+.date-dot.done {
+  background-color: #3d5f98;
+}
+
+/* =========================================================
+   공통 팝업
+========================================================= */
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal-backdrop:not([hidden]) {
+  display: flex;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(17, 17, 17, 0.28);
+}
+
+.close-btn {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  color: #111111;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* =========================================================
+   새 일정 등록 팝업
+========================================================= */
+
+.modal-container {
+  width: 806px;
+  max-height: calc(100vh - 40px);
+  padding: 42px 46px 48px;
+  overflow-y: auto;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.16);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h2 {
+  color: #000000;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -2px;
+}
+
+.modal-header::after {
+  content: "";
+  position: absolute;
+}
+
+.modal-form {
+  margin-top: 30px;
+  padding-top: 38px;
+  border-top: 3px double #555555;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.form-group label {
+  color: #111111;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  border: 1px solid #969696;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #111111;
+  font-size: 17px;
+  font-weight: 600;
+  outline: none;
+}
+
+.form-group input,
+.form-group select {
+  height: 66px;
+  padding: 0 20px;
+}
+
+.form-group textarea {
+  min-height: 128px;
+  padding: 18px 20px;
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #8b8b8b;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #111111;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.form-row .form-group {
+  min-width: 0;
+}
+
+.modal-footer {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.ghost-btn,
+.submit-btn {
+  height: 76px;
+  border-radius: 8px;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.ghost-btn {
+  background-color: #eeeeee;
+  color: #555555;
+}
+
+.submit-btn {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* ==========================
+   필터 팝업 최종 배치 수정
+========================== */
+
+.filter-modal-container {
+  width: 720px;
+  padding: 42px 52px 56px;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
+}
+
+/* 팝업 제목 */
+
+.filter-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-modal-header h2 {
+  color: #000000;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1.5px;
+}
+
+.filter-modal-divider {
+  height: 3px;
+  margin: 26px 0 36px;
+  border-top: 1px solid #555555;
+  border-bottom: 1px solid #aaaaaa;
+}
+
+/* 분류 / 정렬기준 */
+
+.filter-select-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-field > span {
+  color: #111111;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* 분류 / 정렬기준 셀렉트 박스 */
+
+.filter-field select {
+  width: 100%;
+  height: 64px;
+  padding: 0 52px 0 20px;
+
+  border: 1px solid #b6b6b6;
+  border-radius: 10px;
+
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5l4 4 4-4' fill='none' stroke='%23111111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+  background-size: 14px;
+
+  color: #111111;
+  font-size: 17px;
+  font-weight: 700;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  outline: none;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.filter-field select:hover {
+  border-color: #111111;
+  background-color: #fafafa;
+}
+
+.filter-field select:focus {
+  border-color: #111111;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+}
+
+/* 드롭다운 옵션 */
+
+.filter-field select option {
+  background-color: #ffffff;
+  color: #111111;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 비활성 옵션이 있을 경우 */
+
+.filter-field select option:disabled {
+  color: #999999;
+}
+/* ==========================
+   분류 커스텀 드롭다운
+========================== */
+
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+/* 기존 select는 기능만 유지하고 화면에서는 숨김 */
+
+.custom-select-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 선택된 값이 보이는 버튼 */
+
+.custom-select-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 64px;
+  padding: 0 52px 0 20px;
+
+  border: 1px solid #a8a8a8;
+  border-radius: 10px;
+
+  background-color: #ffffff;
+  color: #111111;
+
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-radius 0.2s ease;
+}
+
+.custom-select-trigger:hover {
+  border-color: #111111;
+}
+
+.custom-select.is-open .custom-select-trigger {
+  border-color: #111111;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
+}
+
+/* 화살표 */
+
+.custom-select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 22px;
+
+  width: 8px;
+  height: 8px;
+
+  border-right: 2px solid #111111;
+  border-bottom: 2px solid #111111;
+
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.custom-select.is-open .custom-select-arrow {
+  transform: translateY(-30%) rotate(225deg);
+}
+
+/* 펼쳐지는 목록 */
+
+.custom-select-list {
+  position: absolute;
+  top: calc(100% - 1px);
+  left: 0;
+  z-index: 1100;
+
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+
+  overflow: hidden;
+
+  border: 1px solid #111111;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+
+  background-color: #ffffff;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+}
+
+.custom-select-list[hidden] {
+  display: none;
+}
+
+.custom-select-list li {
+  width: 100%;
+}
+
+/* 목록 하나하나 */
+
+.custom-select-option {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #222222;
+
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    padding-left 0.15s ease;
+}
+
+.custom-select-option:hover {
+  padding-left: 21px;
+  background-color: #f1f1f1;
+  color: #000000;
+}
+
+.custom-select-option.is-selected {
+  background-color: #111111;
+  color: #ffffff;
+}
+
+.custom-select-option.is-selected:hover {
+  background-color: #111111;
+  color: #ffffff;
+}
+
+/* 선택된 항목 왼쪽 표시점 */
+
+.custom-select-option.is-selected::before {
+  content: "";
+  flex-shrink: 0;
+
+  width: 5px;
+  height: 5px;
+  margin-right: 10px;
+
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+/* 중요도 / 상태 */
+
+.filter-group {
+  margin-top: 28px;
+}
+
+.filter-group legend {
+  margin-bottom: 16px;
+  color: #111111;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.filter-options {
+  display: grid;
+  width: 100%;
+  gap: 10px;
+}
+
+.filter-options label {
+  position: relative;
+  display: block;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.filter-options input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filter-options span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  min-height: 0;
+  padding: 0 12px;
+  border: 1px solid #111111;
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: #111111;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.filter-options input:checked + span {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* 첫 번째 filter-group은 중요도 */
+
+/* 중요도의 '모두' 버튼 숨기기 */
+
+.filter-modal-container
+  > .filter-group:nth-of-type(1)
+  .filter-options
+  label:first-child {
+  display: none;
+}
+
+/* 낮음 / 보통 / 높음 3칸 */
+
+.filter-modal-container > .filter-group:nth-of-type(1) .filter-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* 두 번째 filter-group은 상태 */
+
+/* 모두 / 할일 / 진행중 / 완료 4칸 */
+
+.filter-modal-container > .filter-group:nth-of-type(2) .filter-options {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* 하단 버튼 */
+
+.filter-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 46px;
+}
+
+.filter-reset-btn,
+.filter-apply-btn {
+  width: 100%;
+  height: 72px;
+  border-radius: 7px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.filter-reset-btn {
+  background-color: #eeeeee;
+  color: #666666;
+}
+
+.filter-apply-btn {
+  background-color: #000000;
+  color: #ffffff;
+}
+/* =========================================================
+   신문 팝업
+========================================================= */
+
+.newspaper-modal {
+  width: 920px;
+  max-height: calc(100vh - 40px);
+  padding: 36px;
+  overflow-y: auto;
+  background-color: #f8f5ee;
+  border: 1px solid #cfc8bc;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+}
+
+.newspaper-modal-header {
+  position: relative;
+  padding: 12px 60px 24px;
+  border-top: 7px solid #111111;
+  border-bottom: 4px double #111111;
+  text-align: center;
+}
+
+.newspaper-modal-header p {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+}
+
+.newspaper-modal-header h2 {
+  margin-top: 4px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.newspaper-modal-header .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 0;
+}
+
+.newspaper-body {
+  padding-top: 26px;
+}
+
+.newspaper-issue {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #111111;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.newspaper-headline {
+  margin: 24px auto 14px;
+  max-width: 760px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 45px;
+  font-weight: 900;
+  line-height: 1.08;
+  text-align: center;
+}
+
+.newspaper-lead {
+  max-width: 720px;
+  margin: 0 auto;
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.newspaper-rule {
+  margin: 24px 0;
+  border: 0;
+  border-top: 4px double #111111;
+}
+
+.newspaper-columns {
+  columns: 3;
+  column-gap: 28px;
+  column-rule: 1px solid #c7c1b7;
+}
+
+.newspaper-article {
+  break-inside: avoid;
+  margin-bottom: 22px;
+}
+
+.newspaper-article h3 {
+  margin-bottom: 7px;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.newspaper-article p {
+  color: #333333;
+  font-size: 13px;
+  line-height: 1.65;
+  text-align: justify;
+}
+
+.newspaper-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 26px;
+  border-top: 2px solid #111111;
+  border-bottom: 2px solid #111111;
+}
+
+.newspaper-stat {
+  padding: 16px 10px;
+  border-right: 1px solid #111111;
+  text-align: center;
+}
+
+.newspaper-stat:last-child {
+  border-right: 0;
+}
+
+.newspaper-stat span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.newspaper-stat strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 900;
 }
 
 /* 1920px 이상에서 햄버거 메뉴 숨김 */
