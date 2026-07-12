@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const publishDuration = document.querySelector("#publishDuration");
   const publishDoneCount = document.querySelector("#publishDoneCount");
 
-  //  신문
+  // 신문
   const viewNewspaperBtn = document.querySelector("#viewNewspaperBtn");
   const newspaperModal = document.querySelector("#newspaperModal");
   const closeNewspaper = document.querySelector("#closeNewspaper");
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  //  저장
+  // 저장
   function saveTasks() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
@@ -494,6 +494,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 일정이 없을 때 표시되는 안내
+  function createEmptyState(status) {
+    const emptyMessages = {
+      todo: {
+        title: "비어 있는 일정입니다",
+        description: "할 일을 추가해 보세요.",
+      },
+      progress: {
+        title: "진행 중인 일정이 없습니다",
+        description: "일정을 진행 중으로 변경해 보세요.",
+      },
+      done: {
+        title: "완료된 일정이 없습니다",
+        description: "완료한 일정이 이곳에 표시됩니다.",
+      },
+    };
+
+    const message = emptyMessages[status];
+    const item = document.createElement("li");
+
+    item.className = "kanban-empty";
+    item.setAttribute("role", "status");
+
+    item.innerHTML = `
+      <span class="kanban-empty-icon" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-4-4"></path>
+        </svg>
+      </span>
+
+      <strong class="kanban-empty-title">
+        ${message.title}
+      </strong>
+
+      <p class="kanban-empty-description">
+        ${message.description}
+      </p>
+    `;
+
+    return item;
+  }
+
   function renderTaskBoard(sourceTasks) {
     const visibleTasks = getVisibleTasks(sourceTasks);
 
@@ -517,11 +568,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    const visibleCounts = getStatusCounts(visibleTasks);
+
     Object.entries(lists).forEach(([status, list]) => {
+      if (visibleCounts[status] === 0) {
+        fragments[status].append(createEmptyState(status));
+      }
+
       list.replaceChildren(fragments[status]);
     });
-
-    const visibleCounts = getStatusCounts(visibleTasks);
 
     todoCount.textContent = String(visibleCounts.todo);
 
@@ -642,7 +697,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function findTask(taskId) {
     return tasks.find((task) => task.id === taskId);
   }
-
   function updateTaskStatus(taskId, nextStatus) {
     const targetTask = findTask(taskId);
 
@@ -1102,7 +1156,7 @@ document.addEventListener("DOMContentLoaded", () => {
     countdownText.textContent = `${hours}:${minutes}:${seconds}`;
   }
 
-  // 달력,일정, ecs 키
+  // 달력, 일정, ESC 키
   function handleDateGridClick(event) {
     const dateButton = event.target.closest(".date-cell");
 
