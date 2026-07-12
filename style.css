@@ -988,7 +988,9 @@ body {
 
 /* 회색 기사 영역 */
 .edition-card-container .layout-grid {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
   margin-bottom: 14px;
 }
 
@@ -1000,12 +1002,14 @@ body {
 }
 
 .edition-card-container .grid-right {
-  display: none;
+  display: grid;
+  grid-template-rows: repeat(2, minmax(90px, 1fr));
+  gap: 12px;
 }
 
 .edition-card-container .grid-right-top,
 .edition-card-container .grid-right-bottom {
-  min-height: 0;
+  min-height: 90px;
   background-color: #dddddd;
   border-radius: 0;
 }
@@ -1113,6 +1117,108 @@ body {
   }
 }
 
+/* 1200px 이상 데스크톱에서 신문형 레이아웃으로 정렬 */
+@media (min-width: 1200px) {
+  body {
+    padding-inline: clamp(20px, 2.1vw, 36px);
+  }
+
+  .page-body {
+    max-width: 1600px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "greeting greeting"
+      "calendar stats"
+      "controls controls"
+      "board board";
+    gap: 24px;
+    align-items: start;
+    justify-content: center;
+  }
+
+  .main-content {
+    display: contents;
+  }
+
+  .greeting-area {
+    grid-area: greeting;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .calendar-panel {
+    grid-area: calendar;
+    width: 100%;
+    max-width: none;
+    margin-top: 0;
+    align-self: start;
+  }
+
+  .calendar-all,
+  .calendar-card,
+  .summary-card,
+  .publication-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .stats-section {
+    grid-area: stats;
+    width: 100%;
+  }
+
+  .controls {
+    grid-area: controls;
+    width: 100%;
+    max-width: none;
+  }
+
+  .kanban-board {
+    grid-area: board;
+    width: 100%;
+  }
+
+  .edition-card-container {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+    align-self: start;
+  }
+
+  .stats-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(140px, auto));
+    gap: 14px;
+    width: 100%;
+    overflow: hidden;
+    align-items: stretch;
+  }
+
+  .stat-card {
+    flex: none;
+    min-height: 140px;
+    padding: 24px 18px;
+    border: 1px solid #e5e5e5;
+    border-right: 1px solid #e5e5e5;
+    justify-content: center;
+  }
+
+  .stat-card:last-child {
+    border-right: 1px solid #e5e5e5;
+  }
+
+  .stat-card-title {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+
+  .stat-card-value {
+    font-size: 1.95rem;
+  }
+}
+
 /*  1200px 데스크탑 */
 @media (max-width: 1200px) {
   body {
@@ -1120,13 +1226,24 @@ body {
   }
 
   .page-body {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+    gap: 20px;
   }
 
-  .calendar-panel,
-  .main-content,
-  .edition-card-container {
+  .calendar-panel {
     grid-column: 1;
+    width: 100%;
+    max-width: none;
+  }
+
+  .main-content {
+    grid-column: 2;
+    width: 100%;
+    max-width: none;
+  }
+
+  .edition-card-container {
+    grid-column: 1 / -1;
     width: 100%;
     max-width: none;
   }
@@ -1137,6 +1254,14 @@ body {
   .publication-card {
     width: 100%;
     max-width: none;
+  }
+
+  .stats-cards {
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    flex: 1 1 150px;
   }
 
   .greeting-area {
