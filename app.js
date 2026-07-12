@@ -1,3 +1,31 @@
+//dark mode
+// 1. 필요한 요소들 가져오기
+const bodyElement = document.body;
+const darkBtn = document.querySelector(".circle1"); /* 검은색 동그라미 버튼 */
+const lightBtn = document.querySelector(".circle2"); /* 흰색 동그라미 버튼 */
+
+// 2. 검은색 버튼을 누르면 body에 'dark-mode' 클래스를 붙입니다.
+if (darkBtn) {
+  darkBtn.addEventListener("click", () => {
+    bodyElement.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark"); // 사용자의 선택 기억
+  });
+}
+
+// 3. 흰색 버튼을 누르면 body에서 'dark-mode' 클래스를 뗍니다.
+if (lightBtn) {
+  lightBtn.addEventListener("click", () => {
+    bodyElement.classList.remove("dark-mode");
+    localStorage.setItem("theme", "light"); // 사용자의 선택 기억
+  });
+}
+
+// 4. [새로고침 대응] 나갔다 들어와도 마지막에 썼던 모드를 기억해서 띄워줍니다.
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  bodyElement.classList.add("dark-mode");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // 공통
   const STORAGE_KEY = "flowdash-tasks-v1";
