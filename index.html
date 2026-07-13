@@ -86,6 +86,7 @@
             <header class="card-header">
               <h2 id="calendarTitle">CALENDAR</h2>
             </header>
+
             <nav class="month-nav" aria-label="월 이동">
               <button
                 id="prevMonth"
@@ -93,13 +94,11 @@
                 class="nav-arrow"
                 aria-label="이전 달 보기"
               >
-                <!-- 김양왕, svg 삽입 -->
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-chevron-left"
                   viewBox="0 0 16 16"
                 >
                   <path
@@ -108,7 +107,18 @@
                   />
                 </svg>
               </button>
-              <strong id="monthLabel">2026년 7월</strong>
+
+              <button
+                id="calendarPickerButton"
+                type="button"
+                class="month-picker-button"
+                aria-controls="calendarPickerPanel"
+                aria-expanded="false"
+              >
+                <span id="monthLabel">2026년 7월</span>
+                <span class="month-picker-arrow" aria-hidden="true"></span>
+              </button>
+
               <button
                 id="nextMonth"
                 type="button"
@@ -120,7 +130,6 @@
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-chevron-right"
                   viewBox="0 0 16 16"
                 >
                   <path
@@ -131,6 +140,86 @@
               </button>
             </nav>
 
+            <!-- 반드시 calendar-card 안쪽에 위치 -->
+            <section
+              id="calendarPickerPanel"
+              class="calendar-picker-panel"
+              aria-label="연도와 월 선택"
+              hidden
+            >
+              <div id="monthSelectionView" class="picker-view">
+                <header class="picker-header">
+                  <button
+                    id="pickerPrevYear"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="이전 연도"
+                  >
+                    ‹
+                  </button>
+
+                  <button
+                    id="pickerYearButton"
+                    type="button"
+                    class="picker-year-button"
+                    aria-label="연도 선택 화면 열기"
+                  >
+                    <span id="pickerYearLabel">2026년</span>
+                    <span class="picker-small-arrow" aria-hidden="true"></span>
+                  </button>
+
+                  <button
+                    id="pickerNextYear"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="다음 연도"
+                  >
+                    ›
+                  </button>
+                </header>
+
+                <div
+                  id="monthGrid"
+                  class="month-grid"
+                  role="grid"
+                  aria-label="월 선택"
+                ></div>
+              </div>
+
+              <div id="yearSelectionView" class="picker-view" hidden>
+                <header class="picker-header">
+                  <button
+                    id="pickerPrevDecade"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="이전 10년"
+                  >
+                    ‹
+                  </button>
+
+                  <strong id="yearRangeLabel" class="year-range-label">
+                    2020 - 2029
+                  </strong>
+
+                  <button
+                    id="pickerNextDecade"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="다음 10년"
+                  >
+                    ›
+                  </button>
+                </header>
+
+                <div
+                  id="yearGrid"
+                  class="year-grid"
+                  role="grid"
+                  aria-label="연도 선택"
+                ></div>
+              </div>
+            </section>
+
             <div class="weekday-row" aria-label="요일">
               <span>일</span>
               <span>월</span>
@@ -140,8 +229,7 @@
               <span>금</span>
               <span>토</span>
             </div>
-            <!-- 날짜를 선택하는 달력 그리드임을 감안하여
-  role="grid" 속성을 추가하고 aria-label로 설명을 추가함 -->
+
             <div
               id="dateGrid"
               class="date-grid"
@@ -349,11 +437,7 @@
           <hr class="double-divider" />
 
           <div class="layout-grid" aria-hidden="true">
-            <div class="grid-left"></div>
-            <div class="grid-right">
-              <div class="grid-right-top"></div>
-              <div class="grid-right-bottom"></div>
-            </div>
+            <div class="edition-preview" aria-hidden="true"></div>
           </div>
 
           <section class="status-message" aria-labelledby="editionStatusTitle">
