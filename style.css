@@ -2735,3 +2735,117 @@ body {
     min-height: 260px;
   }
 }
+
+/* ===========================
+   Mobile (767px 이하)
+=========================== */
+@media (max-width: 767px) {
+  .site-header,
+  .page-body {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  /* 햄버거 메뉴 */
+  .menu-btn {
+    position: fixed;
+    top: 15px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .site-header {
+    padding-top: 50px;
+  }
+
+  /* 위 검은선 */
+  .headline-rule {
+    height: 5px;
+  }
+
+  /* 헤더 */
+  .masthead {
+    position: relative; /* 추가 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 12px;
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  /* 세로선 제거 */
+  .masthead::before,
+  .masthead::after {
+    display: none;
+  }
+
+  /* 날짜 영역 숨김 */
+  .today-label,
+  .today-date {
+    display: none;
+  }
+
+  /* 빨간 문구 */
+  .toptitle {
+    margin-bottom: 2px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  /* To-Do List */
+  .masthead-title h1 {
+    font-size: 3.2rem;
+    line-height: 0.9;
+    letter-spacing: 1px;
+    word-spacing: 0;
+    transform: scaleX(0.82);
+    white-space: nowrap;
+  }
+
+  /* 하단 문구 */
+  .subtitle {
+    margin-top: 6px;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    line-height: 1.3;
+  }
+
+  .header-nav {
+    display: contents;
+  }
+
+  .header-sub {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .menu-btn span {
+    width: 20px;
+  }
+
+  /* 메뉴는 모바일에서 숨김 */
+  .nav-links {
+    display: none;
+  }
+
+  /* 다크/라이트 버튼 */
+  .nav-actions {
+    display: none;
+  }
+
+  .circle1,
+  .circle2 {
+    width: 18px;
+    height: 18px;
+  }
+}
