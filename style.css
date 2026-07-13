@@ -13,7 +13,7 @@
 
   --text-main: #000000;
   --text-title: #111111;
-  --text-muted: #555555;
+  --text-muted: #000000;
   --text-light: #858585;
   --text-cta: #111111;
 
@@ -599,7 +599,7 @@ body {
   align-items: center;
   padding: 20px;
   border-bottom: 2px solid var(--border-dark);
-  background-color: var(--bg-inner);
+  background-color: var(--bg-main);
 }
 
 .kanban-header h3 {
@@ -626,7 +626,7 @@ body {
   list-style: none;
   margin: 0;
   padding: 15px;
-  background-color: var(--bg-inner);
+  background-color: var(--bg-main);
   min-height: 500px;
   display: flex;
   flex-direction: column;
@@ -918,7 +918,7 @@ body {
   display: contents;
 }
 
-.kanban-board .task-card.is-done .task-category-tag,
+.kanban-board .task-carcard-he.close-btnd.is-done .task-category-tag,
 .kanban-board .task-card.is-done .task-priority,
 .kanban-board .task-card.is-done .task-time,
 .kanban-board .task-card.is-done .task-footer {
@@ -982,8 +982,7 @@ body {
 }
 
 /* 완료 삭제 버튼 */
-
-.kanban-board .task-card.is-done .task-close {
+.close-btn.close-btn .kanban-board .task-card.is-done .task-close {
   grid-column: 3;
   grid-row: 1;
   align-self: start;
@@ -1347,6 +1346,10 @@ body {
   font-size: 0.95rem;
 }
 
+.publication-text strong {
+  color: var(--btn-red);
+}
+
 .publication-cta {
   display: flex;
   justify-content: space-between;
@@ -1549,7 +1552,7 @@ body {
   background-color: var(--btn-red);
   border: 0;
   border-radius: 10px;
-  color: var(--text-main);
+  color: #ffffff;
   font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
@@ -1567,8 +1570,8 @@ body {
   padding: 22px 0;
   text-align: center;
   border-top: 1px solid var(--border-dark);
-  color: var(--text-main);
-  background: var(--bg-card);
+  color: var(--text-muted);
+  background: var(--bg-main);
 }
 
 .site-footer small {
@@ -1671,7 +1674,7 @@ body {
   flex: 0 0 auto;
   width: 40px;
   height: 40px;
-  color: #111111;
+  color: var(--text-main);
   font-size: 34px;
   font-weight: 300;
   line-height: 1;
@@ -1687,7 +1690,7 @@ body {
   padding: 42px 46px 48px;
   overflow-y: auto;
   border-radius: 22px;
-  background-color: #ffffff;
+  background-color: var(--bg-main);
   box-shadow: 0 20px 70px rgba(0, 0, 0, 0.16);
 }
 
@@ -1698,7 +1701,7 @@ body {
 }
 
 .modal-header h2 {
-  color: #000000;
+  color: var(--text-main);
   font-size: 40px;
   font-weight: 800;
   line-height: 1.2;
@@ -1735,8 +1738,8 @@ body {
   width: 100%;
   border: 1px solid #969696;
   border-radius: 8px;
-  background-color: #ffffff;
-  color: #111111;
+  background-color: var(--bg-card);
+  color: var(--text-main);
   font-size: 17px;
   font-weight: 600;
   outline: none;
@@ -1796,7 +1799,7 @@ body {
 }
 
 .submit-btn {
-  background-color: #000000;
+  background-color: var(--bg-card);
   color: #ffffff;
 }
 
@@ -2193,16 +2196,16 @@ body {
   max-height: calc(100vh - 40px);
   padding: 36px;
   overflow-y: auto;
-  background-color: #f8f5ee;
-  border: 1px solid #cfc8bc;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-light);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
 }
 
 .newspaper-modal-header {
   position: relative;
   padding: 12px 60px 24px;
-  border-top: 7px solid #111111;
-  border-bottom: 4px double #111111;
+  border-top: 7px solid var(--border-dark);
+  border-bottom: 4px double var(--border-dark);
   text-align: center;
 }
 
@@ -2224,6 +2227,7 @@ body {
   position: absolute;
   top: 12px;
   right: 0;
+  color: var(--text-main);
 }
 
 .newspaper-body {
@@ -2234,7 +2238,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding-bottom: 10px;
-  border-bottom: 1px solid #111111;
+  border-bottom: 1px solid var(--border-light);
   font-size: 13px;
   font-weight: 700;
 }
@@ -2252,7 +2256,7 @@ body {
 .newspaper-lead {
   max-width: 720px;
   margin: 0 auto;
-  color: #333333;
+  color: var(--text-main);
   font-size: 16px;
   line-height: 1.7;
   text-align: center;
@@ -2261,7 +2265,7 @@ body {
 .newspaper-rule {
   margin: 24px 0;
   border: 0;
-  border-top: 4px double #111111;
+  border-top: 4px double var(--border-light);
 }
 
 .newspaper-columns {
@@ -2283,7 +2287,7 @@ body {
 }
 
 .newspaper-article p {
-  color: #333333;
+  color: var(--text-main);
   font-size: 13px;
   line-height: 1.65;
   text-align: justify;
@@ -2293,13 +2297,13 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin-top: 26px;
-  border-top: 2px solid #111111;
-  border-bottom: 2px solid #111111;
+  border-top: 2px solid var(--border-light);
+  border-bottom: 2px solid var(--border-light);
 }
 
 .newspaper-stat {
   padding: 16px 10px;
-  border-right: 1px solid #111111;
+  border-right: 1px solid var(--border-light);
   text-align: center;
 }
 
