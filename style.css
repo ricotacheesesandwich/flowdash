@@ -1320,8 +1320,6 @@ body {
   border: 1px solid var(--border-light);
   border-radius: 3px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
-  align-self: flex-start;
-  height: max-content;
 }
 
 .publication-card p {
@@ -1582,7 +1580,10 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* 달력 날짜 */
+/* =========================================================
+   달력 날짜
+========================================================= */
+
 .date-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -1647,7 +1648,10 @@ body {
   background-color: #3d5f98;
 }
 
-/* 공통 팝업 */
+/* =========================================================
+   공통 팝업
+========================================================= */
+
 .modal-backdrop[hidden] {
   display: none;
 }
@@ -1676,7 +1680,9 @@ body {
   line-height: 1;
 }
 
-/* 새 일정 등록 팝업 */
+/* =========================================================
+   새 일정 등록 팝업
+========================================================= */
 
 .modal-container {
   width: 806px;
@@ -2181,7 +2187,9 @@ body {
   background-color: #000000;
   color: #ffffff;
 }
-/*신문팝업*/
+/* =========================================================
+   신문 팝업
+========================================================= */
 
 .newspaper-modal {
   width: 920px;
@@ -2352,6 +2360,14 @@ body {
     max-width: none;
   }
 
+  .calendar-all,
+  .calendar-card,
+  .summary-card,
+  .publication-card {
+    width: 100%;
+    max-width: none;
+  }
+
   .stats-cards {
     flex-wrap: wrap;
   }
@@ -2392,301 +2408,328 @@ body {
     gap: 14px 20px;
   }
 }
-@media (max-width: 769px) {
-  body {
-    padding: 0 clamp(20px, 4vw, 40px);
+
+@media (min-width: 1200px) {
+  .search-bar {
+    height: 62px;
+  }
+}
+
+/* 1280px 이하: greeting 아래에 달력과 통계를 나란히 배치 */
+@media (max-width: 1280px) {
+  .edition-card-container,
+  .site-footer {
+    display: block;
+  }
+
+  .edition-card-container {
+    display: block;
+    grid-area: report;
+    grid-column: 1 / -1;
+    position: static;
+    top: auto;
+    width: 100%;
+    max-width: none;
+    margin-top: 10px;
   }
 
   .page-body {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    margin-top: 24px;
+    box-sizing: border-box;
+    padding: 0 clamp(48px, 7vw, 96px);
+    margin-top: 12px;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-areas:
+      "greet greet"
+      "aside stats"
+      "controls controls"
+      "board board"
+      "report report";
+    align-items: start;
   }
 
   .main-content {
     display: contents;
   }
 
-  .page-body > *,
-  .main-content > * {
-    order: 10;
-    width: 100%;
-  }
-
-  .greeting-area {
-    order: 1;
-  }
-
   .calendar-panel {
-    order: 2;
+    grid-area: aside;
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 245px;
+    grid-template-areas:
+      "calendar publication"
+      "calendar summary";
+    gap: 14px;
+    padding: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 6px 18px rgba(0, 0, 0, 0.08);
   }
 
-  .stats-section {
-    order: 3;
+  .calendar-all {
+    display: contents;
   }
 
-  .controls {
-    order: 4;
+  .calendar-card {
+    grid-area: calendar;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
-  .kanban-board {
-    order: 5;
+  .publication-card {
+    grid-area: publication;
+    width: 100%;
+    margin-top: 0;
+    padding: 12px;
+    box-shadow: none;
   }
 
-  .edition-card-container {
-    order: 20;
+  .summary-card {
+    grid-area: summary;
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 2px;
   }
 
-  @media (max-width: 769px) {
-    .calendar-panel {
-      order: 2;
-
-      display: grid;
-      grid-template-columns:
-        minmax(0, 1.1fr)
-        minmax(280px, 0.9fr);
-
-      grid-template-areas:
-        "calendar publication"
-        "calendar summary";
-
-      gap: 20px 32px;
-      align-items: start;
-
-      width: 100%;
-      max-width: none;
-      margin: 0;
-      padding: 24px;
-
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: 4px;
-
-      box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.05),
-        0 6px 18px rgba(0, 0, 0, 0.05);
-    }
-
-    /* 여기에요 여기가 바로 문제점 해결 방법이에요!!!! */
-    .calendar-all {
-      display: contents;
-    }
-
-    /* 왼쪽 달력 */
-    .calendar-card {
-      grid-area: calendar;
-      align-self: stretch;
-
-      width: 100%;
-      padding: 0;
-
-      background-color: transparent;
-      border: 0;
-    }
-
-    /* 오른쪽 위 발간 정보 */
-    .publication-card {
-      grid-area: publication;
-
-      display: flex;
-      flex-direction: column;
-
-      width: 100%;
-      height: auto;
-      margin: 0;
-      padding: 16px 38px;
-
-      box-shadow: none;
-    }
-
-    /* 발간 제목 */
-    .publication-card .publication-label {
-      order: 1;
-
-      padding: 0 0 8px;
-      border-bottom: 0;
-
-      text-align: center;
-    }
-
-    /* 카운트다운을 설명문보다 위로 이동 */
-    .publication-card .publication-cta {
-      order: 2;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 3px;
-
-      padding: 4px 0 14px;
-
-      border-top: 0;
-      border-bottom: 1px solid var(--border-light);
-
-      text-align: center;
-    }
-
-    .publication-card #countdownText {
-      font-size: 32px;
-      font-weight: 800;
-      line-height: 1.2;
-      letter-spacing: 2px;
-    }
-
-    /* 발간 설명문 */
-    .publication-card .publication-text {
-      order: 3;
-
-      padding: 12px 0 0;
-
-      font-size: 13px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    /* 오른쪽 아래 선택 날짜 */
-    .summary-card {
-      grid-area: summary;
-
-      width: 100%;
-      margin: 0;
-      padding: 0 12px;
-
-      background-color: transparent;
-      border: 0;
-    }
-
-    .summary-card .summary-label {
-      padding-top: 0;
-      border-top: 0;
-    }
+  .summary-label {
+    padding-top: 0;
+    border-top: 0;
   }
-  .masthead-right {
-    display: none;
+
+  .date-grid {
+    justify-items: center;
   }
-  .masthead-title {
-    flex: 2;
-    text-align: right;
-  }
-  .masthead-title h1 {
-    font-size: clamp(3.5rem, 8vw, 5.5rem);
-    flex: 2;
-    text-align: right;
-    transform-origin: right;
-  }
-  .header-nav {
-    position: relative;
-    display: flex;
-    justify-content: left;
-  }
-  .nav-links {
-    gap: clamp(10px, 2vw, 30px);
-    padding-right: 60px;
-    flex-wrap: nowrap;
-  }
-  .nav-links li {
-    width: auto;
-    min-width: 60px;
+
+  .date-cell {
+    width: 34px;
+    min-width: 34px;
+    aspect-ratio: 1 / 1;
+    justify-self: center;
   }
 
   .greeting-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    text-align: center;
-    padding: 24px 0 16px;
-    margin: 0 auto;
-    border-bottom: none;
+    grid-area: greet;
+    padding: 16px 12px 10px;
+    gap: 20px;
+    border-bottom: 1px solid #d8d8d8;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
   }
 
-  .greeting-text {
-    width: 100%;
-    max-width: none;
-    padding: 0;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .greeting-label {
+    margin-bottom: 6px;
+    font-size: 0.66rem;
+    transform: none;
+  }
+
+  .greeting-text h2 {
+    margin-bottom: 8px;
+    font-size: 2.55rem;
+    letter-spacing: -0.8px;
+  }
+
+  .greeting-text p {
+    font-size: 0.78rem;
+    line-height: 1.45;
   }
 
   .word {
-    display: none;
+    min-height: 0;
+    padding: 6px 12px 6px 28px;
+    border-top: 0;
+    border-left: 3px solid var(--border-dark);
+    font-size: 1.65rem;
+    line-height: 1.55;
+    text-align: center;
   }
 
-  .weekday-row {
-    display: grid !important;
-    grid-template-columns: repeat(7, 1fr) !important;
+  .word::before,
+  .word::after {
+    font-size: 2.7rem;
+  }
+
+  .word::before {
+    top: 8px;
+    left: 10px;
+  }
+
+  .word::after {
+    top: 8px;
+    right: 10px;
+  }
+
+  .stats-section {
+    grid-area: stats;
+    align-self: stretch;
+    display: flex;
   }
 
   .stats-cards {
-    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    border: 1px solid #e5e5e5;
+  }
+
+  .stat-card {
+    min-height: 0;
+    padding: 24px 0;
+    border-right: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .stat-card:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .stat-card:last-child {
+    grid-column: 1 / -1;
+    border-bottom: 0;
+  }
+
+  .stat-card:last-child .stat-card-value {
+    font-size: 3rem;
+  }
+
+  .stat-card-title {
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+
+  .stat-card-value {
+    font-size: 3rem;
   }
 
   .controls {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 12px;
-    margin: 16px 0;
+    grid-area: controls;
   }
 
-  .search-bar {
-    width: 30%;
-    flex: none;
+  .kanban-board {
+    grid-area: board;
   }
-  .control-actions {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: 70%;
+
+  .controls {
+    margin: 0;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .search-bar,
+  .filter-btn,
+  .add-btn,
+  .reset-btn {
+    height: 54px;
+  }
+
+  .search-bar input {
+    font-size: 15px;
+  }
+
+  .add-btn,
+  .reset-btn {
+    min-width: 0;
+    padding: 0 16px;
+    font-size: 15px;
+  }
+
+  .kanban-board {
     gap: 12px;
   }
-  .control-actions > * {
-    flex: 1;
-    min-width: 0;
+
+  .kanban-header {
+    padding: 14px;
+  }
+
+  .kanban-body {
+    min-height: 340px;
+  }
+}
+
+/* 768px 이하: 완전 단일 컬럼 모바일 */
+@media (max-width: 768px) {
+  .page-body {
+    padding: 0 12px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "greet"
+      "stats"
+      "aside"
+      "controls"
+      "board";
+    gap: 10px;
+  }
+
+  .main-content {
+    display: contents;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "greet"
+      "stats"
+      "board";
+  }
+
+  .calendar-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .calendar-card,
+  .summary-card,
+  .publication-card {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .greeting-area {
+    grid-template-columns: 1fr;
+    padding: 14px 10px;
+    gap: 12px;
+  }
+
+  .greeting-text h2 {
+    font-size: 2rem;
+  }
+
+  .word {
+    border-left: 0;
+    border-top: 2px solid var(--border-dark);
+    padding: 10px 8px 0;
+    font-size: 1.2rem;
+    text-align: left;
+  }
+
+  .word::before,
+  .word::after {
+    display: none;
+  }
+
+  .control-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-btn,
+  .add-btn,
+  .reset-btn {
+    flex: 1 1 calc(50% - 4px);
   }
 
   .kanban-board {
     flex-direction: column;
-    gap: 24px;
-    justify-content: center;
   }
-  .kanban-col {
-    width: 100%;
-  }
+
   .kanban-body {
-    display: flex;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .edition-card-container {
-    width: 100%;
-    max-width: none;
-    margin-top: 16px;
+    min-height: 260px;
   }
 }
-@media (max-width: 769px) {
-  .masthead::before {
-    content: "";
-    margin-left: 10%;
-  }
-}
-
-@media (max-width: 769px) {
-  .masthead::after {
-    display: none;
-  }
-}
-
-@media (max-width: 769px) {
-  .pc-only {
-    display: none;
-  }
-}
-
-/* 수정 */
