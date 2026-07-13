@@ -52,7 +52,7 @@
           <span></span>
         </button>
         <ul class="nav-links">
-          <li><a class="active" href="#dashboard">DASHBOARD</a></li>
+          <li><a href="#dashboard">DASHBOARD</a></li>
           <li><a href="#taskBoard">TASKS</a></li>
           <li><a href="#calendar">CALENDAR</a></li>
           <li><a href="#report">REPORT</a></li>
@@ -86,6 +86,7 @@
             <header class="card-header">
               <h2 id="calendarTitle">CALENDAR</h2>
             </header>
+
             <nav class="month-nav" aria-label="월 이동">
               <button
                 id="prevMonth"
@@ -93,13 +94,11 @@
                 class="nav-arrow"
                 aria-label="이전 달 보기"
               >
-                <!-- 김양왕, svg 삽입 -->
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-chevron-left"
                   viewBox="0 0 16 16"
                 >
                   <path
@@ -108,7 +107,18 @@
                   />
                 </svg>
               </button>
-              <strong id="monthLabel">2026년 7월</strong>
+
+              <button
+                id="calendarPickerButton"
+                type="button"
+                class="month-picker-button"
+                aria-controls="calendarPickerPanel"
+                aria-expanded="false"
+              >
+                <span id="monthLabel">2026년 7월</span>
+                <span class="month-picker-arrow" aria-hidden="true"></span>
+              </button>
+
               <button
                 id="nextMonth"
                 type="button"
@@ -120,7 +130,6 @@
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-chevron-right"
                   viewBox="0 0 16 16"
                 >
                   <path
@@ -131,6 +140,86 @@
               </button>
             </nav>
 
+            <!-- 반드시 calendar-card 안쪽에 위치 -->
+            <section
+              id="calendarPickerPanel"
+              class="calendar-picker-panel"
+              aria-label="연도와 월 선택"
+              hidden
+            >
+              <div id="monthSelectionView" class="picker-view">
+                <header class="picker-header">
+                  <button
+                    id="pickerPrevYear"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="이전 연도"
+                  >
+                    ‹
+                  </button>
+
+                  <button
+                    id="pickerYearButton"
+                    type="button"
+                    class="picker-year-button"
+                    aria-label="연도 선택 화면 열기"
+                  >
+                    <span id="pickerYearLabel">2026년</span>
+                    <span class="picker-small-arrow" aria-hidden="true"></span>
+                  </button>
+
+                  <button
+                    id="pickerNextYear"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="다음 연도"
+                  >
+                    ›
+                  </button>
+                </header>
+
+                <div
+                  id="monthGrid"
+                  class="month-grid"
+                  role="grid"
+                  aria-label="월 선택"
+                ></div>
+              </div>
+
+              <div id="yearSelectionView" class="picker-view" hidden>
+                <header class="picker-header">
+                  <button
+                    id="pickerPrevDecade"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="이전 10년"
+                  >
+                    ‹
+                  </button>
+
+                  <strong id="yearRangeLabel" class="year-range-label">
+                    2020 - 2029
+                  </strong>
+
+                  <button
+                    id="pickerNextDecade"
+                    type="button"
+                    class="picker-nav-button"
+                    aria-label="다음 10년"
+                  >
+                    ›
+                  </button>
+                </header>
+
+                <div
+                  id="yearGrid"
+                  class="year-grid"
+                  role="grid"
+                  aria-label="연도 선택"
+                ></div>
+              </div>
+            </section>
+
             <div class="weekday-row" aria-label="요일">
               <span>일</span>
               <span>월</span>
@@ -140,8 +229,7 @@
               <span>금</span>
               <span>토</span>
             </div>
-            <!-- 날짜를 선택하는 달력 그리드임을 감안하여
-  role="grid" 속성을 추가하고 aria-label로 설명을 추가함 -->
+
             <div
               id="dateGrid"
               class="date-grid"
@@ -153,7 +241,18 @@
           <!-- 1.js 용 aria-label 추가
         2. 스크린 리더기용 라벨 추가
         3. 날짜 부분 p 대신 time 으로 변경 -->
-          <section class="summary-card" aria-labelledby="selectedDateTitle">
+                  <section class="publication-card mobile-only">
+            <p class="publication-label">NEXT PUBLICATION</p>
+            <p class="publication-text">
+              오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문 발간됩니다.
+            </p>
+            <footer class="publication-cta">
+              <span>발간까지 남은 시간</span>
+              <strong id="countdownTextMobile" class="countdown-val">24:00:00</strong>
+            </footer>
+          </section>
+          
+<section class="summary-card" aria-labelledby="selectedDateTitle">
             <p id="selectedDateTitle" class="summary-label">SELECTED DATE</p>
             <time
               id="selectedDateText"
@@ -181,18 +280,15 @@
               <strong id="summaryTotal">0</strong>
             </footer>
           </section>
-        </section>
 
-        <section class="publication-card">
+        </section> <section class="publication-card pc-only">
           <p class="publication-label">NEXT PUBLICATION</p>
           <p class="publication-text">
-            오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문
-            발간됩니다.
+            오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문 발간됩니다.
           </p>
-          <!-- js 용 아이디 추가 -->
           <footer class="publication-cta">
             <span>발간까지 남은 시간</span>
-            <strong id="countdownText">24:00:00</strong>
+            <strong id="countdownText" class="countdown-val">24:00:00</strong>
           </footer>
         </section>
       </aside>
@@ -212,7 +308,7 @@
           </div>
 
           <blockquote class="word">
-            “ 좋은 하루의 기사는”<br />작은 실행에서 시작됩니다.
+            좋은 하루의 기사는<br />작은 실행에서 시작됩니다.
           </blockquote>
         </header>
         <!-- 1.통계의 내용이기에 ul로 배열하는 것이 아닌 하나의 묶음임을 감안하여 ul로 변경 
@@ -254,7 +350,7 @@
         3.검색이라 text가 아닌 search로 수정함
         4.js 연결용 id 추가
         -->
-        <section class="controls" aria-label="일정 검색과 정렬">
+        <section class="controls" aria-label="일정 검색과 필터">
           <form class="search-bar" role="search">
             <label class="sr-only" for="searchInput">일정 검색</label>
             <span class="search-icon" aria-hidden="true">⌕</span>
@@ -267,34 +363,27 @@
           </form>
 
           <div class="control-actions">
-            <label class="sr-only" for="categoryFilter">분류 필터</label>
-            <select id="categoryFilter" class="filter-select">
-              <option value="all">전체 분류</option>
-              <!-- 분류 카테고리 추가하는게 좋을듯 -->
-              <option value="work">업무</option>
-              <option value="personal">개인</option>
-              <option value="health">건강</option>
-              <option value="study">공부</option>
-            </select>
-            <label class="sr-only" for="statusFilter">상태 필터</label>
-            <select id="statusFilter" class="filter-select">
-              <option value="all">전체 상태</option>
-              <option value="todo">할 일</option>
-              <option value="progress">진행 중</option>
-              <!-- 이건 체크 표시 누르면 되니까 굳이 넣을필요 없을듯?
-              <option value="done">완료</option> -->
-            </select>
-            <label class="sr-only" for="sortSelect">정렬 기준</label>
-            <select id="sortSelect" class="time-select">
-              <option value="time">정렬:시간순</option>
-              <option value="priority">정렬:중요도순</option>
-              <option value="date">정렬:날짜순</option>
-            </select>
+            <button
+              id="filterToggle"
+              type="button"
+              class="filter-btn"
+              aria-label="필터 열기"
+              aria-controls="filterModal"
+              aria-expanded="false"
+            >
+              ⚙
+            </button>
+
             <button id="openModal" type="button" class="add-btn">
               + 새 일정 등록
             </button>
+
+            <button id="resetTasksBtn" type="button" class="reset-btn">
+              할일 초기화
+            </button>
           </div>
         </section>
+
         <!-- 1.div를 section으로 변경, 2. span 을 h3 으로 변경 3.id 추가  -->
         <!-- 4.html 에서 표시될 부분만 표시 ul에 해당되는 일정을 js 로 추가되어 나타나도록 할 예정. -->
         <section
@@ -356,11 +445,7 @@
           <hr class="double-divider" />
 
           <div class="layout-grid" aria-hidden="true">
-            <div class="grid-left"></div>
-            <div class="grid-right">
-              <div class="grid-right-top"></div>
-              <div class="grid-right-bottom"></div>
-            </div>
+            <div class="edition-preview" aria-hidden="true"></div>
           </div>
 
           <section class="status-message" aria-labelledby="editionStatusTitle">
@@ -408,6 +493,194 @@
     <footer class="site-footer">
       <small>© 2026 FlowDash. All rights reserved.</small>
     </footer>
+    <!-- 일정 필터 팝업 -->
+    <section
+      id="filterModal"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="filterModalTitle"
+      aria-hidden="true"
+      hidden
+    >
+      <article class="filter-modal-container">
+        <header class="filter-modal-header">
+          <h2 id="filterModalTitle">일정 필터</h2>
+          <button
+            id="closeFilterModal"
+            type="button"
+            class="close-btn"
+            aria-label="필터 닫기"
+          >
+            &times;
+          </button>
+        </header>
+
+        <div class="filter-modal-divider" aria-hidden="true"></div>
+
+        <div class="filter-select-row">
+          <div class="filter-field">
+            <span id="categoryFilterLabel">분류</span>
+
+            <div class="custom-select" data-custom-select>
+              <!-- 기존 JS가 categoryFilter.value를 사용할 수 있도록 유지 -->
+              <select
+                id="categoryFilter"
+                class="custom-select-native"
+                aria-labelledby="categoryFilterLabel"
+              >
+                <option value="all">전체</option>
+                <option value="work">업무</option>
+                <option value="personal">개인</option>
+                <option value="health">건강</option>
+                <option value="study">공부</option>
+              </select>
+
+              <button
+                type="button"
+                class="custom-select-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span class="custom-select-value">전체</span>
+
+                <span class="custom-select-arrow" aria-hidden="true"></span>
+              </button>
+
+              <ul
+                class="custom-select-list"
+                role="listbox"
+                aria-labelledby="categoryFilterLabel"
+                hidden
+              >
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option is-selected"
+                    data-value="all"
+                    role="option"
+                    aria-selected="true"
+                  >
+                    전체
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="work"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    업무
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="personal"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    개인
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="health"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    건강
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="study"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    공부
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <label class="filter-field" for="sortSelect">
+            <span>정렬기준</span>
+            <select id="sortSelect">
+              <option value="date">날짜순</option>
+              <option value="time">시간순</option>
+              <option value="priority">중요도순</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="filter-group">
+          <legend>중요도</legend>
+          <div class="filter-options">
+            <label>
+              <input type="radio" name="priorityFilter" value="all" checked />
+              <span>모두</span>
+            </label>
+            <label>
+              <input type="radio" name="priorityFilter" value="low" />
+              <span>낮음</span>
+            </label>
+            <label>
+              <input type="radio" name="priorityFilter" value="normal" />
+              <span>보통</span>
+            </label>
+            <label>
+              <input type="radio" name="priorityFilter" value="high" />
+              <span>높음</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="filter-group">
+          <legend>상태</legend>
+          <div class="filter-options">
+            <label>
+              <input type="radio" name="statusFilter" value="all" checked />
+              <span>모두</span>
+            </label>
+            <label>
+              <input type="radio" name="statusFilter" value="todo" />
+              <span>할 일</span>
+            </label>
+            <label>
+              <input type="radio" name="statusFilter" value="progress" />
+              <span>진행중</span>
+            </label>
+            <label>
+              <input type="radio" name="statusFilter" value="done" />
+              <span>완료</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <footer class="filter-modal-actions">
+          <button id="resetFilterBtn" type="button" class="filter-reset-btn">
+            필터 초기화
+          </button>
+          <button id="applyFilterBtn" type="button" class="filter-apply-btn">
+            필터 적용하기
+          </button>
+        </footer>
+      </article>
+    </section>
+
     <!--김양왕 , div태그 시맨틱하게 변경 -->
 
     <!--김양왕 , div태그 시맨틱하게 변경 -->
@@ -418,6 +691,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="modalTitle"
+      aria-hidden="true"
       hidden
     >
       <article class="modal-container">
@@ -519,6 +793,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="newspaperTitle"
+      aria-hidden="true"
       hidden
     >
       <article class="newspaper-modal">
@@ -567,7 +842,7 @@
     </template>
     <!--김양왕 , div태그 시맨틱하게 변경-->
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
 <!-- 전체수정 완료 김태은 -->
