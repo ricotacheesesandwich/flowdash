@@ -2408,3 +2408,328 @@ body {
     gap: 14px 20px;
   }
 }
+
+@media (min-width: 1200px) {
+  .search-bar {
+    height: 62px;
+  }
+}
+
+/* 1280px 이하: greeting 아래에 달력과 통계를 나란히 배치 */
+@media (max-width: 1280px) {
+  .edition-card-container,
+  .site-footer {
+    display: block;
+  }
+
+  .edition-card-container {
+    display: block;
+    grid-area: report;
+    grid-column: 1 / -1;
+    position: static;
+    top: auto;
+    width: 100%;
+    max-width: none;
+    margin-top: 10px;
+  }
+
+  .page-body {
+    box-sizing: border-box;
+    padding: 0 clamp(48px, 7vw, 96px);
+    margin-top: 12px;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-areas:
+      "greet greet"
+      "aside stats"
+      "controls controls"
+      "board board"
+      "report report";
+    align-items: start;
+  }
+
+  .main-content {
+    display: contents;
+  }
+
+  .calendar-panel {
+    grid-area: aside;
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 245px;
+    grid-template-areas:
+      "calendar publication"
+      "calendar summary";
+    gap: 14px;
+    padding: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .calendar-all {
+    display: contents;
+  }
+
+  .calendar-card {
+    grid-area: calendar;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .publication-card {
+    grid-area: publication;
+    width: 100%;
+    margin-top: 0;
+    padding: 12px;
+    box-shadow: none;
+  }
+
+  .summary-card {
+    grid-area: summary;
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 2px;
+  }
+
+  .summary-label {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .date-grid {
+    justify-items: center;
+  }
+
+  .date-cell {
+    width: 34px;
+    min-width: 34px;
+    aspect-ratio: 1 / 1;
+    justify-self: center;
+  }
+
+  .greeting-area {
+    grid-area: greet;
+    padding: 16px 12px 10px;
+    gap: 20px;
+    border-bottom: 1px solid #d8d8d8;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
+  }
+
+  .greeting-label {
+    margin-bottom: 6px;
+    font-size: 0.66rem;
+    transform: none;
+  }
+
+  .greeting-text h2 {
+    margin-bottom: 8px;
+    font-size: 2.55rem;
+    letter-spacing: -0.8px;
+  }
+
+  .greeting-text p {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .word {
+    min-height: 0;
+    padding: 6px 12px 6px 28px;
+    border-top: 0;
+    border-left: 3px solid var(--border-dark);
+    font-size: 1.65rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .word::before,
+  .word::after {
+    font-size: 2.7rem;
+  }
+
+  .word::before {
+    top: 8px;
+    left: 10px;
+  }
+
+  .word::after {
+    top: 8px;
+    right: 10px;
+  }
+
+  .stats-section {
+    grid-area: stats;
+    align-self: stretch;
+    display: flex;
+  }
+
+  .stats-cards {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    border: 1px solid #e5e5e5;
+  }
+
+  .stat-card {
+    min-height: 0;
+    padding: 24px 0;
+    border-right: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .stat-card:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .stat-card:last-child {
+    grid-column: 1 / -1;
+    border-bottom: 0;
+  }
+
+  .stat-card:last-child .stat-card-value {
+    font-size: 3rem;
+  }
+
+  .stat-card-title {
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+
+  .stat-card-value {
+    font-size: 3rem;
+  }
+
+  .controls {
+    grid-area: controls;
+  }
+
+  .kanban-board {
+    grid-area: board;
+  }
+
+  .controls {
+    margin: 0;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .search-bar,
+  .filter-btn,
+  .add-btn,
+  .reset-btn {
+    height: 54px;
+  }
+
+  .search-bar input {
+    font-size: 15px;
+  }
+
+  .add-btn,
+  .reset-btn {
+    min-width: 0;
+    padding: 0 16px;
+    font-size: 15px;
+  }
+
+  .kanban-board {
+    gap: 12px;
+  }
+
+  .kanban-header {
+    padding: 14px;
+  }
+
+  .kanban-body {
+    min-height: 340px;
+  }
+}
+
+/* 768px 이하: 완전 단일 컬럼 모바일 */
+@media (max-width: 768px) {
+  .page-body {
+    padding: 0 12px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "greet"
+      "stats"
+      "aside"
+      "controls"
+      "board";
+    gap: 10px;
+  }
+
+  .main-content {
+    display: contents;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "greet"
+      "stats"
+      "board";
+  }
+
+  .calendar-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .calendar-card,
+  .summary-card,
+  .publication-card {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .greeting-area {
+    grid-template-columns: 1fr;
+    padding: 14px 10px;
+    gap: 12px;
+  }
+
+  .greeting-text h2 {
+    font-size: 2rem;
+  }
+
+  .word {
+    border-left: 0;
+    border-top: 2px solid var(--border-dark);
+    padding: 10px 8px 0;
+    font-size: 1.2rem;
+    text-align: left;
+  }
+
+  .word::before,
+  .word::after {
+    display: none;
+  }
+
+  .control-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-btn,
+  .add-btn,
+  .reset-btn {
+    flex: 1 1 calc(50% - 4px);
+  }
+
+  .kanban-board {
+    flex-direction: column;
+  }
+
+  .kanban-body {
+    min-height: 260px;
+  }
+}
