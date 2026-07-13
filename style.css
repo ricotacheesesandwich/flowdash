@@ -62,8 +62,7 @@ body {
 }
 
 .site-header,
-.page-body,
-.site-footer {
+.page-body {
   width: 100%;
   max-width: 1800px;
   margin: 0 auto;
@@ -676,15 +675,18 @@ body {
 /* CALENDAR CARD */
 .calendar-all {
   width: 290px;
-  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: 2px;
+  margin-right: 5px;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.08),
     0 6px 18px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .calendar-card {
+  position: relative;
   width: 290px;
   padding: 18px;
   background: var(--bg-card);
@@ -1010,7 +1012,7 @@ body {
 /* HEADER */
 .card-header {
   padding-bottom: 10px;
-  border-bottom: 2px solid #111;
+  border-bottom: 2px solid var(--border-light);
 }
 
 .card-header h2 {
@@ -1026,9 +1028,36 @@ body {
   align-items: center;
 }
 
-.month-nav strong {
+/* 현재 연도와 월 버튼 */
+.month-picker-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 130px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--text-main);
   font-size: 15px;
   font-weight: 700;
+}
+
+.month-picker-button:hover {
+  background-color: var(--bg-inner);
+}
+
+/* 연도와 월 옆의 작은 화살표 */
+.month-picker-arrow,
+.picker-small-arrow {
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.month-picker-button[aria-expanded="true"] .month-picker-arrow {
+  transform: translateY(2px) rotate(225deg);
 }
 
 .nav-arrow {
@@ -1048,6 +1077,152 @@ body {
   color: var(--text-main);
 }
 
+/* 연도/월 선택창 */
+.calendar-picker-panel {
+  position: absolute;
+  top: 78px;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  z-index: 30;
+
+  padding: 16px;
+
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-picker-panel[hidden] {
+  display: none;
+}
+
+.picker-view {
+  width: 100%;
+  height: 100%;
+}
+
+.picker-view:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 선택창 상단 */
+.picker-header {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  margin-bottom: 18px;
+}
+
+.picker-nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.picker-nav-button:hover {
+  background-color: var(--bg-inner);
+}
+
+/* 연도 선택 버튼 */
+.picker-year-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 6px;
+  background-color: var(--bg-inner);
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.picker-small-arrow {
+  width: 6px;
+  height: 6px;
+}
+
+/* 월·연도 선택 목록 */
+.month-grid,
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  flex: 1;
+  gap: 10px;
+  align-content: space-between;
+}
+
+/* 월·연도 버튼 */
+.month-option,
+.year-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 4px;
+
+  border-radius: 999px;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.month-option:hover,
+.year-option:hover {
+  background-color: var(--bg-inner);
+}
+
+/* 선택된 월과 연도 */
+.month-option.is-selected,
+.year-option.is-selected {
+  background-color: var(--point-red);
+  color: #ffffff;
+}
+
+.month-option.is-current,
+.year-option.is-current {
+  box-shadow: inset 0 0 0 1.5px var(--point-red);
+}
+
+/* 선택값이면서 실제 현재인 경우 */
+.month-option.is-selected.is-current,
+.year-option.is-selected.is-current {
+  box-shadow: inset 0 0 0 2px #ffffff;
+}
+
+/* 현재 연도 범위 바깥 연도 */
+.year-option.is-outside-range {
+  color: var(--text-light);
+  opacity: 0.65;
+}
+
+.year-range-label {
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
 /* WEEKDAY */
 .weekday-row {
   display: grid;
@@ -1058,7 +1233,7 @@ body {
 .weekday-row span {
   font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: var(--text-main);
 }
 
 /* SUMMARY CARD */
@@ -1298,31 +1473,12 @@ body {
 }
 
 /* 회색 기사 영역 */
-.edition-card-container .layout-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-bottom: 14px;
-}
 
-.edition-card-container .grid-left {
+.edition-preview {
   width: 100%;
   min-height: 210px;
-  background-color: var(--bg-card);
-  border-radius: 0;
-}
-
-.edition-card-container .grid-right {
-  display: grid;
-  grid-template-rows: repeat(2, minmax(90px, 1fr));
-  gap: 12px;
-}
-
-.edition-card-container .grid-right-top,
-  .edition-card-container .grid-right-bottom {
-  min-height: 0;
-  background-color: var(--bg-inner);
-  border-radius: 0;
+  margin-bottom: 14px;
+  background-color: #dddddd;
 }
 
 /* 기록 대기 안내 */
@@ -1407,6 +1563,7 @@ body {
 /* footer */
 .site-footer {
   margin-top: 36px;
+  width: 100vw;
   padding: 22px 0;
   text-align: center;
   border-top: 1px solid var(--border-dark);
@@ -1457,7 +1614,7 @@ body {
 }
 
 .date-cell.selected {
-  background-color: #111111;
+  background-color: var(--text-muted);
   color: #ffffff;
 }
 
@@ -2167,108 +2324,6 @@ body {
 @media (min-width: 1920px) {
   .menu-btn {
     display: none;
-  }
-}
-
-/* 1200px 이상 데스크톱에서 신문형 레이아웃으로 정렬 */
-@media (min-width: 1200px) {
-  body {
-    padding-inline: clamp(20px, 2.1vw, 36px);
-  }
-
-  .page-body {
-    max-width: 1600px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      "greeting greeting"
-      "calendar stats"
-      "controls controls"
-      "board board";
-    gap: 24px;
-    align-items: start;
-    justify-content: center;
-  }
-
-  .main-content {
-    display: contents;
-  }
-
-  .greeting-area {
-    grid-area: greeting;
-    width: 100%;
-    gap: 20px;
-  }
-
-  .calendar-panel {
-    grid-area: calendar;
-    width: 100%;
-    max-width: none;
-    margin-top: 0;
-    align-self: start;
-  }
-
-  .calendar-all,
-  .calendar-card,
-  .summary-card,
-  .publication-card {
-    width: 100%;
-    max-width: none;
-  }
-
-  .stats-section {
-    grid-area: stats;
-    width: 100%;
-  }
-
-  .controls {
-    grid-area: controls;
-    width: 100%;
-    max-width: none;
-  }
-
-  .kanban-board {
-    grid-area: board;
-    width: 100%;
-  }
-
-  .edition-card-container {
-    grid-column: 1 / -1;
-    width: 100%;
-    max-width: none;
-    justify-self: stretch;
-    align-self: start;
-  }
-
-  .stats-cards {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(140px, auto));
-    gap: 14px;
-    width: 100%;
-    overflow: hidden;
-    align-items: stretch;
-  }
-
-  .stat-card {
-    flex: none;
-    min-height: 140px;
-    padding: 24px 18px;
-    border: 1px solid #e5e5e5;
-    border-right: 1px solid #e5e5e5;
-    justify-content: center;
-  }
-
-  .stat-card:last-child {
-    border-right: 1px solid #e5e5e5;
-  }
-
-  .stat-card-title {
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-  }
-
-  .stat-card-value {
-    font-size: 1.95rem;
   }
 }
 

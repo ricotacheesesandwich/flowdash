@@ -1,27 +1,24 @@
-//dark mode
-// 1. 필요한 요소들 가져오기
+// dark mode
 const bodyElement = document.body;
-const darkBtn = document.querySelector(".circle1"); /* 검은색 동그라미 버튼 */
-const lightBtn = document.querySelector(".circle2"); /* 흰색 동그라미 버튼 */
+const darkBtn = document.querySelector(".circle1");
+const lightBtn = document.querySelector(".circle2");
 
-// 2. 검은색 버튼을 누르면 body에 'dark-mode' 클래스를 붙입니다.
 if (darkBtn) {
   darkBtn.addEventListener("click", () => {
     bodyElement.classList.add("dark-mode");
-    localStorage.setItem("theme", "dark"); // 사용자의 선택 기억
+    localStorage.setItem("theme", "dark");
   });
 }
 
-// 3. 흰색 버튼을 누르면 body에서 'dark-mode' 클래스를 뗍니다.
 if (lightBtn) {
   lightBtn.addEventListener("click", () => {
     bodyElement.classList.remove("dark-mode");
-    localStorage.setItem("theme", "light"); // 사용자의 선택 기억
+    localStorage.setItem("theme", "light");
   });
 }
 
-// 4. [새로고침 대응] 나갔다 들어와도 마지막에 썼던 모드를 기억해서 띄워줍니다.
 const savedTheme = localStorage.getItem("theme");
+
 if (savedTheme === "dark") {
   bodyElement.classList.add("dark-mode");
 }
@@ -74,11 +71,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const monthLabel = document.querySelector("#monthLabel");
   const dateGrid = document.querySelector("#dateGrid");
 
+  // 연도·월 선택창
+  const calendarPickerButton = document.querySelector("#calendarPickerButton");
+
+  const calendarPickerPanel = document.querySelector("#calendarPickerPanel");
+
+  const pickerYearButton = document.querySelector("#pickerYearButton");
+  const pickerYearLabel = document.querySelector("#pickerYearLabel");
+
+  const pickerPrevYear = document.querySelector("#pickerPrevYear");
+  const pickerNextYear = document.querySelector("#pickerNextYear");
+
+  const monthSelectionView = document.querySelector("#monthSelectionView");
+
+  const yearSelectionView = document.querySelector("#yearSelectionView");
+
+  const monthGrid = document.querySelector("#monthGrid");
+  const yearGrid = document.querySelector("#yearGrid");
+
+  const yearRangeLabel = document.querySelector("#yearRangeLabel");
+  const pickerPrevDecade = document.querySelector("#pickerPrevDecade");
+  const pickerNextDecade = document.querySelector("#pickerNextDecade");
+
   const todayDateLeft = document.querySelector("#todayDateLeft");
   const todayDateRight = document.querySelector("#todayDateRight");
 
-  // 선택날짜
+  // 선택 날짜
   const selectedDateText = document.querySelector("#selectedDateText");
+
   const summaryTodo = document.querySelector("#summaryTodo");
   const summaryProgress = document.querySelector("#summaryProgress");
   const summaryDone = document.querySelector("#summaryDone");
@@ -92,9 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 일정
   const taskBoard = document.querySelector("#taskBoard");
+
   const todoList = document.querySelector("#todoList");
   const progressList = document.querySelector("#progressList");
   const doneList = document.querySelector("#doneList");
+
   const todoCount = document.querySelector("#todoCount");
   const progressCount = document.querySelector("#progressCount");
   const doneCount = document.querySelector("#doneCount");
@@ -107,8 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterToggle = document.querySelector("#filterToggle");
   const filterModal = document.querySelector("#filterModal");
   const closeFilterModal = document.querySelector("#closeFilterModal");
+
   const categoryFilter = document.querySelector("#categoryFilter");
   const sortSelect = document.querySelector("#sortSelect");
+
   const resetFilterBtn = document.querySelector("#resetFilterBtn");
   const applyFilterBtn = document.querySelector("#applyFilterBtn");
 
@@ -120,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     'input[name="statusFilter"]',
   );
 
-  // 분류 필터 사용자
+  // 분류 필터
   const customSelect = document.querySelector("[data-custom-select]");
 
   const customSelectTrigger = customSelect?.querySelector(
@@ -135,12 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
     ".custom-select-option",
   );
 
-  // 새일정등록
+  // 새 일정 등록
   const openModalBtn = document.querySelector("#openModal");
   const taskModal = document.querySelector("#taskModal");
   const closeModalBtn = document.querySelector("#closeModal");
+
   const taskForm = document.querySelector("#taskForm");
   const resetFormBtn = document.querySelector("#resetFormBtn");
+
   const scheduleTitle = document.querySelector("#scheduleTitle");
   const scheduleCategory = document.querySelector("#scheduleCategory");
   const scheduleDate = document.querySelector("#scheduleDate");
@@ -154,21 +180,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 신문 발간
   const editionSubText = document.querySelector("#editionSubText");
+
   const editionStatusTitle = document.querySelector("#editionStatusTitle");
+
   const editionStatusText = document.querySelector("#editionStatusText");
+
   const publishTime = document.querySelector("#publishTime");
   const publishRate = document.querySelector("#publishRate");
   const publishDuration = document.querySelector("#publishDuration");
+
   const publishDoneCount = document.querySelector("#publishDoneCount");
 
   // 신문
   const viewNewspaperBtn = document.querySelector("#viewNewspaperBtn");
+
   const newspaperModal = document.querySelector("#newspaperModal");
   const closeNewspaper = document.querySelector("#closeNewspaper");
   const newspaperBody = document.querySelector("#newspaperBody");
   const newspaperTitle = document.querySelector("#newspaperTitle");
 
-  // 시간 카운팅
+  // 카운트다운
   const countdownText = document.querySelector("#countdownText");
 
   // 상태값
@@ -177,6 +208,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedDate = todayString;
 
   let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  // 선택 중인 연도
+  let pickerYear = currentMonth.getFullYear();
+
+  // 연도 범위 시작값
+  let pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
 
   let tasks = loadTasks();
 
@@ -247,7 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 저장
   function saveTasks() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
@@ -334,7 +370,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const dots = document.createElement("span");
 
     dots.className = "date-dots";
-
     dots.setAttribute("aria-hidden", "true");
 
     [...statuses].slice(0, 3).forEach((status) => {
@@ -352,7 +387,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const dateString = toDateString(date);
 
     const button = document.createElement("button");
-
     const time = document.createElement("time");
 
     button.type = "button";
@@ -387,10 +421,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return button;
   }
 
-  // 달력 칸
+  // 달력 출력
   function renderCalendar() {
     const year = currentMonth.getFullYear();
-
     const month = currentMonth.getMonth();
 
     const firstDay = new Date(year, month, 1).getDay();
@@ -436,6 +469,183 @@ document.addEventListener("DOMContentLoaded", () => {
     dateGrid.replaceChildren(fragment);
   }
 
+  function renderMonthPicker() {
+    pickerYearLabel.textContent = `${pickerYear}년`;
+
+    const fragment = document.createDocumentFragment();
+
+    const currentYear = today.getFullYear();
+    const currentMonthNumber = today.getMonth();
+
+    for (let month = 0; month < 12; month += 1) {
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "month-option";
+      button.dataset.month = String(month);
+      button.textContent = `${month + 1}월`;
+
+      button.setAttribute("role", "gridcell");
+
+      const isSelectedMonth =
+        pickerYear === currentMonth.getFullYear() &&
+        month === currentMonth.getMonth();
+
+      const isCurrentMonth =
+        pickerYear === currentYear && month === currentMonthNumber;
+
+      let ariaLabel = `${pickerYear}년 ${month + 1}월로 이동`;
+
+      if (isCurrentMonth) {
+        button.classList.add("is-current");
+        button.setAttribute("aria-current", "date");
+
+        ariaLabel += ", 현재 달";
+      }
+
+      if (isSelectedMonth) {
+        button.classList.add("is-selected");
+        button.setAttribute("aria-selected", "true");
+
+        ariaLabel += ", 선택된 달";
+      } else {
+        button.setAttribute("aria-selected", "false");
+      }
+
+      button.setAttribute("aria-label", ariaLabel);
+
+      fragment.append(button);
+    }
+
+    monthGrid.replaceChildren(fragment);
+  }
+
+  function renderYearPicker() {
+    const decadeEnd = pickerDecadeStart + 9;
+
+    yearRangeLabel.textContent = `${pickerDecadeStart} - ${decadeEnd}`;
+
+    const fragment = document.createDocumentFragment();
+
+    const firstVisibleYear = pickerDecadeStart - 2;
+    const currentYear = today.getFullYear();
+
+    for (let index = 0; index < 16; index += 1) {
+      const year = firstVisibleYear + index;
+
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "year-option";
+      button.dataset.year = String(year);
+      button.textContent = String(year);
+
+      button.setAttribute("role", "gridcell");
+
+      const isSelectedYear = year === pickerYear;
+      const isCurrentYear = year === currentYear;
+
+      let ariaLabel = `${year}년 선택`;
+
+      if (isCurrentYear) {
+        button.classList.add("is-current");
+        button.setAttribute("aria-current", "date");
+
+        ariaLabel += ", 현재 연도";
+      }
+
+      if (isSelectedYear) {
+        button.classList.add("is-selected");
+        button.setAttribute("aria-selected", "true");
+
+        ariaLabel += ", 선택된 연도";
+      } else {
+        button.setAttribute("aria-selected", "false");
+      }
+
+      if (year < pickerDecadeStart || year > decadeEnd) {
+        button.classList.add("is-outside-range");
+      }
+
+      button.setAttribute("aria-label", ariaLabel);
+
+      fragment.append(button);
+    }
+
+    yearGrid.replaceChildren(fragment);
+  }
+  function showMonthSelection() {
+    monthSelectionView.hidden = false;
+    yearSelectionView.hidden = true;
+  }
+
+  function showYearSelection() {
+    monthSelectionView.hidden = true;
+    yearSelectionView.hidden = false;
+
+    renderYearPicker();
+  }
+
+  function openCalendarPicker() {
+    pickerYear = currentMonth.getFullYear();
+
+    pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+    renderMonthPicker();
+    showMonthSelection();
+
+    calendarPickerPanel.hidden = false;
+
+    calendarPickerButton.setAttribute("aria-expanded", "true");
+  }
+
+  function closeCalendarPicker() {
+    calendarPickerPanel.hidden = true;
+
+    calendarPickerButton.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleCalendarPicker() {
+    if (calendarPickerPanel.hidden) {
+      openCalendarPicker();
+    } else {
+      closeCalendarPicker();
+    }
+  }
+
+  function handleMonthPickerClick(event) {
+    const monthButton = event.target.closest(".month-option");
+
+    if (!monthButton || !monthGrid.contains(monthButton)) {
+      return;
+    }
+
+    const selectedMonth = Number(monthButton.dataset.month);
+
+    currentMonth = new Date(pickerYear, selectedMonth, 1);
+
+    selectedDate = toDateString(currentMonth);
+
+    closeCalendarPicker();
+
+    renderAll();
+  }
+
+  function handleYearPickerClick(event) {
+    const yearButton = event.target.closest(".year-option");
+
+    if (!yearButton || !yearGrid.contains(yearButton)) {
+      return;
+    }
+
+    pickerYear = Number(yearButton.dataset.year);
+
+    pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+    renderMonthPicker();
+    showMonthSelection();
+  }
+
   // 일정 점
   function refreshCalendarDate(dateString) {
     const dateButton = dateGrid.querySelector(
@@ -449,7 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDateDots(dateButton, getStatusesForDate(dateString));
   }
 
-  // 날짜 일정 카드
+  // 날짜 통계
   function renderSummary(state) {
     const { counts, total, rate } = state;
 
@@ -522,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 일정이 없을 때 표시되는 안내
+  // 빈 일정 안내
   function createEmptyState(status) {
     const emptyMessages = {
       todo: {
@@ -540,6 +750,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const message = emptyMessages[status];
+
     const item = document.createElement("li");
 
     item.className = "kanban-empty";
@@ -707,6 +918,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       option.value = value;
       option.textContent = label;
+
       option.selected = task.status === value;
 
       statusSelect.append(option);
@@ -721,10 +933,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return item;
   }
 
-  // 일정 변경 및 삭제
+  // 일정 변경과 삭제
   function findTask(taskId) {
     return tasks.find((task) => task.id === taskId);
   }
+
   function updateTaskStatus(taskId, nextStatus) {
     const targetTask = findTask(taskId);
 
@@ -955,7 +1168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     newspaperBody.replaceChildren(issue, headline, lead, rule, columns, stats);
   }
 
-  // 달력 날짜 새로고침 추가 명령어
+  // 일정 변경 화면 갱신
   function renderTaskChanges(dateString) {
     const state = getDateState();
 
@@ -974,7 +1187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderEditionCard(state);
   }
 
-  // 열고 닫기
+  // 팝업 열고 닫기
   function openLayer(layer, focusTarget) {
     layer.hidden = false;
 
@@ -1011,16 +1224,13 @@ document.addEventListener("DOMContentLoaded", () => {
     closeLayer(filterModal, filterToggle);
   }
 
-  // 일정등록 폼
+  // 일정 등록 폼
   function resetTaskForm() {
     taskForm.reset();
 
     scheduleDate.value = selectedDate;
-
     scheduleTime.value = "09:00";
-
     schedulePriority.value = "normal";
-
     scheduleStatus.value = "todo";
   }
 
@@ -1104,7 +1314,6 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.assign(activeFilters, DEFAULT_FILTERS);
 
     searchInput.value = "";
-
     sortSelect.value = DEFAULT_FILTERS.sort;
 
     setCustomSelectValue(DEFAULT_FILTERS.category);
@@ -1132,7 +1341,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeFilterLayer();
   }
 
-  // 날짜 카운트다운
+  // 카운트다운
   function updateCurrentDate(now) {
     const nextTodayString = toDateString(now);
 
@@ -1184,7 +1393,7 @@ document.addEventListener("DOMContentLoaded", () => {
     countdownText.textContent = `${hours}:${minutes}:${seconds}`;
   }
 
-  // 달력, 일정, ESC 키
+  // 클릭과 키보드 처리
   function handleDateGridClick(event) {
     const dateButton = event.target.closest(".date-cell");
 
@@ -1201,6 +1410,8 @@ document.addEventListener("DOMContentLoaded", () => {
       clickedDate.getMonth(),
       1,
     );
+
+    closeCalendarPicker();
 
     renderAll();
   }
@@ -1297,9 +1508,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 이벤트 연결
   function bindEvents() {
-    // 이전달 이동
+    calendarPickerButton.addEventListener("click", () => {
+      toggleCalendarPicker();
+    });
+
+    monthGrid.addEventListener("click", handleMonthPickerClick);
+
+    yearGrid.addEventListener("click", handleYearPickerClick);
+
+    pickerPrevYear.addEventListener("click", () => {
+      pickerYear -= 1;
+
+      pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+      renderMonthPicker();
+    });
+
+    pickerNextYear.addEventListener("click", () => {
+      pickerYear += 1;
+
+      pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+      renderMonthPicker();
+    });
+
+    pickerYearButton.addEventListener("click", () => {
+      pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+      showYearSelection();
+    });
+
+    pickerPrevDecade.addEventListener("click", () => {
+      pickerDecadeStart -= 10;
+
+      renderYearPicker();
+    });
+
+    pickerNextDecade.addEventListener("click", () => {
+      pickerDecadeStart += 10;
+
+      renderYearPicker();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (calendarPickerPanel.hidden) {
+        return;
+      }
+
+      const clickedPickerButton = calendarPickerButton.contains(event.target);
+
+      const clickedPickerPanel = calendarPickerPanel.contains(event.target);
+
+      if (!clickedPickerButton && !clickedPickerPanel) {
+        closeCalendarPicker();
+      }
+    });
+
     prevMonthBtn.addEventListener("click", () => {
+      closeCalendarPicker();
+
       currentMonth = new Date(
         currentMonth.getFullYear(),
         currentMonth.getMonth() - 1,
@@ -1311,8 +1580,9 @@ document.addEventListener("DOMContentLoaded", () => {
       renderAll();
     });
 
-    // 다음달로 이동
     nextMonthBtn.addEventListener("click", () => {
+      closeCalendarPicker();
+
       currentMonth = new Date(
         currentMonth.getFullYear(),
         currentMonth.getMonth() + 1,
@@ -1418,7 +1688,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       saveTasks();
-
       resetTaskForm();
 
       closeLayer(taskModal, openModalBtn);
@@ -1427,24 +1696,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     resetTasksBtn.addEventListener("click", () => {
-      if (tasks.length === 0) {
-        window.alert("초기화할 일정이 없습니다.");
+      const selectedDateTasks = getTasksForDate(selectedDate);
+
+      if (selectedDateTasks.length === 0) {
+        window.alert("선택한 날짜에 초기화할 일정이 없습니다.");
 
         return;
       }
 
-      if (!window.confirm("등록된 모든 일정을 삭제할까요?")) {
+      if (
+        !window.confirm(
+          `${formatSelectedDate(selectedDate)}의 일정을 모두 삭제할까요?`,
+        )
+      ) {
         return;
       }
 
-      tasks = [];
+      tasks = tasks.filter((task) => task.date !== selectedDate);
 
       saveTasks();
 
-      renderAll();
+      renderTaskChanges(selectedDate);
     });
 
-    // 신문 미리보기 열고 닫기
     viewNewspaperBtn.addEventListener("click", () => {
       renderNewspaper();
 
@@ -1482,16 +1756,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("keydown", handleEscapeKey);
   }
 
-  // 초기 실행 js
+  // 초기 실행
   function init() {
     setCustomSelectValue(categoryFilter.value || DEFAULT_FILTERS.category);
 
     renderHeaderDate();
-
     renderAll();
-
     updateCountdown();
-
     bindEvents();
 
     window.setInterval(updateCountdown, 1000);
