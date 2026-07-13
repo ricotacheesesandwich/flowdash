@@ -241,18 +241,7 @@
           <!-- 1.js 용 aria-label 추가
         2. 스크린 리더기용 라벨 추가
         3. 날짜 부분 p 대신 time 으로 변경 -->
-                  <section class="publication-card mobile-only">
-            <p class="publication-label">NEXT PUBLICATION</p>
-            <p class="publication-text">
-              오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문 발간됩니다.
-            </p>
-            <footer class="publication-cta">
-              <span>발간까지 남은 시간</span>
-              <strong id="countdownTextMobile" class="countdown-val">24:00:00</strong>
-            </footer>
-          </section>
-          
-<section class="summary-card" aria-labelledby="selectedDateTitle">
+          <section class="summary-card" aria-labelledby="selectedDateTitle">
             <p id="selectedDateTitle" class="summary-label">SELECTED DATE</p>
             <time
               id="selectedDateText"
@@ -280,15 +269,18 @@
               <strong id="summaryTotal">0</strong>
             </footer>
           </section>
+        </section>
 
-        </section> <section class="publication-card pc-only">
+        <section class="publication-card">
           <p class="publication-label">NEXT PUBLICATION</p>
           <p class="publication-text">
-            오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문 발간됩니다.
+            오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문
+            발간됩니다.
           </p>
+          <!-- js 용 아이디 추가 -->
           <footer class="publication-cta">
             <span>발간까지 남은 시간</span>
-            <strong id="countdownText" class="countdown-val">24:00:00</strong>
+            <strong id="countdownText">24:00:00</strong>
           </footer>
         </section>
       </aside>
@@ -842,7 +834,7 @@
     </template>
     <!--김양왕 , div태그 시맨틱하게 변경-->
 
-    <script src="app.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
 <!-- 전체수정 완료 김태은 -->
