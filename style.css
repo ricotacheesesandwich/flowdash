@@ -1484,7 +1484,7 @@ body {
   width: 100%;
   min-height: 210px;
   margin-bottom: 14px;
-  background-color: #dddddd;
+  background-color: var(--bg-card);
 }
 
 /* 기록 대기 안내 */
@@ -1573,7 +1573,7 @@ body {
   padding: 22px 0;
   text-align: center;
   border-top: 1px solid var(--border-dark);
-  color: var(--text-muted);
+  color: #8a8a8a;
   background: var(--bg-main);
 }
 
@@ -1731,7 +1731,7 @@ body {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  border: 1px solid #969696;
+  border: 1px solid var(--border-light);
   border-radius: 8px;
   background-color: var(--bg-card);
   color: var(--text-main);
@@ -1760,7 +1760,7 @@ body {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #111111;
+  border-color: var(--border-light);
 }
 
 .form-row {
@@ -1892,7 +1892,7 @@ body {
 }
 
 .filter-field select:focus {
-  border-color: #111111;
+  border-color: var(--border-light);
   background-color: var(--border-divider);
   box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
 }
@@ -2232,7 +2232,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--text-muted);
   font-size: 13px;
   font-weight: 700;
 }
@@ -2259,7 +2259,7 @@ body {
 .newspaper-rule {
   margin: 24px 0;
   border: 0;
-  border-top: 4px double var(--border-light);
+  border-top: 4px double var(--text-muted);
 }
 
 .newspaper-columns {
@@ -2291,13 +2291,13 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin-top: 26px;
-  border-top: 2px solid var(--border-light);
-  border-bottom: 2px solid var(--border-light);
+  border-top: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
 }
 
 .newspaper-stat {
   padding: 16px 10px;
-  border-right: 1px solid var(--border-light);
+  border-right: 1px solid var(--text-muted);
   text-align: center;
 }
 
