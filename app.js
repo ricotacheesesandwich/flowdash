@@ -1,0 +1,1774 @@
+// dark mode
+const bodyElement = document.body;
+const darkBtn = document.querySelector(".circle1");
+const lightBtn = document.querySelector(".circle2");
+
+if (darkBtn) {
+  darkBtn.addEventListener("click", () => {
+    bodyElement.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark");
+  });
+}
+
+if (lightBtn) {
+  lightBtn.addEventListener("click", () => {
+    bodyElement.classList.remove("dark-mode");
+    localStorage.setItem("theme", "light");
+  });
+}
+
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "dark") {
+  bodyElement.classList.add("dark-mode");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 공통
+  const STORAGE_KEY = "flowdash-tasks-v1";
+
+  const DEFAULT_FILTERS = Object.freeze({
+    category: "all",
+    sort: "date",
+    priority: "all",
+    status: "all",
+  });
+
+  const categoryLabels = {
+    work: "업무",
+    personal: "개인",
+    health: "건강",
+    study: "공부",
+  };
+
+  const priorityLabels = {
+    low: "낮음",
+    normal: "보통",
+    high: "높음",
+  };
+
+  const statusLabels = {
+    todo: "할 일",
+    progress: "진행 중",
+    done: "완료",
+  };
+
+  const statusEntries = Object.entries(statusLabels);
+
+  const priorityOrder = {
+    high: 0,
+    normal: 1,
+    low: 2,
+  };
+
+  const englishWeekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  const koreanWeekdays = ["일", "월", "화", "수", "목", "금", "토"];
+
+  // 달력
+  const prevMonthBtn = document.querySelector("#prevMonth");
+  const nextMonthBtn = document.querySelector("#nextMonth");
+  const monthLabel = document.querySelector("#monthLabel");
+  const dateGrid = document.querySelector("#dateGrid");
+
+  // 연도·월 선택창
+  const calendarPickerButton = document.querySelector("#calendarPickerButton");
+
+  const calendarPickerPanel = document.querySelector("#calendarPickerPanel");
+
+  const pickerYearButton = document.querySelector("#pickerYearButton");
+  const pickerYearLabel = document.querySelector("#pickerYearLabel");
+
+  const pickerPrevYear = document.querySelector("#pickerPrevYear");
+  const pickerNextYear = document.querySelector("#pickerNextYear");
+
+  const monthSelectionView = document.querySelector("#monthSelectionView");
+
+  const yearSelectionView = document.querySelector("#yearSelectionView");
+
+  const monthGrid = document.querySelector("#monthGrid");
+  const yearGrid = document.querySelector("#yearGrid");
+
+  const yearRangeLabel = document.querySelector("#yearRangeLabel");
+  const pickerPrevDecade = document.querySelector("#pickerPrevDecade");
+  const pickerNextDecade = document.querySelector("#pickerNextDecade");
+
+  const todayDateLeft = document.querySelector("#todayDateLeft");
+  const todayDateRight = document.querySelector("#todayDateRight");
+
+  // 선택 날짜
+  const selectedDateText = document.querySelector("#selectedDateText");
+
+  const summaryTodo = document.querySelector("#summaryTodo");
+  const summaryProgress = document.querySelector("#summaryProgress");
+  const summaryDone = document.querySelector("#summaryDone");
+  const summaryTotal = document.querySelector("#summaryTotal");
+
+  const statTotal = document.querySelector("#statTotal");
+  const statTodo = document.querySelector("#statTodo");
+  const statProgress = document.querySelector("#statProgress");
+  const statDone = document.querySelector("#statDone");
+  const statAchievement = document.querySelector("#statAchievement");
+
+  // 일정
+  const taskBoard = document.querySelector("#taskBoard");
+
+  const todoList = document.querySelector("#todoList");
+  const progressList = document.querySelector("#progressList");
+  const doneList = document.querySelector("#doneList");
+
+  const todoCount = document.querySelector("#todoCount");
+  const progressCount = document.querySelector("#progressCount");
+  const doneCount = document.querySelector("#doneCount");
+
+  // 검색창
+  const searchInput = document.querySelector("#searchInput");
+  const searchForm = document.querySelector(".search-bar");
+
+  // 필터
+  const filterToggle = document.querySelector("#filterToggle");
+  const filterModal = document.querySelector("#filterModal");
+  const closeFilterModal = document.querySelector("#closeFilterModal");
+
+  const categoryFilter = document.querySelector("#categoryFilter");
+  const sortSelect = document.querySelector("#sortSelect");
+
+  const resetFilterBtn = document.querySelector("#resetFilterBtn");
+  const applyFilterBtn = document.querySelector("#applyFilterBtn");
+
+  const priorityFilterInputs = document.querySelectorAll(
+    'input[name="priorityFilter"]',
+  );
+
+  const statusFilterInputs = document.querySelectorAll(
+    'input[name="statusFilter"]',
+  );
+
+  // 분류 필터
+  const customSelect = document.querySelector("[data-custom-select]");
+
+  const customSelectTrigger = customSelect?.querySelector(
+    ".custom-select-trigger",
+  );
+
+  const customSelectValue = customSelect?.querySelector(".custom-select-value");
+
+  const customSelectList = customSelect?.querySelector(".custom-select-list");
+
+  const customSelectOptions = customSelect?.querySelectorAll(
+    ".custom-select-option",
+  );
+
+  // 새 일정 등록
+  const openModalBtn = document.querySelector("#openModal");
+  const taskModal = document.querySelector("#taskModal");
+  const closeModalBtn = document.querySelector("#closeModal");
+
+  const taskForm = document.querySelector("#taskForm");
+  const resetFormBtn = document.querySelector("#resetFormBtn");
+
+  const scheduleTitle = document.querySelector("#scheduleTitle");
+  const scheduleCategory = document.querySelector("#scheduleCategory");
+  const scheduleDate = document.querySelector("#scheduleDate");
+  const scheduleTime = document.querySelector("#scheduleTime");
+  const schedulePriority = document.querySelector("#schedulePriority");
+  const scheduleStatus = document.querySelector("#scheduleStatus");
+  const scheduleMemo = document.querySelector("#scheduleMemo");
+
+  // 일정 초기화
+  const resetTasksBtn = document.querySelector("#resetTasksBtn");
+
+  // 신문 발간
+  const editionSubText = document.querySelector("#editionSubText");
+
+  const editionStatusTitle = document.querySelector("#editionStatusTitle");
+
+  const editionStatusText = document.querySelector("#editionStatusText");
+
+  const publishTime = document.querySelector("#publishTime");
+  const publishRate = document.querySelector("#publishRate");
+  const publishDuration = document.querySelector("#publishDuration");
+
+  const publishDoneCount = document.querySelector("#publishDoneCount");
+
+  // 신문
+  const viewNewspaperBtn = document.querySelector("#viewNewspaperBtn");
+
+  const newspaperModal = document.querySelector("#newspaperModal");
+  const closeNewspaper = document.querySelector("#closeNewspaper");
+  const newspaperBody = document.querySelector("#newspaperBody");
+  const newspaperTitle = document.querySelector("#newspaperTitle");
+
+  // 카운트다운
+  const countdownText = document.querySelector("#countdownText");
+
+  // 상태값
+  let today = new Date();
+  let todayString = toDateString(today);
+  let selectedDate = todayString;
+
+  let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  // 선택 중인 연도
+  let pickerYear = currentMonth.getFullYear();
+
+  // 연도 범위 시작값
+  let pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+  let tasks = loadTasks();
+
+  const activeFilters = {
+    ...DEFAULT_FILTERS,
+  };
+
+  // 날짜
+  function pad(value) {
+    return String(value).padStart(2, "0");
+  }
+
+  function toDateString(date) {
+    return `${date.getFullYear()}-${pad(
+      date.getMonth() + 1,
+    )}-${pad(date.getDate())}`;
+  }
+
+  function fromDateString(dateString) {
+    const [year, month, day] = dateString.split("-").map(Number);
+
+    return new Date(year, month - 1, day);
+  }
+
+  function formatSelectedDate(dateString) {
+    const date = fromDateString(dateString);
+
+    return `${dateString.replaceAll("-", ".")} (${
+      englishWeekdays[date.getDay()]
+    })`;
+  }
+
+  function formatKoreanDate(dateString) {
+    const date = fromDateString(dateString);
+
+    return `${date.getFullYear()}년 ${
+      date.getMonth() + 1
+    }월 ${date.getDate()}일 ${koreanWeekdays[date.getDay()]}요일`;
+  }
+
+  function getLastDateOfMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  function createTaskId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      return window.crypto.randomUUID();
+    }
+
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  // 저장 및 불러오기
+  function loadTasks() {
+    try {
+      const savedData =
+        localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem("flowdash-tasks") ||
+        "[]";
+
+      const savedTasks = JSON.parse(savedData);
+
+      return Array.isArray(savedTasks) ? savedTasks : [];
+    } catch (error) {
+      console.warn("저장된 일정을 불러오지 못했습니다.", error);
+
+      return [];
+    }
+  }
+
+  function saveTasks() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    } catch (error) {
+      console.warn("일정을 저장하지 못했습니다.", error);
+    }
+  }
+
+  // 데이터 조회 및 통계
+  function getTasksForDate(dateString) {
+    return tasks.filter((task) => task.date === dateString);
+  }
+
+  function getStatusCounts(targetTasks) {
+    return targetTasks.reduce(
+      (counts, task) => {
+        if (task.status in counts) {
+          counts[task.status] += 1;
+        }
+
+        return counts;
+      },
+      {
+        todo: 0,
+        progress: 0,
+        done: 0,
+      },
+    );
+  }
+
+  function getDateState(dateString = selectedDate) {
+    const selectedTasks = getTasksForDate(dateString);
+    const counts = getStatusCounts(selectedTasks);
+    const total = selectedTasks.length;
+
+    const rate = total === 0 ? 0 : Math.round((counts.done / total) * 100);
+
+    return {
+      selectedTasks,
+      counts,
+      total,
+      rate,
+    };
+  }
+
+  function getStatusMapByDate() {
+    const statusMap = new Map();
+
+    tasks.forEach((task) => {
+      if (!statusMap.has(task.date)) {
+        statusMap.set(task.date, new Set());
+      }
+
+      statusMap.get(task.date).add(task.status);
+    });
+
+    return statusMap;
+  }
+
+  function getStatusesForDate(dateString) {
+    return new Set(getTasksForDate(dateString).map((task) => task.status));
+  }
+
+  function renderHeaderDate() {
+    const formatted = todayString.replaceAll("-", ".");
+
+    [todayDateLeft, todayDateRight].forEach((element) => {
+      if (!element) {
+        return;
+      }
+
+      element.textContent = formatted;
+      element.dateTime = todayString;
+    });
+  }
+
+  function renderDateDots(button, statuses) {
+    button.querySelector(".date-dots")?.remove();
+
+    if (!statuses || statuses.size === 0) {
+      return;
+    }
+
+    const dots = document.createElement("span");
+
+    dots.className = "date-dots";
+    dots.setAttribute("aria-hidden", "true");
+
+    [...statuses].slice(0, 3).forEach((status) => {
+      const dot = document.createElement("span");
+
+      dot.className = `date-dot ${status}`;
+
+      dots.append(dot);
+    });
+
+    button.append(dots);
+  }
+
+  function createDateButton(date, visibleMonth, statusMap) {
+    const dateString = toDateString(date);
+
+    const button = document.createElement("button");
+    const time = document.createElement("time");
+
+    button.type = "button";
+    button.className = "date-cell";
+    button.dataset.date = dateString;
+
+    button.setAttribute("role", "gridcell");
+
+    button.setAttribute("aria-label", `${formatSelectedDate(dateString)} 선택`);
+
+    time.dateTime = dateString;
+    time.textContent = String(date.getDate());
+
+    button.append(time);
+
+    if (date.getMonth() !== visibleMonth) {
+      button.classList.add("other-month");
+    }
+
+    if (dateString === todayString) {
+      button.classList.add("is-today");
+    }
+
+    if (dateString === selectedDate) {
+      button.classList.add("selected");
+
+      button.setAttribute("aria-current", "date");
+    }
+
+    renderDateDots(button, statusMap.get(dateString));
+
+    return button;
+  }
+
+  // 달력 출력
+  function renderCalendar() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+
+    const firstDay = new Date(year, month, 1).getDay();
+
+    const lastDay = getLastDateOfMonth(year, month);
+
+    const prevLastDay = getLastDateOfMonth(year, month - 1);
+
+    const statusMap = getStatusMapByDate();
+
+    const fragment = document.createDocumentFragment();
+
+    monthLabel.textContent = `${year}년 ${month + 1}월`;
+
+    let cellCount = 0;
+
+    for (let index = firstDay - 1; index >= 0; index -= 1) {
+      const day = prevLastDay - index;
+
+      fragment.append(
+        createDateButton(new Date(year, month - 1, day), month, statusMap),
+      );
+
+      cellCount += 1;
+    }
+
+    for (let day = 1; day <= lastDay; day += 1) {
+      fragment.append(
+        createDateButton(new Date(year, month, day), month, statusMap),
+      );
+
+      cellCount += 1;
+    }
+
+    const nextDays = 42 - cellCount;
+
+    for (let day = 1; day <= nextDays; day += 1) {
+      fragment.append(
+        createDateButton(new Date(year, month + 1, day), month, statusMap),
+      );
+    }
+
+    dateGrid.replaceChildren(fragment);
+  }
+
+  function renderMonthPicker() {
+    pickerYearLabel.textContent = `${pickerYear}년`;
+
+    const fragment = document.createDocumentFragment();
+
+    const currentYear = today.getFullYear();
+    const currentMonthNumber = today.getMonth();
+
+    for (let month = 0; month < 12; month += 1) {
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "month-option";
+      button.dataset.month = String(month);
+      button.textContent = `${month + 1}월`;
+
+      button.setAttribute("role", "gridcell");
+
+      const isSelectedMonth =
+        pickerYear === currentMonth.getFullYear() &&
+        month === currentMonth.getMonth();
+
+      const isCurrentMonth =
+        pickerYear === currentYear && month === currentMonthNumber;
+
+      let ariaLabel = `${pickerYear}년 ${month + 1}월로 이동`;
+
+      if (isCurrentMonth) {
+        button.classList.add("is-current");
+        button.setAttribute("aria-current", "date");
+
+        ariaLabel += ", 현재 달";
+      }
+
+      if (isSelectedMonth) {
+        button.classList.add("is-selected");
+        button.setAttribute("aria-selected", "true");
+
+        ariaLabel += ", 선택된 달";
+      } else {
+        button.setAttribute("aria-selected", "false");
+      }
+
+      button.setAttribute("aria-label", ariaLabel);
+
+      fragment.append(button);
+    }
+
+    monthGrid.replaceChildren(fragment);
+  }
+
+  function renderYearPicker() {
+    const decadeEnd = pickerDecadeStart + 9;
+
+    yearRangeLabel.textContent = `${pickerDecadeStart} - ${decadeEnd}`;
+
+    const fragment = document.createDocumentFragment();
+
+    const firstVisibleYear = pickerDecadeStart - 2;
+    const currentYear = today.getFullYear();
+
+    for (let index = 0; index < 16; index += 1) {
+      const year = firstVisibleYear + index;
+
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "year-option";
+      button.dataset.year = String(year);
+      button.textContent = String(year);
+
+      button.setAttribute("role", "gridcell");
+
+      const isSelectedYear = year === pickerYear;
+      const isCurrentYear = year === currentYear;
+
+      let ariaLabel = `${year}년 선택`;
+
+      if (isCurrentYear) {
+        button.classList.add("is-current");
+        button.setAttribute("aria-current", "date");
+
+        ariaLabel += ", 현재 연도";
+      }
+
+      if (isSelectedYear) {
+        button.classList.add("is-selected");
+        button.setAttribute("aria-selected", "true");
+
+        ariaLabel += ", 선택된 연도";
+      } else {
+        button.setAttribute("aria-selected", "false");
+      }
+
+      if (year < pickerDecadeStart || year > decadeEnd) {
+        button.classList.add("is-outside-range");
+      }
+
+      button.setAttribute("aria-label", ariaLabel);
+
+      fragment.append(button);
+    }
+
+    yearGrid.replaceChildren(fragment);
+  }
+  function showMonthSelection() {
+    monthSelectionView.hidden = false;
+    yearSelectionView.hidden = true;
+  }
+
+  function showYearSelection() {
+    monthSelectionView.hidden = true;
+    yearSelectionView.hidden = false;
+
+    renderYearPicker();
+  }
+
+  function openCalendarPicker() {
+    pickerYear = currentMonth.getFullYear();
+
+    pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+    renderMonthPicker();
+    showMonthSelection();
+
+    calendarPickerPanel.hidden = false;
+
+    calendarPickerButton.setAttribute("aria-expanded", "true");
+  }
+
+  function closeCalendarPicker() {
+    calendarPickerPanel.hidden = true;
+
+    calendarPickerButton.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleCalendarPicker() {
+    if (calendarPickerPanel.hidden) {
+      openCalendarPicker();
+    } else {
+      closeCalendarPicker();
+    }
+  }
+
+  function handleMonthPickerClick(event) {
+    const monthButton = event.target.closest(".month-option");
+
+    if (!monthButton || !monthGrid.contains(monthButton)) {
+      return;
+    }
+
+    const selectedMonth = Number(monthButton.dataset.month);
+
+    currentMonth = new Date(pickerYear, selectedMonth, 1);
+
+    selectedDate = toDateString(currentMonth);
+
+    closeCalendarPicker();
+
+    renderAll();
+  }
+
+  function handleYearPickerClick(event) {
+    const yearButton = event.target.closest(".year-option");
+
+    if (!yearButton || !yearGrid.contains(yearButton)) {
+      return;
+    }
+
+    pickerYear = Number(yearButton.dataset.year);
+
+    pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+    renderMonthPicker();
+    showMonthSelection();
+  }
+
+  // 일정 점
+  function refreshCalendarDate(dateString) {
+    const dateButton = dateGrid.querySelector(
+      `.date-cell[data-date="${dateString}"]`,
+    );
+
+    if (!dateButton) {
+      return;
+    }
+
+    renderDateDots(dateButton, getStatusesForDate(dateString));
+  }
+
+  // 날짜 통계
+  function renderSummary(state) {
+    const { counts, total, rate } = state;
+
+    selectedDateText.textContent = formatSelectedDate(selectedDate);
+
+    selectedDateText.dateTime = selectedDate;
+
+    summaryTodo.textContent = String(counts.todo);
+
+    summaryProgress.textContent = String(counts.progress);
+
+    summaryDone.textContent = String(counts.done);
+
+    summaryTotal.textContent = String(total);
+
+    statTotal.textContent = String(total);
+
+    statTodo.textContent = String(counts.todo);
+
+    statProgress.textContent = String(counts.progress);
+
+    statDone.textContent = String(counts.done);
+
+    statAchievement.textContent = `${rate}%`;
+  }
+
+  function getVisibleTasks(sourceTasks = getTasksForDate(selectedDate)) {
+    const keyword = searchInput.value.trim().toLowerCase();
+
+    const visibleTasks = sourceTasks.filter((task) => {
+      const matchesKeyword =
+        keyword === "" ||
+        task.title.toLowerCase().includes(keyword) ||
+        (task.memo || "").toLowerCase().includes(keyword) ||
+        (categoryLabels[task.category] || "").includes(keyword);
+
+      const matchesCategory =
+        activeFilters.category === "all" ||
+        task.category === activeFilters.category;
+
+      const matchesPriority =
+        activeFilters.priority === "all" ||
+        task.priority === activeFilters.priority;
+
+      const matchesStatus =
+        activeFilters.status === "all" || task.status === activeFilters.status;
+
+      return (
+        matchesKeyword && matchesCategory && matchesPriority && matchesStatus
+      );
+    });
+
+    return visibleTasks.sort((firstTask, secondTask) => {
+      if (activeFilters.sort === "priority") {
+        return (
+          (priorityOrder[firstTask.priority] ?? 999) -
+            (priorityOrder[secondTask.priority] ?? 999) ||
+          firstTask.time.localeCompare(secondTask.time)
+        );
+      }
+
+      if (activeFilters.sort === "time") {
+        return firstTask.time.localeCompare(secondTask.time);
+      }
+
+      return (
+        firstTask.date.localeCompare(secondTask.date) ||
+        firstTask.time.localeCompare(secondTask.time)
+      );
+    });
+  }
+
+  // 빈 일정 안내
+  function createEmptyState(status) {
+    const emptyMessages = {
+      todo: {
+        title: "비어 있는 일정입니다",
+        description: "할 일을 추가해 보세요.",
+      },
+      progress: {
+        title: "진행 중인 일정이 없습니다",
+        description: "일정을 진행 중으로 변경해 보세요.",
+      },
+      done: {
+        title: "완료된 일정이 없습니다",
+        description: "완료한 일정이 이곳에 표시됩니다.",
+      },
+    };
+
+    const message = emptyMessages[status];
+
+    const item = document.createElement("li");
+
+    item.className = "kanban-empty";
+    item.setAttribute("role", "status");
+
+    item.innerHTML = `
+      <span class="kanban-empty-icon" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-4-4"></path>
+        </svg>
+      </span>
+
+      <strong class="kanban-empty-title">
+        ${message.title}
+      </strong>
+
+      <p class="kanban-empty-description">
+        ${message.description}
+      </p>
+    `;
+
+    return item;
+  }
+
+  function renderTaskBoard(sourceTasks) {
+    const visibleTasks = getVisibleTasks(sourceTasks);
+
+    const lists = {
+      todo: todoList,
+      progress: progressList,
+      done: doneList,
+    };
+
+    const fragments = {
+      todo: document.createDocumentFragment(),
+      progress: document.createDocumentFragment(),
+      done: document.createDocumentFragment(),
+    };
+
+    visibleTasks.forEach((task) => {
+      const targetFragment = fragments[task.status];
+
+      if (targetFragment) {
+        targetFragment.append(createTaskCard(task));
+      }
+    });
+
+    const visibleCounts = getStatusCounts(visibleTasks);
+
+    Object.entries(lists).forEach(([status, list]) => {
+      if (visibleCounts[status] === 0) {
+        fragments[status].append(createEmptyState(status));
+      }
+
+      list.replaceChildren(fragments[status]);
+    });
+
+    todoCount.textContent = String(visibleCounts.todo);
+
+    progressCount.textContent = String(visibleCounts.progress);
+
+    doneCount.textContent = String(visibleCounts.done);
+
+    const hasActiveFilter = Object.entries(DEFAULT_FILTERS).some(
+      ([key, value]) => activeFilters[key] !== value,
+    );
+
+    filterToggle.classList.toggle("is-active", hasActiveFilter);
+  }
+
+  function createTaskCard(task) {
+    const item = document.createElement("li");
+
+    const article = document.createElement("article");
+
+    const top = document.createElement("header");
+
+    const checkbox = document.createElement("button");
+
+    const category = document.createElement("span");
+
+    const priority = document.createElement("span");
+
+    const time = document.createElement("time");
+
+    const removeButton = document.createElement("button");
+
+    const title = document.createElement("h4");
+
+    const memo = document.createElement("p");
+
+    const footer = document.createElement("footer");
+
+    const statusSelect = document.createElement("select");
+
+    item.className = `task-card priority-${task.priority}`;
+
+    item.dataset.taskId = task.id;
+
+    if (task.status === "done") {
+      item.classList.add("is-done");
+    }
+
+    top.className = "task-top";
+
+    checkbox.type = "button";
+    checkbox.className = "task-checkbox";
+
+    checkbox.dataset.action = "toggle-done";
+
+    checkbox.setAttribute(
+      "aria-label",
+      task.status === "done" ? "완료 취소" : "완료 처리",
+    );
+
+    category.className = "task-category-tag";
+
+    category.textContent = categoryLabels[task.category] || task.category;
+
+    priority.className = `task-priority priority-${task.priority}`;
+
+    priority.textContent = priorityLabels[task.priority] || task.priority;
+
+    time.className = "task-time";
+    time.dateTime = task.time;
+    time.textContent = task.time;
+
+    removeButton.type = "button";
+    removeButton.className = "task-close";
+
+    removeButton.dataset.action = "delete-task";
+
+    removeButton.setAttribute("aria-label", "일정 삭제");
+
+    removeButton.textContent = "×";
+
+    top.append(checkbox, category, priority, time, removeButton);
+
+    title.className = "task-title";
+    title.textContent = task.title;
+
+    memo.className = "task-desc";
+
+    memo.textContent = task.memo || "등록된 메모가 없습니다.";
+
+    footer.className = "task-footer";
+
+    statusSelect.className = "task-dropdown";
+
+    statusSelect.dataset.action = "change-status";
+
+    statusSelect.setAttribute("aria-label", `${task.title} 상태 변경`);
+
+    statusEntries.forEach(([value, label]) => {
+      const option = document.createElement("option");
+
+      option.value = value;
+      option.textContent = label;
+
+      option.selected = task.status === value;
+
+      statusSelect.append(option);
+    });
+
+    footer.append(statusSelect);
+
+    article.append(top, title, memo, footer);
+
+    item.append(article);
+
+    return item;
+  }
+
+  // 일정 변경과 삭제
+  function findTask(taskId) {
+    return tasks.find((task) => task.id === taskId);
+  }
+
+  function updateTaskStatus(taskId, nextStatus) {
+    const targetTask = findTask(taskId);
+
+    if (!targetTask || !(nextStatus in statusLabels)) {
+      return;
+    }
+
+    targetTask.status = nextStatus;
+
+    saveTasks();
+
+    renderTaskChanges(targetTask.date);
+  }
+
+  function deleteTask(taskId) {
+    const targetTask = findTask(taskId);
+
+    if (!targetTask) {
+      return;
+    }
+
+    if (!window.confirm(`"${targetTask.title}" 일정을 삭제할까요?`)) {
+      return;
+    }
+
+    const deletedDate = targetTask.date;
+
+    tasks = tasks.filter((task) => task.id !== taskId);
+
+    saveTasks();
+
+    renderTaskChanges(deletedDate);
+  }
+
+  // 신문
+  function calculateTimeSpan(targetTasks) {
+    if (targetTasks.length < 2) {
+      return "-";
+    }
+
+    const minutes = targetTasks
+      .map((task) => {
+        const [hour, minute] = task.time.split(":").map(Number);
+
+        return hour * 60 + minute;
+      })
+      .sort((first, second) => first - second);
+
+    const difference = minutes.at(-1) - minutes[0];
+
+    const hours = Math.floor(difference / 60);
+
+    const remainingMinutes = difference % 60;
+
+    if (hours === 0) {
+      return `${remainingMinutes}분`;
+    }
+
+    if (remainingMinutes === 0) {
+      return `${hours}시간`;
+    }
+
+    return `${hours}시간 ${remainingMinutes}분`;
+  }
+
+  function renderEditionCard(state) {
+    const { selectedTasks, counts, total, rate } = state;
+
+    editionSubText.textContent = `${formatSelectedDate(selectedDate)} 기록`;
+
+    publishTime.textContent = "00:00 예정";
+
+    publishRate.textContent = `${rate}%`;
+
+    publishDuration.textContent = calculateTimeSpan(selectedTasks);
+
+    publishDoneCount.textContent = `${counts.done}개 / ${total}개`;
+
+    if (total === 0) {
+      editionStatusTitle.textContent = "오늘의 기록을 기다리는 중";
+
+      editionStatusText.textContent =
+        "일정을 등록하면 선택한 날짜의 기록을 신문 형태로 확인할 수 있습니다.";
+
+      return;
+    }
+
+    if (counts.done === total) {
+      editionStatusTitle.textContent = "모든 일정이 완료되었습니다";
+
+      editionStatusText.textContent =
+        "완료된 하루의 기록이 신문 발간을 기다리고 있습니다.";
+
+      return;
+    }
+
+    editionStatusTitle.textContent = `${counts.done}개의 일정 완료`;
+
+    editionStatusText.textContent =
+      `전체 ${total}개 일정 중 ${counts.done}개를 마쳤습니다. ` +
+      "남은 일정도 차근차근 완료해보세요.";
+  }
+
+  function renderNewspaper() {
+    const { selectedTasks, counts, total, rate } = getDateState();
+
+    newspaperTitle.textContent = "오늘의 일정 신문";
+
+    const issue = document.createElement("div");
+
+    const issueDate = document.createElement("span");
+
+    const issueNumber = document.createElement("span");
+
+    const headline = document.createElement("h3");
+
+    const lead = document.createElement("p");
+
+    const rule = document.createElement("hr");
+
+    const columns = document.createElement("div");
+
+    const stats = document.createElement("div");
+
+    issue.className = "newspaper-issue";
+
+    issueDate.textContent = formatKoreanDate(selectedDate);
+
+    issueNumber.textContent = `DAILY ISSUE · ${selectedDate.replaceAll(
+      "-",
+      "",
+    )}`;
+
+    issue.append(issueDate, issueNumber);
+
+    headline.className = "newspaper-headline";
+
+    if (total === 0) {
+      headline.textContent = "아직 기록되지 않은 하루";
+    } else if (counts.done === total) {
+      headline.textContent = "오늘의 모든 일정, 성공적으로 마무리";
+    } else {
+      headline.textContent = `${total}개의 일정 속에서 이어진 오늘의 기록`;
+    }
+
+    lead.className = "newspaper-lead";
+
+    lead.textContent =
+      total === 0
+        ? "선택한 날짜에 등록된 일정이 없습니다. 새 일정을 등록하면 이곳에 하루의 기록이 기사처럼 정리됩니다."
+        : `선택한 날짜에는 총 ${total}개의 일정이 등록되었으며, 그중 ${counts.done}개가 완료되었습니다. 현재 달성률은 ${rate}%입니다.`;
+
+    rule.className = "newspaper-rule";
+
+    columns.className = "newspaper-columns";
+
+    if (total === 0) {
+      const emptyArticle = document.createElement("article");
+
+      const emptyTitle = document.createElement("h3");
+
+      const emptyText = document.createElement("p");
+
+      emptyArticle.className = "newspaper-article";
+
+      emptyTitle.textContent = "등록된 기사가 없습니다";
+
+      emptyText.textContent =
+        "새 일정 등록 버튼을 눌러 오늘의 첫 기사를 작성해보세요.";
+
+      emptyArticle.append(emptyTitle, emptyText);
+
+      columns.append(emptyArticle);
+    } else {
+      [...selectedTasks]
+        .sort((firstTask, secondTask) =>
+          firstTask.time.localeCompare(secondTask.time),
+        )
+        .forEach((task) => {
+          const article = document.createElement("article");
+
+          const articleTitle = document.createElement("h3");
+
+          const articleText = document.createElement("p");
+
+          article.className = "newspaper-article";
+
+          articleTitle.textContent = `${task.time} · ${task.title}`;
+
+          articleText.textContent = `${
+            categoryLabels[task.category] || task.category
+          } 일정으로 등록되었으며 중요도는 ${
+            priorityLabels[task.priority] || task.priority
+          }, 현재 상태는 ${statusLabels[task.status] || task.status}입니다. ${
+            task.memo || "추가 메모는 기록되지 않았습니다."
+          }`;
+
+          article.append(articleTitle, articleText);
+
+          columns.append(article);
+        });
+    }
+
+    stats.className = "newspaper-stats";
+
+    [
+      ["전체 일정", `${total}개`],
+      ["할 일", `${counts.todo}개`],
+      ["진행 중", `${counts.progress}개`],
+      ["달성률", `${rate}%`],
+    ].forEach(([label, value]) => {
+      const stat = document.createElement("div");
+
+      const statLabel = document.createElement("span");
+
+      const statValue = document.createElement("strong");
+
+      stat.className = "newspaper-stat";
+
+      statLabel.textContent = label;
+      statValue.textContent = value;
+
+      stat.append(statLabel, statValue);
+
+      stats.append(stat);
+    });
+
+    newspaperBody.replaceChildren(issue, headline, lead, rule, columns, stats);
+  }
+
+  // 일정 변경 화면 갱신
+  function renderTaskChanges(dateString) {
+    const state = getDateState();
+
+    refreshCalendarDate(dateString);
+    renderSummary(state);
+    renderTaskBoard(state.selectedTasks);
+    renderEditionCard(state);
+  }
+
+  function renderAll() {
+    const state = getDateState();
+
+    renderCalendar();
+    renderSummary(state);
+    renderTaskBoard(state.selectedTasks);
+    renderEditionCard(state);
+  }
+
+  // 팝업 열고 닫기
+  function openLayer(layer, focusTarget) {
+    layer.hidden = false;
+
+    layer.setAttribute("aria-hidden", "false");
+
+    document.body.classList.add("modal-open");
+
+    window.requestAnimationFrame(() => {
+      focusTarget?.focus();
+    });
+  }
+
+  function closeLayer(layer, returnFocusTarget) {
+    layer.hidden = true;
+
+    layer.setAttribute("aria-hidden", "true");
+
+    const hasOpenLayer = document.querySelector(
+      ".modal-backdrop:not([hidden])",
+    );
+
+    if (!hasOpenLayer) {
+      document.body.classList.remove("modal-open");
+    }
+
+    returnFocusTarget?.focus();
+  }
+
+  function closeFilterLayer() {
+    filterToggle.setAttribute("aria-expanded", "false");
+
+    closeCustomSelect();
+
+    closeLayer(filterModal, filterToggle);
+  }
+
+  // 일정 등록 폼
+  function resetTaskForm() {
+    taskForm.reset();
+
+    scheduleDate.value = selectedDate;
+    scheduleTime.value = "09:00";
+    schedulePriority.value = "normal";
+    scheduleStatus.value = "todo";
+  }
+
+  function openTaskModal() {
+    resetTaskForm();
+
+    openLayer(taskModal, scheduleTitle);
+  }
+
+  function getCheckedValue(inputs) {
+    return [...inputs].find((input) => input.checked)?.value || "all";
+  }
+
+  function checkFilterValue(inputs, value) {
+    inputs.forEach((input) => {
+      input.checked = input.value === value;
+    });
+  }
+
+  function setCustomSelectValue(value, { emitChange = false } = {}) {
+    if (!customSelect || !customSelectOptions) {
+      categoryFilter.value = value;
+
+      return;
+    }
+
+    const selectedOption = [...customSelectOptions].find(
+      (option) => option.dataset.value === value,
+    );
+
+    if (!selectedOption) {
+      return;
+    }
+
+    categoryFilter.value = value;
+
+    customSelectValue.textContent = selectedOption.textContent.trim();
+
+    customSelectOptions.forEach((option) => {
+      const isSelected = option === selectedOption;
+
+      option.classList.toggle("is-selected", isSelected);
+
+      option.setAttribute("aria-selected", String(isSelected));
+    });
+
+    if (emitChange) {
+      categoryFilter.dispatchEvent(
+        new Event("change", {
+          bubbles: true,
+        }),
+      );
+    }
+  }
+
+  function openCustomSelect() {
+    if (!customSelect) {
+      return;
+    }
+
+    customSelect.classList.add("is-open");
+
+    customSelectList.hidden = false;
+
+    customSelectTrigger.setAttribute("aria-expanded", "true");
+  }
+
+  function closeCustomSelect() {
+    if (!customSelect) {
+      return;
+    }
+
+    customSelect.classList.remove("is-open");
+
+    customSelectList.hidden = true;
+
+    customSelectTrigger.setAttribute("aria-expanded", "false");
+  }
+
+  function resetFilters({ render = true } = {}) {
+    Object.assign(activeFilters, DEFAULT_FILTERS);
+
+    searchInput.value = "";
+    sortSelect.value = DEFAULT_FILTERS.sort;
+
+    setCustomSelectValue(DEFAULT_FILTERS.category);
+
+    checkFilterValue(priorityFilterInputs, DEFAULT_FILTERS.priority);
+
+    checkFilterValue(statusFilterInputs, DEFAULT_FILTERS.status);
+
+    if (render) {
+      renderTaskBoard();
+    }
+  }
+
+  function applyFilterValues() {
+    activeFilters.category = categoryFilter.value;
+
+    activeFilters.sort = sortSelect.value;
+
+    activeFilters.priority = getCheckedValue(priorityFilterInputs);
+
+    activeFilters.status = getCheckedValue(statusFilterInputs);
+
+    renderTaskBoard();
+
+    closeFilterLayer();
+  }
+
+  // 카운트다운
+  function updateCurrentDate(now) {
+    const nextTodayString = toDateString(now);
+
+    if (nextTodayString === todayString) {
+      return;
+    }
+
+    const previousTodayString = todayString;
+
+    today = now;
+    todayString = nextTodayString;
+
+    renderHeaderDate();
+
+    if (selectedDate === previousTodayString) {
+      selectedDate = todayString;
+
+      currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+      renderAll();
+
+      return;
+    }
+
+    renderCalendar();
+  }
+
+  function updateCountdown() {
+    const now = new Date();
+
+    updateCurrentDate(now);
+
+    const nextMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+    );
+
+    const difference = Math.max(0, nextMidnight.getTime() - now.getTime());
+
+    const totalSeconds = Math.floor(difference / 1000);
+
+    const hours = pad(Math.floor(totalSeconds / 3600));
+
+    const minutes = pad(Math.floor((totalSeconds % 3600) / 60));
+
+    const seconds = pad(totalSeconds % 60);
+
+    countdownText.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+
+  // 클릭과 키보드 처리
+  function handleDateGridClick(event) {
+    const dateButton = event.target.closest(".date-cell");
+
+    if (!dateButton || !dateGrid.contains(dateButton)) {
+      return;
+    }
+
+    const clickedDate = fromDateString(dateButton.dataset.date);
+
+    selectedDate = dateButton.dataset.date;
+
+    currentMonth = new Date(
+      clickedDate.getFullYear(),
+      clickedDate.getMonth(),
+      1,
+    );
+
+    closeCalendarPicker();
+
+    renderAll();
+  }
+
+  function handleTaskBoardClick(event) {
+    const actionTarget = event.target.closest("[data-action]");
+
+    if (!actionTarget || !taskBoard.contains(actionTarget)) {
+      return;
+    }
+
+    const taskCard = actionTarget.closest(".task-card");
+
+    const taskId = taskCard?.dataset.taskId;
+
+    if (!taskId) {
+      return;
+    }
+
+    if (actionTarget.dataset.action === "toggle-done") {
+      const targetTask = findTask(taskId);
+
+      if (!targetTask) {
+        return;
+      }
+
+      updateTaskStatus(taskId, targetTask.status === "done" ? "todo" : "done");
+    }
+
+    if (actionTarget.dataset.action === "delete-task") {
+      deleteTask(taskId);
+    }
+  }
+
+  function handleTaskBoardChange(event) {
+    const statusSelect = event.target.closest(
+      'select[data-action="change-status"]',
+    );
+
+    if (!statusSelect || !taskBoard.contains(statusSelect)) {
+      return;
+    }
+
+    const taskId = statusSelect.closest(".task-card")?.dataset.taskId;
+
+    if (taskId) {
+      updateTaskStatus(taskId, statusSelect.value);
+    }
+  }
+
+  function handleCustomSelectClick(event) {
+    const option = event.target.closest(".custom-select-option");
+
+    if (!option || !customSelectList.contains(option)) {
+      return;
+    }
+
+    setCustomSelectValue(option.dataset.value, {
+      emitChange: true,
+    });
+
+    closeCustomSelect();
+
+    customSelectTrigger.focus();
+  }
+
+  function handleEscapeKey(event) {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    if (customSelect?.classList.contains("is-open")) {
+      closeCustomSelect();
+
+      customSelectTrigger.focus();
+
+      return;
+    }
+
+    if (!newspaperModal.hidden) {
+      closeLayer(newspaperModal, viewNewspaperBtn);
+
+      return;
+    }
+
+    if (!taskModal.hidden) {
+      closeLayer(taskModal, openModalBtn);
+
+      return;
+    }
+
+    if (!filterModal.hidden) {
+      closeFilterLayer();
+    }
+  }
+
+  // 이벤트 연결
+  function bindEvents() {
+    calendarPickerButton.addEventListener("click", () => {
+      toggleCalendarPicker();
+    });
+
+    monthGrid.addEventListener("click", handleMonthPickerClick);
+
+    yearGrid.addEventListener("click", handleYearPickerClick);
+
+    pickerPrevYear.addEventListener("click", () => {
+      pickerYear -= 1;
+
+      pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+      renderMonthPicker();
+    });
+
+    pickerNextYear.addEventListener("click", () => {
+      pickerYear += 1;
+
+      pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+      renderMonthPicker();
+    });
+
+    pickerYearButton.addEventListener("click", () => {
+      pickerDecadeStart = Math.floor(pickerYear / 10) * 10;
+
+      showYearSelection();
+    });
+
+    pickerPrevDecade.addEventListener("click", () => {
+      pickerDecadeStart -= 10;
+
+      renderYearPicker();
+    });
+
+    pickerNextDecade.addEventListener("click", () => {
+      pickerDecadeStart += 10;
+
+      renderYearPicker();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (calendarPickerPanel.hidden) {
+        return;
+      }
+
+      const clickedPickerButton = calendarPickerButton.contains(event.target);
+
+      const clickedPickerPanel = calendarPickerPanel.contains(event.target);
+
+      if (!clickedPickerButton && !clickedPickerPanel) {
+        closeCalendarPicker();
+      }
+    });
+
+    prevMonthBtn.addEventListener("click", () => {
+      closeCalendarPicker();
+
+      currentMonth = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() - 1,
+        1,
+      );
+
+      selectedDate = toDateString(currentMonth);
+
+      renderAll();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      closeCalendarPicker();
+
+      currentMonth = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() + 1,
+        1,
+      );
+
+      selectedDate = toDateString(currentMonth);
+
+      renderAll();
+    });
+
+    dateGrid.addEventListener("click", handleDateGridClick);
+
+    taskBoard.addEventListener("click", handleTaskBoardClick);
+
+    taskBoard.addEventListener("change", handleTaskBoardChange);
+
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+    });
+
+    searchInput.addEventListener("input", () => {
+      renderTaskBoard();
+    });
+
+    filterToggle.addEventListener("click", () => {
+      filterToggle.setAttribute("aria-expanded", "true");
+
+      openLayer(filterModal, closeFilterModal);
+    });
+
+    closeFilterModal.addEventListener("click", closeFilterLayer);
+
+    resetFilterBtn.addEventListener("click", () => {
+      resetFilters();
+    });
+
+    applyFilterBtn.addEventListener("click", applyFilterValues);
+
+    if (customSelect) {
+      customSelectTrigger.addEventListener("click", () => {
+        if (customSelect.classList.contains("is-open")) {
+          closeCustomSelect();
+        } else {
+          openCustomSelect();
+        }
+      });
+
+      customSelectList.addEventListener("click", handleCustomSelectClick);
+
+      document.addEventListener("click", (event) => {
+        if (!customSelect.contains(event.target)) {
+          closeCustomSelect();
+        }
+      });
+    }
+
+    openModalBtn.addEventListener("click", openTaskModal);
+
+    closeModalBtn.addEventListener("click", () => {
+      closeLayer(taskModal, openModalBtn);
+    });
+
+    resetFormBtn.addEventListener("click", resetTaskForm);
+
+    taskForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const title = scheduleTitle.value.trim();
+
+      const category = scheduleCategory.value;
+
+      const date = scheduleDate.value;
+
+      const time = scheduleTime.value;
+
+      if (!title || !category || !date || !time) {
+        window.alert("제목, 분류, 날짜, 시간을 모두 입력해주세요.");
+
+        return;
+      }
+
+      tasks.push({
+        id: createTaskId(),
+        title,
+        category,
+        date,
+        time,
+        priority: schedulePriority.value,
+        status: scheduleStatus.value,
+        memo: scheduleMemo.value.trim(),
+        createdAt: Date.now(),
+      });
+
+      selectedDate = date;
+
+      const addedDate = fromDateString(date);
+
+      currentMonth = new Date(addedDate.getFullYear(), addedDate.getMonth(), 1);
+
+      resetFilters({
+        render: false,
+      });
+
+      saveTasks();
+      resetTaskForm();
+
+      closeLayer(taskModal, openModalBtn);
+
+      renderAll();
+    });
+
+    resetTasksBtn.addEventListener("click", () => {
+      const selectedDateTasks = getTasksForDate(selectedDate);
+
+      if (selectedDateTasks.length === 0) {
+        window.alert("선택한 날짜에 초기화할 일정이 없습니다.");
+
+        return;
+      }
+
+      if (
+        !window.confirm(
+          `${formatSelectedDate(selectedDate)}의 일정을 모두 삭제할까요?`,
+        )
+      ) {
+        return;
+      }
+
+      tasks = tasks.filter((task) => task.date !== selectedDate);
+
+      saveTasks();
+
+      renderTaskChanges(selectedDate);
+    });
+
+    viewNewspaperBtn.addEventListener("click", () => {
+      renderNewspaper();
+
+      openLayer(newspaperModal, closeNewspaper);
+    });
+
+    closeNewspaper.addEventListener("click", () => {
+      closeLayer(newspaperModal, viewNewspaperBtn);
+    });
+
+    const layerSettings = new Map([
+      [filterModal, closeFilterLayer],
+      [
+        taskModal,
+        () => {
+          closeLayer(taskModal, openModalBtn);
+        },
+      ],
+      [
+        newspaperModal,
+        () => {
+          closeLayer(newspaperModal, viewNewspaperBtn);
+        },
+      ],
+    ]);
+
+    layerSettings.forEach((closeHandler, layer) => {
+      layer.addEventListener("click", (event) => {
+        if (event.target === layer) {
+          closeHandler();
+        }
+      });
+    });
+
+    document.addEventListener("keydown", handleEscapeKey);
+  }
+
+  // 초기 실행
+  function init() {
+    setCustomSelectValue(categoryFilter.value || DEFAULT_FILTERS.category);
+
+    renderHeaderDate();
+    renderAll();
+    updateCountdown();
+    bindEvents();
+
+    window.setInterval(updateCountdown, 1000);
+  }
+
+  init();
+});
+
+// 수정
