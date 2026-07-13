@@ -1,5 +1,3 @@
-/* reset.css */
-
 *,
 *::before,
 *::after {
@@ -10,6 +8,7 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 기본 여백 제거 */
 body,
 h1,
 h2,
@@ -31,23 +30,11 @@ textarea {
   padding: 0;
 }
 
-header,
-main,
-aside,
-section,
-article,
-nav,
-footer {
-  margin: 0;
-  padding: 0;
-}
-
-/* 혹시몰라서 맥 폰트 위주로 추가. */
 body {
   min-width: 320px;
   min-height: 100vh;
   color: #111;
-  background: #f4f4f4;
+  background-color: #f4f4f4;
   font-family:
     Pretendard,
     -apple-system,
@@ -66,7 +53,6 @@ a {
   text-decoration: none;
 }
 
-img,
 svg {
   display: block;
   max-width: 100%;
@@ -79,23 +65,17 @@ textarea {
   font: inherit;
 }
 
-/* 1.마우스 올릴때 손가락 모양으로 바뀌게 함. */
 button {
   border: 0;
   background: none;
   cursor: pointer;
 }
 
-/* 기본 테두리 제거 */
 fieldset {
   border: 0;
 }
 
+/* hidden 속성이 붙은 요소 숨김 */
 [hidden] {
   display: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
 }
