@@ -2334,7 +2334,7 @@ body {
 }
 
 /*  1200px 데스크탑 */
-@media (max-width: 1200px) {
+@media (min-width: 1200px) {
   body {
     padding: 0 20px;
   }
@@ -2409,9 +2409,7 @@ body {
     flex-wrap: wrap;
     gap: 14px 20px;
   }
-}
 
-@media (min-width: 1200px) {
   .search-bar {
     height: 62px;
   }
