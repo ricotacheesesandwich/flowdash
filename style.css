@@ -2327,96 +2327,14 @@ body {
 }
 
 /* 1920px 이상에서 햄버거 메뉴 숨김 */
-@media (min-width: 1920px) {
+@media (min-width: 768px) {
   .menu-btn {
     display: none;
   }
 }
 
-/*  1200px 데스크탑 */
-@media (min-width: 1200px) {
-  body {
-    padding: 0 20px;
-  }
-
-  .page-body {
-    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
-    gap: 20px;
-  }
-
-  .calendar-panel {
-    grid-column: 1;
-    width: 100%;
-    max-width: none;
-  }
-
-  .main-content {
-    grid-column: 2;
-    width: 100%;
-    max-width: none;
-  }
-
-  .edition-card-container {
-    grid-column: 1 / -1;
-    width: 100%;
-    max-width: none;
-  }
-
-  .calendar-all,
-  .calendar-card,
-  .summary-card,
-  .publication-card {
-    width: 100%;
-    max-width: none;
-  }
-
-  .stats-cards {
-    flex-wrap: wrap;
-  }
-
-  .stat-card {
-    flex: 1 1 150px;
-  }
-
-  .greeting-area {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .word {
-    padding: 20px 0 0;
-    border-left: none;
-    border-top: 4px solid #111111;
-    text-align: left;
-  }
-
-  .controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .control-actions {
-    flex-wrap: wrap;
-  }
-
-  .filter-select,
-  .time-select,
-  .add-btn {
-    flex: 1 1 180px;
-  }
-
-  .nav-links {
-    flex-wrap: wrap;
-    gap: 14px 20px;
-  }
-
-  .search-bar {
-    height: 62px;
-  }
-}
-
 /* 1280px 이하: greeting 아래에 달력과 통계를 나란히 배치 */
-@media (max-width: 1280px) {
+@media (max-width: 1599px) {
   .edition-card-container,
   .site-footer {
     display: block;
@@ -2655,7 +2573,7 @@ body {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
+@media (max-width: 1199px) {
   /* ==================================================
      1. 전체 페이지
   ================================================== */
@@ -2766,10 +2684,6 @@ body {
   .header-nav {
     min-height: 48px;
     padding: 8px 0;
-  }
-
-  .menu-btn {
-    display: none;
   }
 
   .nav-links {
@@ -3695,7 +3609,7 @@ body {
   }
 
   .filter-modal-actions {
-    margin-top: 32px; 
+    margin-top: 32px;
   }
 
   .filter-reset-btn,
