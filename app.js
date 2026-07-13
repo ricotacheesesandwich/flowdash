@@ -1770,3 +1770,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   init();
 });
+
+// 수정
