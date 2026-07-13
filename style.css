@@ -2657,81 +2657,1073 @@ body {
   }
 }
 
-/* 768px 이하: 완전 단일 컬럼 모바일 */
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1199px) {
+  /* ==================================================
+     1. 전체 페이지
+  ================================================== */
+
+  body {
+    padding: 0 20px;
+    overflow-x: hidden;
+  }
+
+  .site-header,
   .page-body {
-    padding: 0 12px;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "greet"
-      "stats"
-      "aside"
-      "controls"
-      "board";
-    gap: 10px;
+    width: 100%;
+    max-width: none;
+    margin-right: auto;
+    margin-left: auto;
   }
 
-  .main-content {
-    display: contents;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "greet"
-      "stats"
-      "board";
+  .site-header {
+    padding-top: 20px;
   }
 
-  .calendar-panel {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+  /* ==================================================
+     2. 헤더
+  ================================================== */
+
+  .headline-rule {
+    height: 6px;
   }
 
-  .calendar-card,
-  .summary-card,
-  .publication-card {
-    grid-column: auto;
-    grid-row: auto;
+  .masthead {
+    min-height: 150px;
+    padding: 10px 0 12px;
   }
 
-  .greeting-area {
-    grid-template-columns: 1fr;
-    padding: 14px 10px;
-    gap: 12px;
+  /* 왼쪽 날짜와 제목 사이 세로선 */
+  .masthead::before {
+    left: 20%;
   }
 
-  .greeting-text h2 {
-    font-size: 2rem;
-  }
-
-  .word {
-    border-left: 0;
-    border-top: 2px solid var(--border-dark);
-    padding: 10px 8px 0;
-    font-size: 1.2rem;
-    text-align: left;
-  }
-
-  .word::before,
-  .word::after {
+  /* 오른쪽 세로선 제거 */
+  .masthead::after {
     display: none;
   }
 
-  .control-actions {
-    width: 100%;
-    flex-wrap: wrap;
+  /* 왼쪽 날짜 */
+  .masthead-left {
+    flex: 0 0 20%;
+    padding: 0 12px;
+  }
+
+  /* 오른쪽 날짜 숨김 */
+  .masthead-right {
+    display: none;
+  }
+
+  .today-label {
+    font-size: 0.72rem;
+  }
+
+  .today-date {
+    margin-top: 4px;
+    font-size: 1.05rem;
+    letter-spacing: 1.5px;
+  }
+
+  .header-sub {
+    margin-top: 4px;
+    font-size: 0.64rem;
+    line-height: 1.4;
+  }
+
+  /* 가운데 타이틀 */
+  .masthead-title {
+    flex: 1;
+    min-width: 0;
+    padding: 0 14px;
+    text-align: center;
+  }
+
+  .toptitle {
+    margin-bottom: 5px;
+    font-size: 0.58rem;
+    letter-spacing: 0.4px;
+  }
+
+  .masthead-title h1 {
+    margin: 0;
+    font-size: clamp(4rem, 9vw, 5.4rem);
+    line-height: 0.82;
+    letter-spacing: 4px;
+    word-spacing: -2px;
+    white-space: nowrap;
+    transform: scaleX(0.75);
+    transform-origin: center;
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    font-size: 0.6rem;
+    line-height: 1.45;
+    letter-spacing: 1px;
+  }
+
+  /* ==================================================
+     3. 내비게이션
+  ================================================== */
+
+  .header-nav {
+    min-height: 48px;
+    padding: 8px 0;
+  }
+
+  .menu-btn {
+    display: none;
+  }
+
+  .nav-links {
+    flex-wrap: nowrap;
+    gap: clamp(18px, 4vw, 42px);
+    margin-right: 65px;
+  }
+
+  .nav-links li {
+    width: auto;
+    min-width: max-content;
+  }
+
+  .nav-links li a {
+    padding-bottom: 4px;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+
+  .nav-links li a::after {
+    width: calc(100% + 12px);
+    height: 2px;
+  }
+
+  .nav-actions {
+    right: 0;
     gap: 8px;
   }
 
-  .filter-btn,
-  .add-btn,
-  .reset-btn {
-    flex: 1 1 calc(50% - 4px);
+  .circle1,
+  .circle2 {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ==================================================
+     4. 전체 콘텐츠 순서
+  ================================================== */
+
+  .page-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+  /*
+    main-content 안의 요소를 page-body의 직접 자식처럼
+    취급해서 레퍼런스 순서대로 배치
+  */
+  .main-content {
+    display: contents;
+  }
+
+  .page-body > *,
+  .main-content > * {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    order: 10;
+  }
+
+  .greeting-area {
+    order: 1;
+  }
+
+  .calendar-panel {
+    order: 2;
+  }
+
+  .stats-section {
+    order: 3;
+  }
+
+  .controls {
+    order: 4;
   }
 
   .kanban-board {
-    flex-direction: column;
+    order: 5;
   }
 
+  .edition-card-container {
+    order: 6;
+  }
+
+  /* ==================================================
+     5. 인사말
+  ================================================== */
+
+  .greeting-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0;
+    margin: 0;
+    padding: 24px 20px 20px;
+
+    border-bottom: 0;
+    text-align: center;
+  }
+
+  .greeting-text {
+    align-self: auto;
+    width: 100%;
+    padding: 0;
+  }
+
+  .greeting-label {
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    transform: none;
+  }
+
+  .greeting-text h2 {
+    margin-bottom: 10px;
+    font-size: clamp(1.8rem, 4.4vw, 2.5rem);
+    letter-spacing: -1px;
+  }
+
+  .greeting-text p {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+
+  /* 레퍼런스에서는 명언 영역 숨김 */
+  .word {
+    display: none;
+  }
+
+  /* ==================================================
+     6. 달력 + 발간 정보 + 선택 날짜
+  ================================================== */
+
+  .calendar-panel {
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 1.1fr)
+      minmax(250px, 0.9fr);
+
+    grid-template-areas:
+      "calendar publication"
+      "calendar summary";
+
+    gap: 14px 18px;
+    align-items: start;
+
+    margin: 0;
+    padding: 16px;
+
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 5px 14px rgba(0, 0, 0, 0.04);
+  }
+
+  /*
+    calendar-all 자체의 박스를 없애고
+    calendar-card와 summary-card를
+    calendar-panel의 grid 자식으로 사용
+  */
+  .calendar-all {
+    display: contents;
+  }
+
+  /* ==================================================
+     7. 달력
+  ================================================== */
+
+  .calendar-card {
+    grid-area: calendar;
+    align-self: stretch;
+
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+
+    gap: 14px;
+
+    background-color: transparent;
+    border: 0;
+  }
+
+  .calendar-card > .card-header {
+    padding-bottom: 10px;
+  }
+
+  .calendar-card > .card-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .month-nav {
+    min-height: 34px;
+  }
+
+  .month-picker-button {
+    min-width: 110px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .nav-arrow {
+    width: 26px;
+    height: 26px;
+  }
+
+  .weekday-row,
+  .date-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .weekday-row span {
+    font-size: 10px;
+  }
+
+  .date-grid {
+    gap: 2px;
+  }
+
+  /* 날짜 선택 원 찌그러짐 방지 */
+  .date-cell {
+    width: clamp(26px, 3vw, 34px);
+    height: auto;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+
+    justify-self: center;
+
+    border-radius: 50%;
+    font-size: 10px;
+  }
+
+  .date-cell.is-today {
+    outline-offset: -1px;
+  }
+
+  /* 달력 연도·월 선택 패널 */
+  .calendar-picker-panel {
+    top: 62px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  /* ==================================================
+     8. 다음 발간 정보
+  ================================================== */
+
+  .publication-card {
+    grid-area: publication;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    min-width: 0;
+    height: auto;
+
+    margin: 0;
+    padding: 13px 18px;
+
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+    box-shadow: none;
+  }
+
+  .publication-card .publication-label {
+    order: 1;
+
+    padding: 0 0 7px;
+
+    border-bottom: 0;
+
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .publication-card .publication-cta {
+    order: 2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+
+    margin: 0;
+    padding: 4px 0 10px;
+
+    border-top: 0;
+    border-bottom: 1px solid var(--border-light);
+
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .publication-card #countdownText {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 1.5px;
+  }
+
+  .publication-card .publication-text {
+    order: 3;
+
+    padding: 9px 0 0;
+
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* ==================================================
+     9. 선택 날짜 요약
+  ================================================== */
+
+  .summary-card {
+    grid-area: summary;
+
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0 10px;
+
+    background-color: transparent;
+    border: 0;
+  }
+
+  .summary-card .summary-label {
+    padding-top: 0;
+    border-top: 0;
+    font-size: 9px;
+  }
+
+  .summary-date {
+    margin: 4px 0 9px;
+    padding-bottom: 9px;
+    font-size: 11px;
+  }
+
+  .status-list li {
+    padding: 4px 0;
+    font-size: 10px;
+  }
+
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    margin-right: 6px;
+  }
+
+  .summary-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    font-size: 10px;
+  }
+
+  .summary-footer strong {
+    font-size: 11px;
+  }
+
+  /* ==================================================
+     10. 통계
+  ================================================== */
+
+  .stats-section {
+    width: 100%;
+  }
+
+  .stats-cards {
+    display: flex;
+    flex-wrap: nowrap;
+
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border: 1px solid var(--border-light);
+  }
+
+  .stat-card {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 24px 4px;
+
+    border-right: 1px solid var(--border-light);
+    border-bottom: 0;
+  }
+
+  .stat-card:last-child {
+    border-right: 0;
+  }
+
+  .stat-card-title {
+    margin-bottom: 9px;
+
+    font-size: clamp(0.68rem, 1.5vw, 0.88rem);
+    line-height: 1.3;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .stat-card-value {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  }
+
+  /* ==================================================
+     11. 검색창과 버튼
+  ================================================== */
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 8px;
+
+    width: 100%;
+    margin: 0;
+  }
+
+  .search-bar {
+    flex: 1.4 1 0;
+    width: auto;
+    min-width: 0;
+    height: 52px;
+
+    padding: 0 14px;
+    border-radius: 9px;
+  }
+
+  .search-icon {
+    margin-right: 7px;
+    font-size: 18px;
+  }
+
+  .search-bar input {
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .control-actions {
+    display: flex;
+    flex: 1.6 1 0;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    flex: 0 0 52px;
+
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+
+    border-radius: 9px;
+    font-size: 18px;
+  }
+
+  .add-btn,
+  .reset-btn {
+    flex: 1 1 0;
+
+    width: auto;
+    min-width: 0;
+    height: 52px;
+
+    padding: 0 10px;
+
+    font-size: clamp(0.72rem, 1.4vw, 0.9rem);
+    white-space: nowrap;
+  }
+
+  /* ==================================================
+     12. 칸반 전체
+  ================================================== */
+
+  .kanban-board {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 14px;
+
+    width: 100%;
+  }
+
+  .kanban-col {
+    flex: none;
+
+    width: 100%;
+    min-width: 0;
+
+    border-radius: 3px;
+  }
+
+  .kanban-header {
+    min-height: 52px;
+    padding: 13px 16px;
+  }
+
+  .kanban-header h3 {
+    font-size: 15px;
+  }
+
+  .count-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  /* 카드들을 2열로 배치 */
   .kanban-body {
-    min-height: 260px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    min-height: 0;
+    padding: 14px;
+  }
+
+  /* 빈 상태는 전체 열 사용 */
+  .kanban-empty {
+    grid-column: 1 / -1;
+
+    min-height: 150px;
+    padding: 24px 16px;
+  }
+
+  .kanban-empty-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* ==================================================
+     13. 일반 일정 카드
+  ================================================== */
+
+  .kanban-board .task-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .kanban-board .task-card article {
+    padding: 14px 12px 12px;
+  }
+
+  .kanban-board .task-top {
+    grid-template-columns:
+      20px
+      auto
+      minmax(0, 1fr)
+      20px;
+
+    gap: 7px;
+  }
+
+  .kanban-board .task-checkbox {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+  }
+
+  .kanban-board .task-priority {
+    min-width: auto;
+    height: 24px;
+
+    padding: 0 7px;
+
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  .kanban-board .task-time {
+    padding-left: 13px;
+    font-size: 10px;
+  }
+
+  .kanban-board .task-time::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  .kanban-board .task-time::after {
+    left: 4px;
+    width: 3px;
+    box-shadow: 0 -2px 0 -0.2px #bcbcbc;
+  }
+
+  .kanban-board .task-close {
+    width: 20px;
+    height: 20px;
+  }
+
+  .kanban-board .task-close::before,
+  .kanban-board .task-close::after {
+    top: 9px;
+    left: 2px;
+
+    width: 16px;
+    height: 1px;
+  }
+
+  .kanban-board .task-title {
+    margin: 9px 0 0 27px;
+
+    font-size: 14px;
+    line-height: 1.35;
+    letter-spacing: -0.3px;
+  }
+
+  .kanban-board .task-desc {
+    margin: 5px 0 0 27px;
+
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .kanban-board .task-footer {
+    margin-top: 10px;
+  }
+
+  .kanban-board .task-dropdown {
+    height: 38px;
+
+    padding: 0 32px 0 10px;
+
+    font-size: 12px;
+
+    background-position:
+      calc(100% - 14px) 16px,
+      calc(100% - 10px) 16px;
+
+    background-size: 5px 5px;
+  }
+
+  /* ==================================================
+     14. 완료 카드
+  ================================================== */
+
+  .kanban-board .task-card.is-done article {
+    grid-template-columns:
+      20px
+      minmax(0, 1fr)
+      20px;
+
+    grid-template-rows: auto auto;
+
+    column-gap: 9px;
+
+    padding: 13px 12px;
+  }
+
+  .kanban-board .task-card.is-done .task-checkbox {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+
+    margin-top: 1px;
+  }
+
+  .kanban-board .task-card.is-done .task-checkbox::after {
+    font-size: 14px;
+  }
+
+  .kanban-board .task-card.is-done .task-title {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .kanban-board .task-card.is-done .task-desc {
+    margin-top: 5px;
+
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .kanban-board .task-card.is-done .task-close {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ==================================================
+     15. 어제의 신문
+  ================================================== */
+
+  .edition-card-container {
+    position: static;
+
+    width: 100%;
+    max-width: none;
+
+    margin: 0;
+    padding: 0 12px 12px;
+
+    border-radius: 0;
+  }
+
+  .edition-card-container > .card-header {
+    margin: 0 -12px 12px;
+    padding: 12px 14px 10px;
+  }
+
+  .edition-card-container .header-title h2 {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .edition-card-container .badge {
+    flex-basis: 70px;
+
+    min-width: 70px;
+    max-width: 70px;
+    min-height: 30px;
+
+    padding: 4px 7px;
+
+    font-size: 9px;
+  }
+
+  .edition-card-container .content-box {
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 1.5fr)
+      minmax(180px, 0.7fr);
+
+    grid-template-areas:
+      "edition-header edition-header"
+      "edition-divider edition-divider"
+      "edition-preview edition-preview"
+      "edition-status edition-data";
+
+    column-gap: 20px;
+
+    padding: 12px 12px 14px;
+  }
+
+  .edition-card-container .content-header {
+    grid-area: edition-header;
+  }
+
+  .edition-card-container .content-header h2 {
+    font-size: 16px;
+  }
+
+  .edition-card-container .content-header .sub-text {
+    margin-top: 4px;
+    font-size: 9px;
+  }
+
+  .edition-card-container .double-divider {
+    grid-area: edition-divider;
+    width: 100%;
+    margin: 9px 0;
+  }
+
+  .edition-card-container .layout-grid {
+    grid-area: edition-preview;
+  }
+
+  .edition-preview {
+    min-height: 150px;
+    margin-bottom: 12px;
+  }
+
+  .edition-card-container .status-message {
+    grid-area: edition-status;
+
+    margin: 0;
+    padding: 0 4px;
+  }
+
+  .edition-card-container .status-message h3 {
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+
+  .edition-card-container .status-message p {
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .edition-card-container .data-list {
+    grid-area: edition-data;
+    align-self: start;
+
+    padding: 0;
+  }
+
+  .edition-card-container .data-item {
+    padding: 4px 0;
+  }
+
+  .edition-card-container .data-item dt,
+  .edition-card-container .data-item dd {
+    font-size: 9px;
+  }
+
+  .edition-card-container > .card-footer {
+    margin-top: 10px;
+  }
+
+  .edition-card-container .view-newspaper-btn {
+    padding: 11px 0;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  /* ==================================================
+     16. 푸터
+  ================================================== */
+
+  .site-footer {
+    width: 100%;
+    margin-top: 28px;
+    padding: 18px 0;
+  }
+
+  .site-footer small {
+    font-size: 0.75rem;
+  }
+
+  /* ==================================================
+     17. 일정 등록 팝업
+  ================================================== */
+
+  .modal-container {
+    width: min(720px, calc(100vw - 40px));
+    max-height: calc(100vh - 40px);
+
+    padding: 32px 34px 38px;
+
+    border-radius: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 30px;
+  }
+
+  .modal-form {
+    margin-top: 22px;
+    padding-top: 26px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 15px;
+  }
+
+  .form-group input,
+  .form-group select {
+    height: 56px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 14px;
+  }
+
+  .form-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .modal-footer {
+    grid-template-columns: 150px 1fr;
+  }
+
+  .ghost-btn,
+  .submit-btn {
+    height: 62px;
+    font-size: 17px;
+  }
+
+  /* ==================================================
+     18. 필터 팝업
+  ================================================== */
+
+  .filter-modal-container {
+    width: min(680px, calc(100vw - 40px));
+    padding: 32px 38px 40px;
+  }
+
+  .filter-modal-header h2 {
+    font-size: 27px;
+  }
+
+  .filter-modal-divider {
+    margin: 20px 0 28px;
+  }
+
+  .filter-field select,
+  .custom-select-trigger {
+    height: 56px;
+    font-size: 14px;
+  }
+
+  .filter-options span {
+    height: 54px;
+    font-size: 14px;
+  }
+
+  .filter-modal-actions {
+    margin-top: 32px;
+  }
+
+  .filter-reset-btn,
+  .filter-apply-btn {
+    height: 60px;
+    font-size: 16px;
+  }
+
+  /* ==================================================
+     19. 신문 팝업
+  ================================================== */
+
+  .newspaper-modal {
+    width: min(840px, calc(100vw - 40px));
+    padding: 26px;
+  }
+
+  .newspaper-modal-header {
+    padding: 10px 50px 18px;
+  }
+
+  .newspaper-modal-header h2 {
+    font-size: 42px;
+  }
+
+  .newspaper-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
