@@ -7,8 +7,73 @@
     <link rel="stylesheet" href="./reset.css" />
     <link rel="stylesheet" href="./style.css" />
   </head>
+  <!-- 김상우 div 시멘틱 하게 변경 -->
   <body>
-    <!-- 김상우 div 시멘틱 하게 변경 -->
+    <section id="nameIntro" class="name-intro" aria-labelledby="nameIntroTitle">
+      <div class="name-intro-content">
+        <header class="name-intro-brand">
+          <svg class="name-intro-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <rect x="10" y="12" width="28" height="26" rx="1"></rect>
+
+            <path d="M15 18h8v14h-8z"></path>
+            <path d="M27 18h7"></path>
+            <path d="M27 23h7"></path>
+            <path d="M27 28h7"></path>
+            <path d="M27 33h7"></path>
+          </svg>
+
+          <div class="name-intro-edition">
+            <span class="name-intro-line"></span>
+            <span class="name-intro-dot" aria-hidden="true"></span>
+
+            <strong>DAILY EDITION</strong>
+
+            <span class="name-intro-dot" aria-hidden="true"></span>
+            <span class="name-intro-line"></span>
+          </div>
+
+          <p>Your day. Your story</p>
+        </header>
+
+        <h1 id="nameIntroTitle" class="name-intro-title">What is your name?</h1>
+
+        <p class="name-intro-description">
+          당신만의 하루를 기록할 수 있도록 이름을 입력해주세요.
+        </p>
+
+        <div class="name-intro-divider" aria-hidden="true">
+          <span></span>
+          <i></i>
+          <span></span>
+        </div>
+
+        <form id="nameForm" class="name-intro-form" novalidate>
+          <label class="sr-only" for="nameInput"> 사용자 이름 </label>
+
+          <input
+            id="nameInput"
+            type="text"
+            maxlength="20"
+            autocomplete="name"
+            placeholder="Enter your name"
+          />
+
+          <p
+            id="nameIntroError"
+            class="name-intro-error"
+            aria-live="polite"
+          ></p>
+
+          <button
+            id="nameConfirmButton"
+            type="submit"
+            class="name-confirm-button"
+          >
+            CONFIRM
+          </button>
+        </form>
+      </div>
+    </section>
     <header class="site-header">
       <!-- 장식선 추가 장식이라 안읽힘 -->
       <div class="headline-rule" aria-hidden="true"></div>
@@ -291,8 +356,24 @@
         <header class="greeting-area">
           <!-- 독립된 개체가 아니기에 article 태그를 div 로 변경 -->
           <div class="greeting-text">
-            <span class="greeting-label">GOOD MORNING USER</span>
-            <h2>안녕하세요, USER님.</h2>
+            <span class="greeting-label">
+              GOOD MORNING
+              <span id="greetingLabelName">USER</span>
+            </span>
+
+            <h2>
+              안녕하세요,
+              <button
+                id="displayUserName"
+                type="button"
+                class="greeting-user-name"
+                title="이름을 더블클릭하면 수정할 수 있습니다."
+                aria-label="사용자 이름 수정"
+              >
+                USER</button
+              >님.
+            </h2>
+
             <p>
               오늘의 일정은 기사가 되고, 완료된 하루는 자정에 신문으로
               발간됩니다.
@@ -816,7 +897,7 @@
           </button>
         </header>
 
-        <form id="taskForm" class="modal-form">
+        <form id="taskForm" class="modal-form" novalidate>
           <section class="form-group">
             <header class="form-label-row">
               <label for="scheduleTitle">제목</label>
@@ -1118,7 +1199,9 @@
       <article class="newspaper-modal">
         <header class="newspaper-modal-header">
           <p>FLOW DASH DAILY</p>
+
           <h2 id="newspaperTitle">발간된 신문</h2>
+
           <button
             id="closeNewspaper"
             type="button"
@@ -1128,7 +1211,55 @@
             &times;
           </button>
         </header>
+
         <section id="newspaperBody" class="newspaper-body"></section>
+      </article>
+    </section>
+
+    <!-- 공통 경고·삭제 확인 팝업 -->
+    <section
+      id="messageModal"
+      class="modal-backdrop message-modal-backdrop"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="messageModalTitle"
+      aria-describedby="messageModalText"
+      aria-hidden="true"
+      data-variant="notice"
+      hidden
+    >
+      <article class="message-modal">
+        <p id="messageModalLabel" class="message-modal-label">NOTICE</p>
+
+        <h2 id="messageModalTitle" class="message-modal-title">
+          내용을 확인해주세요
+        </h2>
+
+        <p id="messageModalText" class="message-modal-text">
+          입력 내용을 다시 확인해주세요.
+        </p>
+
+        <footer
+          id="messageModalActions"
+          class="message-modal-actions is-single"
+        >
+          <button
+            id="messageCancelButton"
+            type="button"
+            class="message-cancel-button"
+            hidden
+          >
+            취소
+          </button>
+
+          <button
+            id="messageConfirmButton"
+            type="button"
+            class="message-confirm-button"
+          >
+            확인
+          </button>
+        </footer>
       </article>
     </section>
 
