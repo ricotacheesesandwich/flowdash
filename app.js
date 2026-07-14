@@ -101,6 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextMonthBtn = document.querySelector("#nextMonth");
   const monthLabel = document.querySelector("#monthLabel");
   const dateGrid = document.querySelector("#dateGrid");
+  const calendarAll = document.querySelector(".calendar-all");
+  const calendarMobileToggle = document.querySelector("#calendarMobileToggle");
 
   // 연도·월 선택창
   const calendarPickerButton = document.querySelector("#calendarPickerButton");
@@ -258,6 +260,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 명언
   const dailyQuote = document.querySelector(".word");
+
+  let isMobileCalendarExpanded = false;
+
+  function isMobileViewport() {
+    return window.matchMedia("(max-width: 767px)").matches;
+  }
+
+  function getActiveCalendarWeekRow() {
+    const activeCell =
+      dateGrid.querySelector(".date-cell.selected") ||
+      dateGrid.querySelector(".date-cell.is-today");
+
+    return activeCell?.dataset.weekRow ?? "1";
+  }
+
+  function updateMobileCalendarToggle() {
+    if (!calendarMobileToggle) {
+      return;
+    }
+
+    const isExpanded = isMobileViewport() && isMobileCalendarExpanded;
+
+    calendarMobileToggle.setAttribute("aria-expanded", String(isExpanded));
+    calendarMobileToggle.setAttribute(
+      "aria-label",
+      isExpanded ? "달력 접기" : "달력 펼치기",
+    );
+  }
+
+  function updateMobileCalendarLayout() {
+    if (!calendarAll || !calendarMobileToggle) {
+      return;
+    }
+
+    const isMobile = isMobileViewport();
+    const activeWeekRow = getActiveCalendarWeekRow();
+
+    calendarAll.classList.toggle(
+      "is-mobile-collapsed",
+      isMobile && !isMobileCalendarExpanded,
+    );
+    calendarAll.classList.toggle(
+      "is-mobile-expanded",
+      isMobile && isMobileCalendarExpanded,
+    );
+
+    dateGrid.querySelectorAll(".date-cell").forEach((cell) => {
+      const shouldHide =
+        isMobile &&
+        !isMobileCalendarExpanded &&
+        cell.dataset.weekRow !== activeWeekRow;
+
+      cell.classList.toggle("is-mobile-hidden", shouldHide);
+    });
+
+    updateMobileCalendarToggle();
+  }
 
   // const quotes = [
   //   "작은 실천이 큰 변화를 만든다.",
@@ -537,6 +596,34 @@ document.addEventListener("DOMContentLoaded", () => {
     button.append(dots);
   }
 
+  function applyMobileDateStatus(button, statuses) {
+    button.classList.remove(
+      "mobile-status-todo",
+      "mobile-status-done",
+      "mobile-status-progress",
+    );
+
+    if (!statuses || statuses.size === 0) {
+      return;
+    }
+
+    if (statuses.has("done")) {
+      button.classList.add("mobile-status-done");
+
+      return;
+    }
+
+    if (statuses.has("todo")) {
+      button.classList.add("mobile-status-todo");
+
+      return;
+    }
+
+    if (statuses.has("progress")) {
+      button.classList.add("mobile-status-progress");
+    }
+  }
+
   function createDateButton(date, visibleMonth, statusMap) {
     const dateString = toDateString(date);
 
@@ -570,7 +657,10 @@ document.addEventListener("DOMContentLoaded", () => {
       button.setAttribute("aria-current", "date");
     }
 
-    renderDateDots(button, statusMap.get(dateString));
+    const statuses = statusMap.get(dateString);
+
+    renderDateDots(button, statuses);
+    applyMobileDateStatus(button, statuses);
 
     return button;
   }
@@ -594,33 +684,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let cellCount = 0;
 
-    for (let index = firstDay - 1; index >= 0; index -= 1) {
-      const day = prevLastDay - index;
+    function appendCalendarCell(date) {
+      const button = createDateButton(date, month, statusMap);
 
-      fragment.append(
-        createDateButton(new Date(year, month - 1, day), month, statusMap),
-      );
+      button.dataset.weekRow = String(Math.floor(cellCount / 7) + 1);
 
+      fragment.append(button);
       cellCount += 1;
     }
 
-    for (let day = 1; day <= lastDay; day += 1) {
-      fragment.append(
-        createDateButton(new Date(year, month, day), month, statusMap),
-      );
+    for (let index = firstDay - 1; index >= 0; index -= 1) {
+      const day = prevLastDay - index;
 
-      cellCount += 1;
+      appendCalendarCell(new Date(year, month - 1, day));
+    }
+
+    for (let day = 1; day <= lastDay; day += 1) {
+      appendCalendarCell(new Date(year, month, day));
     }
 
     const nextDays = 42 - cellCount;
 
     for (let day = 1; day <= nextDays; day += 1) {
-      fragment.append(
-        createDateButton(new Date(year, month + 1, day), month, statusMap),
-      );
+      appendCalendarCell(new Date(year, month + 1, day));
     }
 
     dateGrid.replaceChildren(fragment);
+    updateMobileCalendarLayout();
   }
 
   function renderMonthPicker() {
@@ -810,7 +900,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    renderDateDots(dateButton, getStatusesForDate(dateString));
+    const statuses = getStatusesForDate(dateString);
+
+    renderDateDots(dateButton, statuses);
+    applyMobileDateStatus(dateButton, statuses);
   }
 
   // 사용자 이름 관리
@@ -2323,6 +2416,19 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedDate = toDateString(currentMonth);
 
       renderAll();
+    });
+
+    calendarMobileToggle?.addEventListener("click", () => {
+      if (!isMobileViewport()) {
+        return;
+      }
+
+      isMobileCalendarExpanded = !isMobileCalendarExpanded;
+      updateMobileCalendarLayout();
+    });
+
+    window.addEventListener("resize", () => {
+      updateMobileCalendarLayout();
     });
 
     dateGrid.addEventListener("click", handleDateGridClick);
