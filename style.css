@@ -3523,7 +3523,7 @@ body.name-intro-open {
     flex: 1;
     min-width: 0;
     padding: 0 14px;
-    text-align: center;
+    text-align: right;
   }
 
   .toptitle {
@@ -3540,7 +3540,7 @@ body.name-intro-open {
     word-spacing: -2px;
     white-space: nowrap;
     transform: scaleX(0.75);
-    transform-origin: center;
+    transform-origin: right;
   }
 
   .subtitle {
@@ -3557,6 +3557,7 @@ body.name-intro-open {
   .header-nav {
     min-height: 48px;
     padding: 8px 0;
+    justify-content: flex-start;
   }
 
   .nav-links {
