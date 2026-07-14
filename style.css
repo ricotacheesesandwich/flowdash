@@ -94,6 +94,9 @@ body * {
 /* header */
 body {
   padding: 0 clamp(16px, 2.4vw, 40px);
+
+  overflow-x: hidden;
+
   letter-spacing: -0.3px;
   background-color: var(--bg-main);
   color: var(--text-main);
@@ -1791,11 +1794,15 @@ body {
 
 /* footer */
 .site-footer {
+  width: 100%;
+  max-width: 100%;
   margin-top: 36px;
-  width: 100vw;
   padding: 22px 0;
+
   text-align: center;
+
   border-top: 1px solid var(--border-dark);
+
   color: #8a8a8a;
   background: var(--bg-main);
 }
