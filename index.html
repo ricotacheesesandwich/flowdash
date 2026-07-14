@@ -344,15 +344,36 @@
         -->
         <section class="controls" aria-label="일정 검색과 필터">
           <form class="search-bar" role="search">
-            <label class="sr-only" for="searchInput">일정 검색</label>
             <span class="search-icon" aria-hidden="true">⌕</span>
+
             <input
               id="searchInput"
               type="search"
               placeholder="일정 검색"
               autocomplete="off"
             />
+
+            <button
+              id="clearSearchButton"
+              class="search-clear-btn"
+              type="button"
+              aria-label="검색어 지우기"
+              hidden
+            >
+              ×
+            </button>
           </form>
+
+          <!-- 오름차순·내림차순 전환 -->
+          <button
+            id="sortDirectionButton"
+            type="button"
+            class="sort-direction-btn"
+            aria-label="현재 오름차순 정렬, 내림차순으로 변경"
+          >
+            <span>정렬:</span>
+            <strong id="sortDirectionText">오름차순</strong>
+          </button>
 
           <div class="control-actions">
             <button
@@ -363,7 +384,32 @@
               aria-controls="filterModal"
               aria-expanded="false"
             >
-              ⚙
+              <svg
+                id="_레이어_1"
+                data-name="레이어 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 105.87 94.39"
+              >
+                <defs>
+                  <style>
+                    .cls-1 {
+                      fill: #9b9a9b;
+                    }
+                  </style>
+                </defs>
+                <path
+                  class="cls-1"
+                  d="M90.16,9.55c-2.08-5.58-7.44-9.55-13.74-9.55s-11.65,3.98-13.73,9.55H0v10.26h62.68c2.08,5.58,7.44,9.55,13.73,9.55s11.66-3.98,13.74-9.55h15.71v-10.26h-15.71ZM76.42,20.2c-3.04,0-5.51-2.47-5.51-5.52s2.47-5.52,5.51-5.52,5.52,2.47,5.52,5.52-2.47,5.52-5.52,5.52Z"
+                />
+                <path
+                  class="cls-1"
+                  d="M27.25,32.48c-6.3,0-11.65,3.98-13.73,9.55H0v10.26h13.52c2.08,5.58,7.44,9.55,13.73,9.55s11.66-3.98,13.74-9.55h64.88v-10.26H41c-2.08-5.58-7.44-9.55-13.74-9.55ZM27.25,52.68c-3.04,0-5.51-2.47-5.51-5.52s2.47-5.52,5.51-5.52,5.52,2.47,5.52,5.52-2.47,5.52-5.52,5.52Z"
+                />
+                <path
+                  class="cls-1"
+                  d="M76.42,65.03c-6.3,0-11.65,3.98-13.73,9.55H0v10.26h62.68c2.08,5.58,7.44,9.55,13.73,9.55s11.66-3.98,13.74-9.55h15.71v-10.26h-15.71c-2.08-5.58-7.44-9.55-13.74-9.55ZM76.42,85.23c-3.04,0-5.51-2.47-5.51-5.52s2.47-5.52,5.51-5.52,5.52,2.47,5.52,5.52-2.47,5.52-5.52,5.52Z"
+                />
+              </svg>
             </button>
 
             <button id="openModal" type="button" class="add-btn">
@@ -609,12 +655,83 @@
           </div>
 
           <label class="filter-field" for="sortSelect">
-            <span>정렬기준</span>
-            <select id="sortSelect">
-              <option value="date">날짜순</option>
-              <option value="time">시간순</option>
-              <option value="priority">중요도순</option>
-            </select>
+            <div class="filter-field">
+              <span>정렬기준</span>
+
+              <div class="custom-select" data-custom-select>
+                <select
+                  id="sortSelect"
+                  class="custom-select-native"
+                  aria-label="정렬기준"
+                >
+                  <option value="created" selected>등록순</option>
+                  <option value="date">날짜순</option>
+                  <option value="time">시간순</option>
+                  <option value="priority">중요도순</option>
+                </select>
+
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span class="custom-select-value">등록순</span>
+                  <span class="custom-select-arrow" aria-hidden="true"></span>
+                </button>
+
+                <ul
+                  class="custom-select-list"
+                  role="listbox"
+                  aria-label="정렬기준 선택"
+                  hidden
+                >
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="created"
+                      role="option"
+                    >
+                      등록순
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="date"
+                      role="option"
+                    >
+                      날짜순
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="time"
+                      role="option"
+                    >
+                      시간순
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="priority"
+                      role="option"
+                    >
+                      중요도순
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </label>
         </div>
 
@@ -688,7 +805,7 @@
     >
       <article class="modal-container">
         <header class="modal-header">
-          <h2 id="modalTitle">새 기사 일정 등록</h2>
+          <h2 id="modalTitle">일정 등록</h2>
           <button
             id="closeModal"
             type="button"
@@ -701,11 +818,24 @@
 
         <form id="taskForm" class="modal-form">
           <section class="form-group">
-            <label for="scheduleTitle">제목</label>
+            <header class="form-label-row">
+              <label for="scheduleTitle">제목</label>
+
+              <span
+                id="titleCharacterCount"
+                class="character-count"
+                aria-live="polite"
+              >
+                0 / 40
+              </span>
+            </header>
+
             <input
               id="scheduleTitle"
               name="title"
               type="text"
+              maxlength="40"
+              aria-describedby="titleCharacterCount"
               placeholder="예: 프로젝트 기획서 초안 작성"
               required
             />
@@ -713,13 +843,81 @@
 
           <section class="form-group">
             <label for="scheduleCategory">분류</label>
-            <select id="scheduleCategory" name="category" required>
-              <option value="" disabled selected hidden>카테고리</option>
-              <option value="work">업무</option>
-              <option value="personal">개인</option>
-              <option value="health">건강</option>
-              <option value="study">공부</option>
-            </select>
+
+            <div class="custom-select" data-custom-select>
+              <select
+                id="scheduleCategory"
+                class="custom-select-native"
+                name="category"
+                required
+              >
+                <option value="work" selected>업무</option>
+                <option value="personal">개인</option>
+                <option value="health">건강</option>
+                <option value="study">공부</option>
+              </select>
+
+              <button
+                type="button"
+                class="custom-select-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span class="custom-select-value">업무</span>
+                <span class="custom-select-arrow" aria-hidden="true"></span>
+              </button>
+
+              <ul
+                class="custom-select-list"
+                role="listbox"
+                aria-label="일정 분류 선택"
+                hidden
+              >
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="work"
+                    role="option"
+                  >
+                    업무
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="personal"
+                    role="option"
+                  >
+                    개인
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="health"
+                    role="option"
+                  >
+                    건강
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="study"
+                    role="option"
+                  >
+                    공부
+                  </button>
+                </li>
+              </ul>
+            </div>
           </section>
 
           <fieldset class="form-row">
@@ -743,28 +941,155 @@
 
             <section class="form-group">
               <label for="schedulePriority">중요도</label>
-              <select id="schedulePriority" name="priority">
-                <option value="high">높음</option>
-                <option value="normal" selected>중간</option>
-                <option value="low">낮음</option>
-              </select>
+
+              <div class="custom-select" data-custom-select>
+                <select
+                  id="schedulePriority"
+                  class="custom-select-native"
+                  name="priority"
+                >
+                  <option value="low">낮음</option>
+                  <option value="normal" selected>보통</option>
+                  <option value="high">높음</option>
+                </select>
+
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span class="custom-select-value">보통</span>
+                  <span class="custom-select-arrow" aria-hidden="true"></span>
+                </button>
+
+                <ul
+                  class="custom-select-list"
+                  role="listbox"
+                  aria-label="일정 중요도 선택"
+                  hidden
+                >
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="low"
+                      role="option"
+                    >
+                      낮음
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="normal"
+                      role="option"
+                    >
+                      보통
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="high"
+                      role="option"
+                    >
+                      높음
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </section>
 
             <section class="form-group">
               <label for="scheduleStatus">상태</label>
-              <select id="scheduleStatus" name="status">
-                <option value="todo" selected>할 일</option>
-                <option value="progress">진행 중</option>
-                <option value="done">완료</option>
-              </select>
+
+              <div class="custom-select" data-custom-select>
+                <select
+                  id="scheduleStatus"
+                  class="custom-select-native"
+                  name="status"
+                >
+                  <option value="todo" selected>할 일</option>
+                  <option value="progress">진행 중</option>
+                  <option value="done">완료</option>
+                </select>
+
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span class="custom-select-value">할 일</span>
+                  <span class="custom-select-arrow" aria-hidden="true"></span>
+                </button>
+
+                <ul
+                  class="custom-select-list"
+                  role="listbox"
+                  aria-label="일정 상태 선택"
+                  hidden
+                >
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="todo"
+                      role="option"
+                    >
+                      할 일
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="progress"
+                      role="option"
+                    >
+                      진행 중
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="done"
+                      role="option"
+                    >
+                      완료
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </section>
           </fieldset>
 
           <section class="form-group">
-            <label for="scheduleMemo">메모</label>
+            <header class="form-label-row">
+              <label for="scheduleMemo">메모</label>
+
+              <span
+                id="memoCharacterCount"
+                class="character-count"
+                aria-live="polite"
+              >
+                0 / 100
+              </span>
+            </header>
+
             <textarea
               id="scheduleMemo"
               name="memo"
+              maxlength="100"
+              aria-describedby="memoCharacterCount"
               placeholder="일정에 필요한 메모를 적어주세요."
             ></textarea>
           </section>
@@ -773,7 +1098,9 @@
             <button type="button" id="resetFormBtn" class="ghost-btn">
               비우기
             </button>
-            <button type="submit" class="submit-btn">일정 등록하기</button>
+            <button id="taskSubmitBtn" type="submit" class="submit-btn">
+              일정 등록하기
+            </button>
           </footer>
         </form>
       </article>
