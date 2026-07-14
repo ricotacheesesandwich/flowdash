@@ -26,9 +26,25 @@ if (savedTheme === "dark") {
 document.addEventListener("DOMContentLoaded", () => {
   // 공통
   const STORAGE_KEY = "flowdash-tasks-v1";
+  const USER_NAME_KEY = "flowdash-user-name";
+
   const TITLE_MAX_LENGTH = 40;
   const MEMO_MAX_LENGTH = 100;
 
+  // 사용자 이름 설정
+  const nameIntro = document.querySelector("#nameIntro");
+
+  const nameForm = document.querySelector("#nameForm");
+
+  const nameInput = document.querySelector("#nameInput");
+
+  const nameConfirmButton = document.querySelector("#nameConfirmButton");
+
+  const nameIntroError = document.querySelector("#nameIntroError");
+
+  const greetingLabelName = document.querySelector("#greetingLabelName");
+
+  const displayUserName = document.querySelector("#displayUserName");
   const DEFAULT_FILTERS = Object.freeze({
     category: "all",
     sort: "created",
@@ -170,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const customSelects = document.querySelectorAll("[data-custom-select]");
 
   const CUSTOM_SELECT_DURATION = 240;
+  const MESSAGE_MODAL_DURATION = 180;
 
   // 새 일정 등록
   const openModalBtn = document.querySelector("#openModal");
@@ -214,12 +231,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const viewNewspaperBtn = document.querySelector("#viewNewspaperBtn");
 
   const newspaperModal = document.querySelector("#newspaperModal");
+
   const closeNewspaper = document.querySelector("#closeNewspaper");
+
   const newspaperBody = document.querySelector("#newspaperBody");
+
   const newspaperTitle = document.querySelector("#newspaperTitle");
+
+  // 공통 경고·삭제 확인 팝업
+  const messageModal = document.querySelector("#messageModal");
+
+  const messageModalLabel = document.querySelector("#messageModalLabel");
+
+  const messageModalTitle = document.querySelector("#messageModalTitle");
+
+  const messageModalText = document.querySelector("#messageModalText");
+
+  const messageModalActions = document.querySelector("#messageModalActions");
+
+  const messageCancelButton = document.querySelector("#messageCancelButton");
+
+  const messageConfirmButton = document.querySelector("#messageConfirmButton");
 
   // 카운트다운
   const countdownText = document.querySelector("#countdownText");
+
+  // 명언
+  const dailyQuote = document.querySelector(".word");
+
+  // const quotes = [
+  //   "작은 실천이 큰 변화를 만든다.",
+  //   "꾸준함은 가장 강력한 재능이다.",
+  //   "오늘의 한 걸음이 내일의 방향이 된다.",
+  //   "완벽보다 완료가 당신을 앞으로 보낸다.",
+  //   "시작하는 용기가 하루를 바꾼다.",
+  //   "지금의 집중이 미래의 여유를 만든다.",
+  //   "기록하는 사람은 결국 성장의 증거를 가진다.",
+  //   "천천히 가도 멈추지 않으면 도착한다.",
+  //   "오늘 끝낸 일 하나가 자신감을 키운다.",
+  //   "좋은 하루의 기사는 작은 실천에서 시작됩니다.",
+  // ];김상우
 
   // 상태값
   let today = new Date();
@@ -236,8 +287,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tasks = loadTasks();
 
+  /* 현재 화면에 표시 중인 사용자 이름 */
+  let currentUserName = "";
+
   /* null이면 새 일정 등록, 값이 있으면 일정 수정 */
   let editingTaskId = null;
+  let messageConfirmAction = null;
+  let messageReturnFocus = null;
+  let messageCloseTimer = null;
 
   const activeFilters = {
     ...DEFAULT_FILTERS,
@@ -428,6 +485,34 @@ document.addEventListener("DOMContentLoaded", () => {
       element.dateTime = todayString;
     });
   }
+
+  // function hashDateString(dateString) {
+  //   let hash = 0;
+
+  //   for (let index = 0; index < dateString.length; index += 1) {
+  //     hash = (hash * 31 + dateString.charCodeAt(index)) >>> 0;
+  //   }
+
+  //   return hash;
+  // }
+
+  // function getDailyQuote(dateString) {
+  //   if (quotes.length === 0) {
+  //     return "";
+  //   }
+
+  //   const quoteIndex = hashDateString(dateString) % quotes.length;
+
+  //   return quotes[quoteIndex];
+  // }
+
+  // function renderDailyQuote() {
+  //   if (!dailyQuote) {
+  //     return;
+  //   }
+
+  //   dailyQuote.textContent = getDailyQuote(todayString);
+  // }김상우
 
   function renderDateDots(button, statuses) {
     button.querySelector(".date-dots")?.remove();
@@ -728,6 +813,107 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDateDots(dateButton, getStatusesForDate(dateString));
   }
 
+  // 사용자 이름 관리
+  function normalizeUserName(value) {
+    return value.trim().replace(/\s+/g, " ");
+  }
+
+  function renderUserName(name) {
+    currentUserName = name;
+
+    greetingLabelName.textContent = name;
+    displayUserName.textContent = name;
+
+    displayUserName.setAttribute("aria-label", `${name} 이름 수정`);
+  }
+
+  function updateNameConfirmButton() {
+    const hasName = normalizeUserName(nameInput.value).length > 0;
+
+    nameConfirmButton.disabled = !hasName;
+
+    if (hasName) {
+      nameIntroError.textContent = "";
+    }
+  }
+
+  function openNameIntro(mode = "create") {
+    const isEditMode = mode === "edit";
+
+    nameIntro.dataset.mode = mode;
+    nameIntro.hidden = false;
+
+    document.body.classList.add("name-intro-open");
+
+    nameInput.value = isEditMode ? currentUserName : "";
+
+    nameConfirmButton.textContent = isEditMode ? "SAVE" : "CONFIRM";
+
+    nameIntroError.textContent = "";
+
+    updateNameConfirmButton();
+
+    window.requestAnimationFrame(() => {
+      nameInput.focus();
+
+      if (isEditMode) {
+        nameInput.select();
+      }
+    });
+  }
+
+  function closeNameIntro() {
+    nameIntro.hidden = true;
+
+    document.body.classList.remove("name-intro-open");
+  }
+
+  function saveUserName() {
+    const nextUserName = normalizeUserName(nameInput.value);
+
+    if (!nextUserName) {
+      nameIntroError.textContent = "이름을 입력해주세요.";
+
+      nameInput.focus();
+
+      return;
+    }
+
+    localStorage.setItem(USER_NAME_KEY, nextUserName);
+
+    renderUserName(nextUserName);
+    closeNameIntro();
+  }
+
+  function initializeUserName() {
+    const storedName = localStorage.getItem(USER_NAME_KEY);
+
+    const savedUserName = normalizeUserName(storedName || "");
+
+    const invalidNames = ["", "undefined", "null", "USER"];
+
+    const hasValidName = !invalidNames.includes(savedUserName);
+
+    /*
+    저장된 이름이 없거나 잘못된 값이면
+    최초 이름 설정 화면 표시
+  */
+    if (!hasValidName) {
+      localStorage.removeItem(USER_NAME_KEY);
+
+      openNameIntro("create");
+
+      return;
+    }
+
+    /*
+    정상적인 이름이 저장되어 있으면
+    홈 화면에 이름 적용 후 인트로 숨김
+  */
+    renderUserName(savedUserName);
+    closeNameIntro();
+  }
+
   // 날짜 통계
   function renderSummary(state) {
     const { counts, total, rate } = state;
@@ -861,18 +1047,28 @@ document.addEventListener("DOMContentLoaded", () => {
     return item;
   }
 
-  /* 일정 3개까지 표시하고 4번째부터 스크롤 */
+  /* 일정이 3개 이상이면 2개 높이까지만 표시하고 스크롤 */
   function updateTaskListScroll(list, taskCount) {
-    const shouldScroll = taskCount > 3;
+    const shouldScroll = taskCount >= 3;
 
     list.classList.toggle("has-scroll", shouldScroll);
+
     list.style.removeProperty("--task-list-max-height");
 
     if (!shouldScroll) {
       return;
     }
 
-    const visibleCards = [...list.querySelectorAll(".task-card")].slice(0, 3);
+    /*
+    첫 번째와 두 번째 카드 높이까지만
+    목록의 표시 영역으로 사용합니다.
+    세 번째 카드부터는 스크롤로 확인합니다.
+  */
+    const visibleCards = [...list.querySelectorAll(".task-card")].slice(0, 2);
+
+    if (visibleCards.length < 2) {
+      return;
+    }
 
     const listStyle = window.getComputedStyle(list);
 
@@ -887,11 +1083,14 @@ document.addEventListener("DOMContentLoaded", () => {
       0,
     );
 
-    const gapsHeight = gap * Math.max(visibleCards.length - 1, 0);
+    const gapsHeight = gap * (visibleCards.length - 1);
 
     const maxHeight = cardsHeight + gapsHeight + paddingTop + paddingBottom;
 
-    list.style.setProperty("--task-list-max-height", `${maxHeight}px`);
+    list.style.setProperty(
+      "--task-list-max-height",
+      `${Math.ceil(maxHeight)}px`,
+    );
   }
 
   function renderTaskBoard(sourceTasks) {
@@ -1131,17 +1330,34 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (!window.confirm(`"${targetTask.title}" 일정을 삭제할까요?`)) {
-      return;
-    }
+    const taskCard = [...taskBoard.querySelectorAll(".task-card")].find(
+      (card) => card.dataset.taskId === taskId,
+    );
 
-    const deletedDate = targetTask.date;
+    openMessageModal({
+      variant: "danger",
 
-    tasks = tasks.filter((task) => task.id !== taskId);
+      title: "일정을 삭제할까요?",
 
-    saveTasks();
+      message:
+        `“${targetTask.title}”\n\n` + "일정은 삭제 후 복구할 수 없습니다.",
 
-    renderTaskChanges(deletedDate);
+      confirmText: "삭제하기",
+      cancelText: "취소하기",
+      showCancel: true,
+
+      returnFocus: taskCard?.querySelector(".task-close") || taskBoard,
+
+      onConfirm: () => {
+        const deletedDate = targetTask.date;
+
+        tasks = tasks.filter((task) => task.id !== taskId);
+
+        saveTasks();
+
+        renderTaskChanges(deletedDate);
+      },
+    });
   }
 
   // 신문
@@ -1386,6 +1602,68 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     returnFocusTarget?.focus();
+  }
+
+  function openMessageModal({
+    variant = "notice",
+    title,
+    message,
+    confirmText = "확인",
+    cancelText = "취소하기",
+    showCancel = false,
+    onConfirm = null,
+    returnFocus = document.activeElement,
+  }) {
+    window.clearTimeout(messageCloseTimer);
+
+    messageModal.classList.remove("is-closing");
+    messageModal.dataset.variant = variant;
+
+    messageModalLabel.textContent =
+      variant === "danger" ? "DELETE WARNING" : "NOTICE";
+
+    messageModalTitle.textContent = title;
+    messageModalText.textContent = message;
+
+    messageConfirmButton.textContent = confirmText;
+    messageCancelButton.textContent = cancelText;
+
+    messageCancelButton.hidden = !showCancel;
+
+    messageModalActions.classList.toggle("is-single", !showCancel);
+
+    messageConfirmAction = typeof onConfirm === "function" ? onConfirm : null;
+
+    messageReturnFocus = returnFocus;
+
+    /*
+    삭제 팝업에서는 삭제 버튼보다
+    취소 버튼에 먼저 포커스
+  */
+    const focusTarget = showCancel ? messageCancelButton : messageConfirmButton;
+
+    openLayer(messageModal, focusTarget);
+  }
+
+  function closeMessageModal({ restoreFocus = true } = {}) {
+    if (messageModal.hidden || messageModal.classList.contains("is-closing")) {
+      return;
+    }
+
+    const focusTarget = restoreFocus ? messageReturnFocus : null;
+
+    messageModal.classList.add("is-closing");
+
+    window.clearTimeout(messageCloseTimer);
+
+    messageCloseTimer = window.setTimeout(() => {
+      messageModal.classList.remove("is-closing");
+
+      closeLayer(messageModal, focusTarget);
+
+      messageConfirmAction = null;
+      messageReturnFocus = null;
+    }, MESSAGE_MODAL_DURATION);
   }
 
   function closeFilterLayer() {
@@ -1708,6 +1986,7 @@ document.addEventListener("DOMContentLoaded", () => {
     todayString = nextTodayString;
 
     renderHeaderDate();
+    // renderDailyQuote(); 김상우
 
     if (selectedDate === previousTodayString) {
       selectedDate = todayString;
@@ -1856,6 +2135,22 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (!nameIntro.hidden) {
+      const savedUserName = localStorage.getItem(USER_NAME_KEY);
+
+      if (savedUserName) {
+        closeNameIntro();
+      }
+
+      return;
+    }
+
+    if (!messageModal.hidden) {
+      closeMessageModal();
+
+      return;
+    }
+
     const openedTaskMenu = document.querySelector(
       ".task-action-menu:not([hidden])",
     );
@@ -1900,6 +2195,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 이벤트 연결
   function bindEvents() {
+    nameInput.addEventListener("input", () => {
+      updateNameConfirmButton();
+    });
+
+    nameForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      saveUserName();
+    });
+
+    /* 홈 화면 이름을 더블클릭하면 수정 화면 열기 */
+    displayUserName.addEventListener("dblclick", () => {
+      openNameIntro("edit");
+    });
+
+    /*
+  키보드 사용자는 이름에 포커스 후
+  Enter 또는 Space로 수정 화면을 열 수 있음
+*/
+    displayUserName.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+
+      event.preventDefault();
+
+      openNameIntro("edit");
+    });
+
     calendarPickerButton.addEventListener("click", () => {
       toggleCalendarPicker();
     });
@@ -1942,6 +2266,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderYearPicker();
     });
 
+    /* 달력 선택창 바깥 클릭 시 닫기 */
     document.addEventListener("click", (event) => {
       if (calendarPickerPanel.hidden) {
         return;
@@ -1954,6 +2279,22 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!clickedPickerButton && !clickedPickerPanel) {
         closeCalendarPicker();
       }
+    });
+
+    /* 경고 팝업 취소 */
+    messageCancelButton.addEventListener("click", () => {
+      closeMessageModal();
+    });
+
+    /* 경고 팝업 확인·삭제 */
+    messageConfirmButton.addEventListener("click", () => {
+      const confirmAction = messageConfirmAction;
+
+      closeMessageModal({
+        restoreFocus: !confirmAction,
+      });
+
+      confirmAction?.();
     });
 
     prevMonthBtn.addEventListener("click", () => {
@@ -2112,27 +2453,48 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextStatus = scheduleStatus.value;
 
       if (!title || !category || !date || !time) {
-        window.alert("제목, 분류, 날짜, 시간을 모두 입력해주세요.");
+        openMessageModal({
+          variant: "notice",
+
+          title: "입력 내용을 확인해주세요",
+
+          message: "제목, 분류, 날짜, 시간을 " + "모두 입력해주세요.",
+
+          confirmText: "확인",
+          returnFocus: scheduleTitle,
+        });
 
         return;
       }
 
       if (title.length > TITLE_MAX_LENGTH) {
-        window.alert(
-          `할 일 제목은 ${TITLE_MAX_LENGTH}자까지 입력할 수 있습니다.`,
-        );
+        openMessageModal({
+          variant: "notice",
 
-        scheduleTitle.focus();
+          title: "제목이 너무 깁니다",
+
+          message:
+            `할 일 제목은 ${TITLE_MAX_LENGTH}자까지 ` + "입력할 수 있습니다.",
+
+          confirmText: "확인",
+          returnFocus: scheduleTitle,
+        });
 
         return;
       }
 
       if (memo.length > MEMO_MAX_LENGTH) {
-        window.alert(
-          `할 일 메모는 ${MEMO_MAX_LENGTH}자까지 입력할 수 있습니다.`,
-        );
+        openMessageModal({
+          variant: "notice",
 
-        scheduleMemo.focus();
+          title: "메모가 너무 깁니다",
+
+          message:
+            `할 일 메모는 ${MEMO_MAX_LENGTH}자까지 ` + "입력할 수 있습니다.",
+
+          confirmText: "확인",
+          returnFocus: scheduleMemo,
+        });
 
         return;
       }
@@ -2208,24 +2570,44 @@ document.addEventListener("DOMContentLoaded", () => {
       const selectedDateTasks = getTasksForDate(selectedDate);
 
       if (selectedDateTasks.length === 0) {
-        window.alert("선택한 날짜에 초기화할 일정이 없습니다.");
+        openMessageModal({
+          variant: "notice",
+
+          title: "초기화할 일정이 없습니다",
+
+          message:
+            "선택한 날짜에 등록된 일정이 없어 " + "초기화할 수 없습니다.",
+
+          confirmText: "확인",
+          returnFocus: resetTasksBtn,
+        });
 
         return;
       }
 
-      if (
-        !window.confirm(
-          `${formatSelectedDate(selectedDate)}의 일정을 모두 삭제할까요?`,
-        )
-      ) {
-        return;
-      }
+      openMessageModal({
+        variant: "danger",
 
-      tasks = tasks.filter((task) => task.date !== selectedDate);
+        title: "모든 일정을 삭제할까요?",
 
-      saveTasks();
+        message:
+          `${formatSelectedDate(selectedDate)}의 ` +
+          `일정 ${selectedDateTasks.length}개가 ` +
+          "모두 삭제됩니다.",
 
-      renderTaskChanges(selectedDate);
+        confirmText: "전체 삭제",
+        cancelText: "취소",
+        showCancel: true,
+        returnFocus: resetTasksBtn,
+
+        onConfirm: () => {
+          tasks = tasks.filter((task) => task.date !== selectedDate);
+
+          saveTasks();
+
+          renderTaskChanges(selectedDate);
+        },
+      });
     });
 
     viewNewspaperBtn.addEventListener("click", () => {
@@ -2241,6 +2623,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const layerSettings = new Map([
       [filterModal, closeFilterLayer],
       [taskModal, closeTaskModal],
+      [messageModal, closeMessageModal],
       [
         newspaperModal,
         () => {
@@ -2265,6 +2648,8 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleTitle.maxLength = TITLE_MAX_LENGTH;
     scheduleMemo.maxLength = MEMO_MAX_LENGTH;
 
+    initializeUserName();
+
     updateTaskFormCharacterCounts();
 
     sortSelect.value = DEFAULT_FILTERS.sort;
@@ -2275,6 +2660,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSearchPlaceholder();
 
     renderHeaderDate();
+    // renderDailyQuote();김상우
     renderAll();
     updateCountdown();
     bindEvents();
@@ -2286,3 +2672,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 수정
+/* 하루마다 바뀌는 명언
+document.addEventListener("DOMContentLoaded", () => {
+  const quoteElement = document.querySelector(".word");
+
+  const quotes = [
+   "작은 실천이 <br> 큰 변화를 만든다.",
+    "꾸준함은 <br> 가장 강력한 재능이다.",
+    "오늘의 한 걸음이 <br> 내일의 방향이 된다.",
+    "완벽보다 완료가 <br> 당신을 앞으로 보낸다.",
+    "시작하는 용기가 <br> 하루를 바꾼다.",
+    "지금의 집중이 <br> 미래의 여유를 만든다.",
+    "기록하는 사람은 결국 <br> 성장의 증거를 가진다.",
+    "천천히 가도 <br> 멈추지 않으면 도착한다.",
+    "오늘 끝낸 일 하나가 <br> 자신감을 키운다.",
+    "좋은 하루의 기사는 <br> 작은 실천에서 시작됩니다.",
+    "삶이 있는 한 <br> 희망은 있다 ",
+    "우리집 강아지는 <br> 복슬강아지"
+  ];
+
+  // 직전에 표시했던 명언 번호
+  const previousIndex = Number(sessionStorage.getItem("previousQuoteIndex"));
+
+  let randomIndex;
+
+  do {
+    randomIndex = Math.floor(Math.random() * quotes.length);
+  } while (quotes.length > 1 && randomIndex === previousIndex);
+
+  quoteElement.innerHTML = quotes[randomIndex];
+
+  sessionStorage.setItem("previousQuoteIndex", randomIndex);
+});*/

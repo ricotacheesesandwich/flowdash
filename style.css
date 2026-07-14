@@ -662,7 +662,7 @@ body {
 }
 
 .sort-direction-btn strong {
-  color: #6165df;
+  color: #bd3131;
   font-weight: 800;
 }
 
@@ -766,10 +766,20 @@ body {
 
 /* 일정이 3개를 초과하면 목록 내부 스크롤 */
 .kanban-body.has-scroll {
+  height: var(--task-list-max-height);
+  min-height: 0;
   max-height: var(--task-list-max-height);
+
+  overflow-x: hidden;
   overflow-y: auto;
+
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+}
+
+.kanban-body.has-scroll > .task-card {
+  flex: 0 0 auto;
+  min-height: auto;
 }
 
 /* 크롬, 엣지, 사파리 스크롤바 */
@@ -857,17 +867,16 @@ body {
 ========================== */
 
 .kanban-board .task-card {
+  flex: 0 0 auto;
+
   width: 100%;
   min-width: 0;
   overflow: hidden;
+
   background-color: var(--bg-card);
   border: 1px solid #cccccc;
   border-radius: 0;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.04),
-    0 3px 8px rgba(0, 0, 0, 0.03);
 }
-
 .kanban-board .task-card article,
 .kanban-board .task-card.is-done article {
   display: flex;
@@ -1914,6 +1923,160 @@ body {
 }
 
 /* =========================================================
+   경고·삭제 확인 팝업
+========================================================= */
+
+.message-modal-backdrop {
+  z-index: 1400;
+
+  background-color: rgba(17, 17, 17, 0.4);
+}
+
+body.dark-mode .message-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.68);
+}
+
+.message-modal {
+  position: relative;
+
+  width: min(440px, calc(100vw - 40px));
+  padding: 42px 34px 32px;
+
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+
+  background-color: var(--bg-card);
+  color: var(--text-main);
+
+  text-align: center;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.22),
+    0 5px 18px rgba(0, 0, 0, 0.1);
+
+  animation: messageModalOpen 0.2s ease both;
+}
+
+/* NOTICE 또는 DELETE WARNING */
+
+.message-modal-label {
+  margin: 0 0 8px;
+
+  color: var(--point-red);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+/* 팝업 제목 */
+
+.message-modal-title {
+  margin: 0;
+
+  color: var(--text-main);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.8px;
+
+  word-break: keep-all;
+}
+
+/* 팝업 설명 */
+
+.message-modal-text {
+  width: 100%;
+  max-width: 340px;
+  margin: 14px auto 0;
+  color: var(--text-light);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.65;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 하단 버튼 */
+
+.message-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.message-modal-actions.is-single {
+  grid-template-columns: 1fr;
+}
+
+.message-cancel-button,
+.message-confirm-button {
+  width: 100%;
+  height: 54px;
+
+  border-radius: 7px;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* 취소 */
+
+.message-cancel-button {
+  border: 1px solid var(--border-light);
+
+  background-color: var(--bg-inner);
+  color: var(--text-main);
+}
+
+.message-cancel-button:hover {
+  border-color: var(--text-light);
+}
+
+/* 일반 확인 */
+
+.message-confirm-button {
+  background-color: var(--text-main);
+  color: var(--bg-card);
+}
+
+/* 삭제 확인일 때 붉은 버튼 */
+
+.message-modal-backdrop[data-variant="danger"] .message-confirm-button {
+  background-color: var(--point-red);
+  color: #ffffff;
+}
+
+@keyframes messageModalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.message-modal-backdrop.is-closing .message-modal {
+  animation: messageModalClose 0.18s ease both;
+}
+
+@keyframes messageModalClose {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+/* =========================================================
    새 일정 등록 팝업
 ========================================================= */
 
@@ -2693,6 +2856,305 @@ body {
   font-size: 22px;
   font-weight: 900;
 }
+/* ==================================================
+   이름 설정 인트로
+================================================== */
+
+body.name-intro-open {
+  overflow: hidden;
+}
+
+.name-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+
+  display: grid;
+  place-items: center;
+
+  width: 100%;
+  height: 100dvh;
+  min-width: 320px;
+  padding: 24px;
+
+  overflow: hidden;
+
+  background-color: #ffffff;
+  color: #111111;
+}
+
+.name-intro[hidden] {
+  display: none;
+}
+
+.name-intro-content {
+  width: min(1180px, 100%);
+  margin: auto;
+
+  text-align: center;
+
+  animation: nameIntroEnter 0.55s ease both;
+}
+
+/* 상단 신문 로고 */
+
+.name-intro-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.name-intro-icon {
+  width: 43px;
+  height: 43px;
+
+  fill: none;
+  stroke: #111111;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.name-intro-edition {
+  display: grid;
+  grid-template-columns:
+    minmax(70px, 210px)
+    6px
+    auto
+    6px
+    minmax(70px, 210px);
+
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  width: min(760px, 100%);
+  margin-top: 8px;
+}
+
+.name-intro-edition strong {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 4px;
+  white-space: nowrap;
+}
+
+.name-intro-line {
+  display: block;
+
+  width: 100%;
+  height: 1px;
+
+  background-color: #111111;
+}
+
+.name-intro-dot {
+  display: block;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background-color: #111111;
+}
+
+.name-intro-brand p {
+  margin-top: 2px;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+/* 메인 제목 */
+
+.name-intro-title {
+  margin-top: clamp(42px, 6vh, 72px);
+
+  color: #000000;
+  font-family: Didot, "Bodoni MT", Georgia, "Times New Roman", serif;
+
+  font-size: clamp(68px, 8vw, 142px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -5px;
+}
+
+.name-intro-description {
+  margin-top: clamp(32px, 4vh, 54px);
+
+  color: #555555;
+  font-size: clamp(18px, 1.8vw, 30px);
+  font-weight: 600;
+  letter-spacing: 2px;
+  word-break: keep-all;
+}
+
+/* 입력창 위 장식선 */
+
+.name-intro-divider {
+  display: grid;
+  grid-template-columns: 1fr 10px 1fr;
+  align-items: center;
+  gap: 24px;
+
+  width: min(460px, 80%);
+  margin: clamp(40px, 6vh, 70px) auto 0;
+}
+
+.name-intro-divider span {
+  height: 1px;
+
+  background-color: #555555;
+}
+
+.name-intro-divider i {
+  display: block;
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background-color: #111111;
+}
+
+/* 이름 입력 폼 */
+
+.name-intro-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: min(510px, 100%);
+  margin: 38px auto 0;
+}
+
+.name-intro-form input {
+  width: 100%;
+  height: 74px;
+  padding: 0 30px;
+
+  border: 1px solid #bdbdbd;
+  border-radius: 999px;
+  outline: none;
+
+  background-color: #ffffff;
+  color: #111111;
+
+  font-size: 20px;
+  text-align: center;
+
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.03);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.name-intro-form input::placeholder {
+  color: #b5b5b5;
+}
+
+.name-intro-form input:focus {
+  border-color: #111111;
+
+  box-shadow:
+    0 0 0 3px rgba(17, 17, 17, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.name-intro-error {
+  min-height: 22px;
+  margin-top: 8px;
+
+  color: #bd3131;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 확인 버튼 */
+
+.name-confirm-button {
+  min-width: 215px;
+  height: 58px;
+  margin-top: 20px;
+  padding: 0 32px;
+
+  border: 3px double #ffffff;
+  outline: 2px solid #111111;
+
+  background-color: #111111;
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 6px;
+
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.name-confirm-button:hover {
+  background-color: #2b2b2b;
+  transform: translateY(-2px);
+}
+
+.name-confirm-button:active {
+  transform: translateY(0);
+}
+
+.name-confirm-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}
+
+/* 홈 화면의 수정 가능한 이름 */
+
+.greeting-user-name {
+  display: inline;
+
+  margin: 0;
+  padding: 0 2px;
+
+  border-bottom: 1px dashed transparent;
+
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+
+  overflow-wrap: anywhere;
+
+  cursor: text;
+}
+
+.greeting-user-name:hover {
+  border-bottom-color: currentColor;
+}
+
+.greeting-user-name:focus-visible {
+  border-bottom-color: var(--point-red);
+  outline: none;
+}
+
+@keyframes nameIntroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* 1920px 이상에서 햄버거 메뉴 숨김 */
 @media (min-width: 768px) {
@@ -2943,6 +3405,48 @@ body {
 }
 
 @media (max-width: 1199px) {
+  /* 이름 설정 인트로 */
+
+  .name-intro {
+    padding: 32px 20px;
+  }
+
+  .name-intro-edition {
+    grid-template-columns:
+      minmax(30px, 140px)
+      5px
+      auto
+      5px
+      minmax(30px, 140px);
+
+    gap: 12px;
+  }
+
+  .name-intro-edition strong {
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+
+  .name-intro-title {
+    margin-top: clamp(28px, 4vh, 52px);
+  }
+
+  .name-intro-description {
+    margin-top: clamp(20px, 3vh, 36px);
+  }
+
+  .name-intro-divider {
+    margin: clamp(24px, 4vh, 44px) auto 0;
+  }
+
+  .name-intro-form {
+    width: min(510px, 100%);
+    margin: 28px auto 0;
+  }
+  .name-intro-form input {
+    height: 66px;
+    font-size: 18px;
+  }
   /* ==================================================
      1. 전체 페이지
   ================================================== */
@@ -3019,7 +3523,7 @@ body {
     flex: 1;
     min-width: 0;
     padding: 0 14px;
-    text-align: center;
+    text-align: right;
   }
 
   .toptitle {
@@ -3036,7 +3540,7 @@ body {
     word-spacing: -2px;
     white-space: nowrap;
     transform: scaleX(0.75);
-    transform-origin: center;
+    transform-origin: right;
   }
 
   .subtitle {
@@ -3053,6 +3557,7 @@ body {
   .header-nav {
     min-height: 48px;
     padding: 8px 0;
+    justify-content: flex-start;
   }
 
   .nav-links {
@@ -3910,6 +4415,27 @@ body {
   .submit-btn {
     height: 62px;
     font-size: 17px;
+  }
+
+  /* 경고·삭제 확인 팝업 */
+
+  .message-modal {
+    width: min(420px, calc(100vw - 40px));
+    padding: 34px 30px 28px;
+  }
+
+  .message-modal-title {
+    font-size: 23px;
+  }
+
+  .message-modal-text {
+    font-size: 14px;
+  }
+
+  .message-cancel-button,
+  .message-confirm-button {
+    height: 50px;
+    font-size: 15px;
   }
 
   /* ==================================================
