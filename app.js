@@ -2286,3 +2286,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 수정
+/* 하루마다 바뀌는 명언
+document.addEventListener("DOMContentLoaded", () => {
+  const quoteElement = document.querySelector(".word");
+
+  const quotes = [
+   "작은 실천이 <br> 큰 변화를 만든다.",
+    "꾸준함은 <br> 가장 강력한 재능이다.",
+    "오늘의 한 걸음이 <br> 내일의 방향이 된다.",
+    "완벽보다 완료가 <br> 당신을 앞으로 보낸다.",
+    "시작하는 용기가 <br> 하루를 바꾼다.",
+    "지금의 집중이 <br> 미래의 여유를 만든다.",
+    "기록하는 사람은 결국 <br> 성장의 증거를 가진다.",
+    "천천히 가도 <br> 멈추지 않으면 도착한다.",
+    "오늘 끝낸 일 하나가 <br> 자신감을 키운다.",
+    "좋은 하루의 기사는 <br> 작은 실천에서 시작됩니다.",
+    "삶이 있는 한 <br> 희망은 있다 ",
+    "우리집 강아지는 <br> 복슬강아지"
+  ];
+
+  // 직전에 표시했던 명언 번호
+  const previousIndex = Number(sessionStorage.getItem("previousQuoteIndex"));
+
+  let randomIndex;
+
+  do {
+    randomIndex = Math.floor(Math.random() * quotes.length);
+  } while (quotes.length > 1 && randomIndex === previousIndex);
+
+  quoteElement.innerHTML = quotes[randomIndex];
+
+  sessionStorage.setItem("previousQuoteIndex", randomIndex);
+});*/
