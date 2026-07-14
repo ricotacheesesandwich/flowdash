@@ -2810,3 +2810,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   sessionStorage.setItem("previousQuoteIndex", randomIndex);
 });*/
+
+const tabletNewspaperBtn =
+  document.getElementById("tabletNewspaperBtn");
+
+const editionCard =
+  document.getElementById("report");
+
+tabletNewspaperBtn.addEventListener("click", () => {
+  const isOpen =
+    editionCard.classList.toggle("is-open");
+
+  document.body.classList.toggle(
+    "edition-open",
+    isOpen
+  );
+
+  tabletNewspaperBtn.setAttribute(
+    "aria-expanded",
+    String(isOpen)
+  );
+});
+const closeTabletNewspaper =
+  document.getElementById("closeTabletNewspaper");
+
+closeTabletNewspaper.addEventListener("click", () => {
+  editionCard.classList.remove("is-open");
+
+  document.body.classList.remove("edition-open");
+
+  tabletNewspaperBtn.setAttribute(
+    "aria-expanded",
+    "false"
+  );
+});
+const editionViewButton =
+  document.getElementById("viewNewspaperBtn");
+
+editionViewButton.addEventListener("click", () => {
+  // 현재 열려 있는 YESTERDAY'S EDITION 신문칸 닫기
+  editionCard.classList.remove("is-open");
+
+  // 신문칸 열림 상태 제거
+  document.body.classList.remove("edition-open");
+
+  // 동그란 버튼의 상태도 닫힘으로 변경
+  tabletNewspaperBtn.setAttribute(
+    "aria-expanded",
+    "false"
+  );
+});
