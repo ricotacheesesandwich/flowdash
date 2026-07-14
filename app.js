@@ -26,10 +26,13 @@ if (savedTheme === "dark") {
 document.addEventListener("DOMContentLoaded", () => {
   // 공통
   const STORAGE_KEY = "flowdash-tasks-v1";
+  const TITLE_MAX_LENGTH = 40;
+  const MEMO_MAX_LENGTH = 100;
 
   const DEFAULT_FILTERS = Object.freeze({
     category: "all",
-    sort: "date",
+    sort: "created",
+    direction: "asc",
     priority: "all",
     status: "all",
   });
@@ -51,6 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
     todo: "할 일",
     progress: "진행 중",
     done: "완료",
+  };
+
+  const sortLabels = {
+    created: "등록순",
+    date: "날짜순",
+    time: "시간순",
+    priority: "중요도순",
+  };
+
+  const directionLabels = {
+    asc: "오름차순",
+    desc: "내림차순",
   };
 
   const statusEntries = Object.entries(statusLabels);
@@ -125,6 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.querySelector("#searchInput");
   const searchForm = document.querySelector(".search-bar");
 
+  const clearSearchButton = document.querySelector("#clearSearchButton");
+
+  // 오름차순·내림차순
+  const sortDirectionButton = document.querySelector("#sortDirectionButton");
+
+  const sortDirectionText = document.querySelector("#sortDirectionText");
+
   // 필터
   const filterToggle = document.querySelector("#filterToggle");
   const filterModal = document.querySelector("#filterModal");
@@ -144,20 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
     'input[name="statusFilter"]',
   );
 
-  // 분류 필터
-  const customSelect = document.querySelector("[data-custom-select]");
+  // 모든 커스텀 선택창
+  const customSelects = document.querySelectorAll("[data-custom-select]");
 
-  const customSelectTrigger = customSelect?.querySelector(
-    ".custom-select-trigger",
-  );
-
-  const customSelectValue = customSelect?.querySelector(".custom-select-value");
-
-  const customSelectList = customSelect?.querySelector(".custom-select-list");
-
-  const customSelectOptions = customSelect?.querySelectorAll(
-    ".custom-select-option",
-  );
+  const CUSTOM_SELECT_DURATION = 240;
 
   // 새 일정 등록
   const openModalBtn = document.querySelector("#openModal");
@@ -167,6 +179,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const taskForm = document.querySelector("#taskForm");
   const resetFormBtn = document.querySelector("#resetFormBtn");
 
+  const modalTitle = document.querySelector("#modalTitle");
+  const taskSubmitBtn = document.querySelector("#taskSubmitBtn");
+
   const scheduleTitle = document.querySelector("#scheduleTitle");
   const scheduleCategory = document.querySelector("#scheduleCategory");
   const scheduleDate = document.querySelector("#scheduleDate");
@@ -174,6 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const schedulePriority = document.querySelector("#schedulePriority");
   const scheduleStatus = document.querySelector("#scheduleStatus");
   const scheduleMemo = document.querySelector("#scheduleMemo");
+
+  const titleCharacterCount = document.querySelector("#titleCharacterCount");
+
+  const memoCharacterCount = document.querySelector("#memoCharacterCount");
 
   // 일정 초기화
   const resetTasksBtn = document.querySelector("#resetTasksBtn");
@@ -217,6 +236,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tasks = loadTasks();
 
+  /* null이면 새 일정 등록, 값이 있으면 일정 수정 */
+  let editingTaskId = null;
+
   const activeFilters = {
     ...DEFAULT_FILTERS,
   };
@@ -252,6 +274,53 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${date.getFullYear()}년 ${
       date.getMonth() + 1
     }월 ${date.getDate()}일 ${koreanWeekdays[date.getDay()]}요일`;
+  }
+
+  /* 등록·완료 시간을 YYYY-MM-DD HH:MM 형태로 변환 */
+  function formatTaskTimestamp(timestamp) {
+    if (!timestamp) {
+      return "기록 없음";
+    }
+
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+      return "기록 없음";
+    }
+
+    return `${toDateString(date)} ${pad(date.getHours())}:${pad(
+      date.getMinutes(),
+    )}`;
+  }
+
+  /* 카드 하단의 시간 한 줄 생성 */
+  function createTaskHistoryRow(label, timestamp) {
+    const row = document.createElement("div");
+    const icon = document.createElement("span");
+    const time = document.createElement("time");
+
+    const formattedTime = formatTaskTimestamp(timestamp);
+
+    row.className = "task-history-row";
+    row.setAttribute("aria-label", `${label}: ${formattedTime}`);
+
+    icon.className = "task-history-icon";
+    icon.setAttribute("aria-hidden", "true");
+
+    time.className = "task-history-time";
+    time.textContent = formattedTime;
+
+    if (timestamp) {
+      const date = new Date(timestamp);
+
+      if (!Number.isNaN(date.getTime())) {
+        time.dateTime = date.toISOString();
+      }
+    }
+
+    row.append(icon, time);
+
+    return row;
   }
 
   function getLastDateOfMonth(year, month) {
@@ -712,23 +781,31 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
+    const taskOrder = new Map(tasks.map((task, index) => [task.id, index]));
+
     return visibleTasks.sort((firstTask, secondTask) => {
-      if (activeFilters.sort === "priority") {
-        return (
+      const direction = activeFilters.direction === "desc" ? -1 : 1;
+
+      let comparison = 0;
+
+      if (activeFilters.sort === "created") {
+        comparison =
+          (taskOrder.get(firstTask.id) ?? 0) -
+          (taskOrder.get(secondTask.id) ?? 0);
+      } else if (activeFilters.sort === "priority") {
+        comparison =
           (priorityOrder[firstTask.priority] ?? 999) -
             (priorityOrder[secondTask.priority] ?? 999) ||
-          firstTask.time.localeCompare(secondTask.time)
-        );
+          firstTask.time.localeCompare(secondTask.time);
+      } else if (activeFilters.sort === "time") {
+        comparison = firstTask.time.localeCompare(secondTask.time);
+      } else {
+        comparison =
+          firstTask.date.localeCompare(secondTask.date) ||
+          firstTask.time.localeCompare(secondTask.time);
       }
 
-      if (activeFilters.sort === "time") {
-        return firstTask.time.localeCompare(secondTask.time);
-      }
-
-      return (
-        firstTask.date.localeCompare(secondTask.date) ||
-        firstTask.time.localeCompare(secondTask.time)
-      );
+      return comparison * direction;
     });
   }
 
@@ -757,31 +834,64 @@ document.addEventListener("DOMContentLoaded", () => {
     item.setAttribute("role", "status");
 
     item.innerHTML = `
-      <span class="kanban-empty-icon" aria-hidden="true">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-4-4"></path>
-        </svg>
-      </span>
+    <span class="kanban-empty-icon" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-4-4"></path>
+      </svg>
+    </span>
 
-      <strong class="kanban-empty-title">
-        ${message.title}
-      </strong>
+    <strong class="kanban-empty-title">
+      ${message.title}
+    </strong>
 
-      <p class="kanban-empty-description">
-        ${message.description}
-      </p>
-    `;
+    <p class="kanban-empty-description">
+      ${message.description}
+    </p>
+  `;
 
     return item;
+  }
+
+  /* 일정 3개까지 표시하고 4번째부터 스크롤 */
+  function updateTaskListScroll(list, taskCount) {
+    const shouldScroll = taskCount > 3;
+
+    list.classList.toggle("has-scroll", shouldScroll);
+    list.style.removeProperty("--task-list-max-height");
+
+    if (!shouldScroll) {
+      return;
+    }
+
+    const visibleCards = [...list.querySelectorAll(".task-card")].slice(0, 3);
+
+    const listStyle = window.getComputedStyle(list);
+
+    const gap = Number.parseFloat(listStyle.rowGap || listStyle.gap) || 0;
+
+    const paddingTop = Number.parseFloat(listStyle.paddingTop) || 0;
+
+    const paddingBottom = Number.parseFloat(listStyle.paddingBottom) || 0;
+
+    const cardsHeight = visibleCards.reduce(
+      (totalHeight, card) => totalHeight + card.offsetHeight,
+      0,
+    );
+
+    const gapsHeight = gap * Math.max(visibleCards.length - 1, 0);
+
+    const maxHeight = cardsHeight + gapsHeight + paddingTop + paddingBottom;
+
+    list.style.setProperty("--task-list-max-height", `${maxHeight}px`);
   }
 
   function renderTaskBoard(sourceTasks) {
@@ -815,6 +925,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       list.replaceChildren(fragments[status]);
+
+      updateTaskListScroll(list, visibleCounts[status]);
     });
 
     todoCount.textContent = String(visibleCounts.todo);
@@ -832,42 +944,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createTaskCard(task) {
     const item = document.createElement("li");
-
     const article = document.createElement("article");
 
     const top = document.createElement("header");
-
     const checkbox = document.createElement("button");
-
-    const category = document.createElement("span");
-
     const priority = document.createElement("span");
 
-    const time = document.createElement("time");
-
-    const removeButton = document.createElement("button");
+    const menuWrapper = document.createElement("div");
+    const menuButton = document.createElement("button");
+    const actionMenu = document.createElement("div");
+    const editButton = document.createElement("button");
+    const deleteButton = document.createElement("button");
 
     const title = document.createElement("h4");
-
     const memo = document.createElement("p");
 
     const footer = document.createElement("footer");
-
+    const history = document.createElement("div");
     const statusSelect = document.createElement("select");
 
     item.className = `task-card priority-${task.priority}`;
-
     item.dataset.taskId = task.id;
 
     if (task.status === "done") {
       item.classList.add("is-done");
     }
 
+    /* 카드 상단 */
+
     top.className = "task-top";
 
     checkbox.type = "button";
     checkbox.className = "task-checkbox";
-
     checkbox.dataset.action = "toggle-done";
 
     checkbox.setAttribute(
@@ -875,40 +983,72 @@ document.addEventListener("DOMContentLoaded", () => {
       task.status === "done" ? "완료 취소" : "완료 처리",
     );
 
-    category.className = "task-category-tag";
-
-    category.textContent = categoryLabels[task.category] || task.category;
-
     priority.className = `task-priority priority-${task.priority}`;
 
     priority.textContent = priorityLabels[task.priority] || task.priority;
 
-    time.className = "task-time";
-    time.dateTime = task.time;
-    time.textContent = task.time;
+    /* 점 세 개 메뉴 */
 
-    removeButton.type = "button";
-    removeButton.className = "task-close";
+    menuWrapper.className = "task-menu";
 
-    removeButton.dataset.action = "delete-task";
+    menuButton.type = "button";
+    menuButton.className = "task-close";
+    menuButton.dataset.action = "toggle-task-menu";
 
-    removeButton.setAttribute("aria-label", "일정 삭제");
+    menuButton.setAttribute("aria-label", `${task.title} 일정 메뉴 열기`);
 
-    removeButton.textContent = "×";
+    menuButton.setAttribute("aria-haspopup", "menu");
+    menuButton.setAttribute("aria-expanded", "false");
 
-    top.append(checkbox, category, priority, time, removeButton);
+    actionMenu.id = `task-menu-${task.id}`;
+    actionMenu.className = "task-action-menu";
+    actionMenu.setAttribute("role", "menu");
+    actionMenu.hidden = true;
+
+    menuButton.setAttribute("aria-controls", actionMenu.id);
+
+    editButton.type = "button";
+    editButton.className = "task-action-button";
+    editButton.dataset.action = "edit-task";
+    editButton.setAttribute("role", "menuitem");
+    editButton.textContent = "수정";
+
+    deleteButton.type = "button";
+    deleteButton.className = "task-action-button delete";
+
+    deleteButton.dataset.action = "delete-task";
+    deleteButton.setAttribute("role", "menuitem");
+    deleteButton.textContent = "삭제";
+
+    actionMenu.append(editButton, deleteButton);
+
+    menuWrapper.append(menuButton, actionMenu);
+
+    top.append(checkbox, priority, menuWrapper);
+
+    /* 제목 */
 
     title.className = "task-title";
     title.textContent = task.title;
 
-    memo.className = "task-desc";
+    /* 메모 */
 
+    memo.className = "task-desc";
     memo.textContent = task.memo || "등록된 메모가 없습니다.";
 
-    footer.className = "task-footer";
+    /* 등록·완료 시간 */
+
+    history.className = "task-history";
+
+    history.append(createTaskHistoryRow("등록 시간", task.createdAt));
+
+    if (task.completedAt) {
+      history.append(createTaskHistoryRow("완료 시간", task.completedAt));
+    }
+
+    /* 상태 선택창 */
 
     statusSelect.className = "task-dropdown";
-
     statusSelect.dataset.action = "change-status";
 
     statusSelect.setAttribute("aria-label", `${task.title} 상태 변경`);
@@ -918,13 +1058,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       option.value = value;
       option.textContent = label;
-
       option.selected = task.status === value;
 
       statusSelect.append(option);
     });
 
-    footer.append(statusSelect);
+    footer.className = "task-footer";
+    footer.append(history, statusSelect);
 
     article.append(top, title, memo, footer);
 
@@ -934,6 +1074,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 일정 변경과 삭제
+  function closeAllTaskMenus(exceptMenu = null) {
+    const taskMenus = taskBoard.querySelectorAll(".task-menu");
+
+    taskMenus.forEach((taskMenu) => {
+      if (taskMenu === exceptMenu) {
+        return;
+      }
+
+      const menuButton = taskMenu.querySelector(".task-close");
+
+      const actionMenu = taskMenu.querySelector(".task-action-menu");
+
+      menuButton?.setAttribute("aria-expanded", "false");
+
+      if (actionMenu) {
+        actionMenu.hidden = true;
+      }
+    });
+  }
+
   function findTask(taskId) {
     return tasks.find((task) => task.id === taskId);
   }
@@ -945,7 +1105,19 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const previousStatus = targetTask.status;
+
     targetTask.status = nextStatus;
+
+    /* 완료 상태로 바뀐 순간의 날짜와 시간 저장 */
+    if (nextStatus === "done" && previousStatus !== "done") {
+      targetTask.completedAt = Date.now();
+    }
+
+    /* 완료를 취소하면 기존 완료 시간 제거 */
+    if (nextStatus !== "done") {
+      targetTask.completedAt = null;
+    }
 
     saveTasks();
 
@@ -1219,25 +1391,88 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeFilterLayer() {
     filterToggle.setAttribute("aria-expanded", "false");
 
-    closeCustomSelect();
+    closeAllCustomSelects(null, {
+      immediate: true,
+    });
 
     closeLayer(filterModal, filterToggle);
+  }
+  function updateCharacterCount(input, countElement, maxLength) {
+    const currentLength = input.value.length;
+
+    countElement.textContent = `${currentLength} / ${maxLength}`;
+
+    countElement.classList.toggle("is-limit", currentLength >= maxLength);
+  }
+
+  function updateTaskFormCharacterCounts() {
+    updateCharacterCount(scheduleTitle, titleCharacterCount, TITLE_MAX_LENGTH);
+
+    updateCharacterCount(scheduleMemo, memoCharacterCount, MEMO_MAX_LENGTH);
   }
 
   // 일정 등록 폼
   function resetTaskForm() {
     taskForm.reset();
 
+    scheduleCategory.value = "work";
     scheduleDate.value = selectedDate;
     scheduleTime.value = "09:00";
     schedulePriority.value = "normal";
     scheduleStatus.value = "todo";
+
+    syncAllCustomSelects();
+    updateTaskFormCharacterCounts();
+  }
+
+  function resetTaskModalMode() {
+    editingTaskId = null;
+
+    modalTitle.textContent = "일정 등록";
+    taskSubmitBtn.textContent = "일정 등록하기";
   }
 
   function openTaskModal() {
+    resetTaskModalMode();
     resetTaskForm();
 
     openLayer(taskModal, scheduleTitle);
+  }
+
+  function openEditTaskModal(taskId) {
+    const targetTask = findTask(taskId);
+
+    if (!targetTask) {
+      return;
+    }
+
+    editingTaskId = taskId;
+
+    scheduleTitle.value = targetTask.title;
+    scheduleCategory.value = targetTask.category;
+    scheduleDate.value = targetTask.date;
+    scheduleTime.value = targetTask.time;
+    schedulePriority.value = targetTask.priority;
+    scheduleStatus.value = targetTask.status;
+    scheduleMemo.value = targetTask.memo || "";
+
+    modalTitle.textContent = "일정 수정";
+    taskSubmitBtn.textContent = "수정 완료";
+
+    syncAllCustomSelects();
+    updateTaskFormCharacterCounts();
+
+    openLayer(taskModal, scheduleTitle);
+  }
+
+  function closeTaskModal() {
+    resetTaskModalMode();
+
+    closeAllCustomSelects(null, {
+      immediate: true,
+    });
+
+    closeLayer(taskModal, openModalBtn);
   }
 
   function getCheckedValue(inputs) {
@@ -1250,35 +1485,103 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function setCustomSelectValue(value, { emitChange = false } = {}) {
-    if (!customSelect || !customSelectOptions) {
-      categoryFilter.value = value;
+  function renderSortDirectionButton() {
+    const currentDirection = activeFilters.direction;
+
+    const nextDirection = currentDirection === "asc" ? "desc" : "asc";
+
+    sortDirectionText.textContent = directionLabels[currentDirection];
+
+    sortDirectionButton.setAttribute(
+      "aria-label",
+      `현재 ${directionLabels[currentDirection]} 정렬, ` +
+        `${directionLabels[nextDirection]}으로 변경`,
+    );
+
+    sortDirectionButton.classList.toggle(
+      "is-desc",
+      currentDirection === "desc",
+    );
+  }
+
+  function updateSearchPlaceholder() {
+    const filterDescriptions = [];
+
+    if (activeFilters.category !== "all") {
+      filterDescriptions.push(categoryLabels[activeFilters.category]);
+    }
+
+    if (activeFilters.priority !== "all") {
+      filterDescriptions.push(
+        `중요도 ${priorityLabels[activeFilters.priority]}`,
+      );
+    }
+
+    if (activeFilters.status !== "all") {
+      filterDescriptions.push(statusLabels[activeFilters.status]);
+    }
+
+    const hasChangedSetting =
+      filterDescriptions.length > 0 ||
+      activeFilters.sort !== DEFAULT_FILTERS.sort ||
+      activeFilters.direction !== DEFAULT_FILTERS.direction;
+
+    if (!hasChangedSetting) {
+      searchInput.placeholder = "일정 검색";
 
       return;
     }
 
-    const selectedOption = [...customSelectOptions].find(
+    filterDescriptions.push(
+      sortLabels[activeFilters.sort],
+      directionLabels[activeFilters.direction],
+    );
+
+    searchInput.placeholder = `적용: ${filterDescriptions.join(" · ")}`;
+  }
+
+  function getCustomSelectParts(customSelect) {
+    return {
+      nativeSelect: customSelect.querySelector(".custom-select-native"),
+
+      trigger: customSelect.querySelector(".custom-select-trigger"),
+
+      valueElement: customSelect.querySelector(".custom-select-value"),
+
+      list: customSelect.querySelector(".custom-select-list"),
+
+      options: [...customSelect.querySelectorAll(".custom-select-option")],
+    };
+  }
+
+  function setCustomSelectValue(
+    customSelect,
+    value,
+    { emitChange = false } = {},
+  ) {
+    const { nativeSelect, valueElement, options } =
+      getCustomSelectParts(customSelect);
+
+    const selectedOption = options.find(
       (option) => option.dataset.value === value,
     );
 
-    if (!selectedOption) {
+    if (!nativeSelect || !selectedOption) {
       return;
     }
 
-    categoryFilter.value = value;
+    nativeSelect.value = value;
+    valueElement.textContent = selectedOption.textContent.trim();
 
-    customSelectValue.textContent = selectedOption.textContent.trim();
-
-    customSelectOptions.forEach((option) => {
+    options.forEach((option) => {
       const isSelected = option === selectedOption;
 
       option.classList.toggle("is-selected", isSelected);
-
       option.setAttribute("aria-selected", String(isSelected));
     });
 
     if (emitChange) {
-      categoryFilter.dispatchEvent(
+      nativeSelect.dispatchEvent(
         new Event("change", {
           bubbles: true,
         }),
@@ -1286,41 +1589,90 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function openCustomSelect() {
-    if (!customSelect) {
+  function syncCustomSelect(customSelect) {
+    const nativeSelect = customSelect.querySelector(".custom-select-native");
+
+    if (!nativeSelect) {
       return;
     }
 
-    customSelect.classList.add("is-open");
-
-    customSelectList.hidden = false;
-
-    customSelectTrigger.setAttribute("aria-expanded", "true");
+    setCustomSelectValue(customSelect, nativeSelect.value);
   }
 
-  function closeCustomSelect() {
+  function syncAllCustomSelects() {
+    customSelects.forEach((customSelect) => {
+      syncCustomSelect(customSelect);
+    });
+  }
+
+  function openCustomSelect(customSelect) {
     if (!customSelect) {
       return;
     }
 
+    closeAllCustomSelects(customSelect);
+
+    const { trigger, list } = getCustomSelectParts(customSelect);
+
+    window.clearTimeout(customSelect.closeTimer);
+
+    list.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+
+    window.requestAnimationFrame(() => {
+      customSelect.classList.add("is-open");
+    });
+  }
+
+  function closeCustomSelect(customSelect, { immediate = false } = {}) {
+    if (!customSelect) {
+      return;
+    }
+
+    const { trigger, list } = getCustomSelectParts(customSelect);
+
     customSelect.classList.remove("is-open");
+    trigger.setAttribute("aria-expanded", "false");
 
-    customSelectList.hidden = true;
+    window.clearTimeout(customSelect.closeTimer);
 
-    customSelectTrigger.setAttribute("aria-expanded", "false");
+    if (immediate) {
+      list.hidden = true;
+
+      return;
+    }
+
+    customSelect.closeTimer = window.setTimeout(() => {
+      if (!customSelect.classList.contains("is-open")) {
+        list.hidden = true;
+      }
+    }, CUSTOM_SELECT_DURATION);
+  }
+
+  function closeAllCustomSelects(exceptCustomSelect = null, options = {}) {
+    customSelects.forEach((customSelect) => {
+      if (customSelect !== exceptCustomSelect) {
+        closeCustomSelect(customSelect, options);
+      }
+    });
   }
 
   function resetFilters({ render = true } = {}) {
     Object.assign(activeFilters, DEFAULT_FILTERS);
 
     searchInput.value = "";
-    sortSelect.value = DEFAULT_FILTERS.sort;
 
-    setCustomSelectValue(DEFAULT_FILTERS.category);
+    categoryFilter.value = DEFAULT_FILTERS.category;
+    sortSelect.value = DEFAULT_FILTERS.sort;
 
     checkFilterValue(priorityFilterInputs, DEFAULT_FILTERS.priority);
 
     checkFilterValue(statusFilterInputs, DEFAULT_FILTERS.status);
+
+    syncAllCustomSelects();
+
+    renderSortDirectionButton();
+    updateSearchPlaceholder();
 
     if (render) {
       renderTaskBoard();
@@ -1336,6 +1688,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeFilters.status = getCheckedValue(statusFilterInputs);
 
+    updateSearchPlaceholder();
     renderTaskBoard();
 
     closeFilterLayer();
@@ -1431,7 +1784,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (actionTarget.dataset.action === "toggle-done") {
+    const action = actionTarget.dataset.action;
+
+    /* 완료 체크 */
+
+    if (action === "toggle-done") {
       const targetTask = findTask(taskId);
 
       if (!targetTask) {
@@ -1439,9 +1796,41 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       updateTaskStatus(taskId, targetTask.status === "done" ? "todo" : "done");
+
+      return;
     }
 
-    if (actionTarget.dataset.action === "delete-task") {
+    /* 점 세 개 메뉴 열기·닫기 */
+
+    if (action === "toggle-task-menu") {
+      const taskMenu = actionTarget.closest(".task-menu");
+
+      const actionMenu = taskMenu.querySelector(".task-action-menu");
+
+      const willOpen = actionMenu.hidden;
+
+      closeAllTaskMenus(taskMenu);
+
+      actionMenu.hidden = !willOpen;
+
+      actionTarget.setAttribute("aria-expanded", String(willOpen));
+
+      return;
+    }
+
+    /* 일정 수정 */
+
+    if (action === "edit-task") {
+      closeAllTaskMenus();
+      openEditTaskModal(taskId);
+
+      return;
+    }
+
+    /* 일정 삭제 */
+
+    if (action === "delete-task") {
+      closeAllTaskMenus();
       deleteTask(taskId);
     }
   }
@@ -1462,31 +1851,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function handleCustomSelectClick(event) {
-    const option = event.target.closest(".custom-select-option");
-
-    if (!option || !customSelectList.contains(option)) {
-      return;
-    }
-
-    setCustomSelectValue(option.dataset.value, {
-      emitChange: true,
-    });
-
-    closeCustomSelect();
-
-    customSelectTrigger.focus();
-  }
-
   function handleEscapeKey(event) {
     if (event.key !== "Escape") {
       return;
     }
 
-    if (customSelect?.classList.contains("is-open")) {
-      closeCustomSelect();
+    const openedTaskMenu = document.querySelector(
+      ".task-action-menu:not([hidden])",
+    );
 
-      customSelectTrigger.focus();
+    if (openedTaskMenu) {
+      closeAllTaskMenus();
+
+      return;
+    }
+
+    const openedCustomSelect = document.querySelector(
+      "[data-custom-select].is-open",
+    );
+
+    if (openedCustomSelect) {
+      const trigger = openedCustomSelect.querySelector(
+        ".custom-select-trigger",
+      );
+
+      closeCustomSelect(openedCustomSelect);
+      trigger?.focus();
 
       return;
     }
@@ -1498,7 +1888,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!taskModal.hidden) {
-      closeLayer(taskModal, openModalBtn);
+      closeTaskModal();
 
       return;
     }
@@ -1604,7 +1994,30 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
     });
 
+    function updateClearSearchButton() {
+      clearSearchButton.hidden = searchInput.value.length === 0;
+    }
+
     searchInput.addEventListener("input", () => {
+      updateClearSearchButton();
+      renderTaskBoard();
+    });
+
+    clearSearchButton.addEventListener("click", () => {
+      searchInput.value = "";
+
+      updateClearSearchButton();
+      renderTaskBoard();
+
+      searchInput.focus();
+    });
+
+    sortDirectionButton.addEventListener("click", () => {
+      activeFilters.direction =
+        activeFilters.direction === "asc" ? "desc" : "asc";
+
+      renderSortDirectionButton();
+      updateSearchPlaceholder();
       renderTaskBoard();
     });
 
@@ -1622,42 +2035,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyFilterBtn.addEventListener("click", applyFilterValues);
 
-    if (customSelect) {
-      customSelectTrigger.addEventListener("click", () => {
+    customSelects.forEach((customSelect) => {
+      const { nativeSelect, trigger, list } =
+        getCustomSelectParts(customSelect);
+
+      trigger.addEventListener("click", () => {
         if (customSelect.classList.contains("is-open")) {
-          closeCustomSelect();
+          closeCustomSelect(customSelect);
         } else {
-          openCustomSelect();
+          openCustomSelect(customSelect);
         }
       });
 
-      customSelectList.addEventListener("click", handleCustomSelectClick);
+      list.addEventListener("click", (event) => {
+        const option = event.target.closest(".custom-select-option");
 
-      document.addEventListener("click", (event) => {
+        if (!option || !list.contains(option)) {
+          return;
+        }
+
+        setCustomSelectValue(customSelect, option.dataset.value, {
+          emitChange: true,
+        });
+
+        closeCustomSelect(customSelect);
+        trigger.focus();
+      });
+
+      nativeSelect.addEventListener("change", () => {
+        syncCustomSelect(customSelect);
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      customSelects.forEach((customSelect) => {
         if (!customSelect.contains(event.target)) {
-          closeCustomSelect();
+          closeCustomSelect(customSelect);
         }
       });
-    }
+    });
+
+    /* 일정 카드 메뉴 바깥 클릭 시 닫기 */
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".task-menu")) {
+        closeAllTaskMenus();
+      }
+    });
 
     openModalBtn.addEventListener("click", openTaskModal);
 
-    closeModalBtn.addEventListener("click", () => {
-      closeLayer(taskModal, openModalBtn);
+    closeModalBtn.addEventListener("click", closeTaskModal);
+
+    scheduleTitle.addEventListener("input", () => {
+      updateCharacterCount(
+        scheduleTitle,
+        titleCharacterCount,
+        TITLE_MAX_LENGTH,
+      );
     });
 
+    scheduleMemo.addEventListener("input", () => {
+      updateCharacterCount(scheduleMemo, memoCharacterCount, MEMO_MAX_LENGTH);
+    });
     resetFormBtn.addEventListener("click", resetTaskForm);
 
     taskForm.addEventListener("submit", (event) => {
       event.preventDefault();
 
       const title = scheduleTitle.value.trim();
+      const memo = scheduleMemo.value.trim();
 
       const category = scheduleCategory.value;
-
       const date = scheduleDate.value;
-
       const time = scheduleTime.value;
+      const priority = schedulePriority.value;
+      const nextStatus = scheduleStatus.value;
 
       if (!title || !category || !date || !time) {
         window.alert("제목, 분류, 날짜, 시간을 모두 입력해주세요.");
@@ -1665,32 +2117,89 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      tasks.push({
-        id: createTaskId(),
-        title,
-        category,
-        date,
-        time,
-        priority: schedulePriority.value,
-        status: scheduleStatus.value,
-        memo: scheduleMemo.value.trim(),
-        createdAt: Date.now(),
-      });
+      if (title.length > TITLE_MAX_LENGTH) {
+        window.alert(
+          `할 일 제목은 ${TITLE_MAX_LENGTH}자까지 입력할 수 있습니다.`,
+        );
+
+        scheduleTitle.focus();
+
+        return;
+      }
+
+      if (memo.length > MEMO_MAX_LENGTH) {
+        window.alert(
+          `할 일 메모는 ${MEMO_MAX_LENGTH}자까지 입력할 수 있습니다.`,
+        );
+
+        scheduleMemo.focus();
+
+        return;
+      }
+
+      if (editingTaskId) {
+        /* 기존 일정 수정 */
+
+        const targetTask = findTask(editingTaskId);
+
+        if (!targetTask) {
+          return;
+        }
+
+        const previousStatus = targetTask.status;
+
+        targetTask.title = title;
+        targetTask.category = category;
+        targetTask.date = date;
+        targetTask.time = time;
+        targetTask.priority = priority;
+        targetTask.status = nextStatus;
+        targetTask.memo = memo;
+
+        if (nextStatus === "done" && previousStatus !== "done") {
+          targetTask.completedAt = Date.now();
+        }
+
+        if (nextStatus !== "done") {
+          targetTask.completedAt = null;
+        }
+      } else {
+        /* 새 일정 등록 */
+
+        const createdAt = Date.now();
+
+        tasks.push({
+          id: createTaskId(),
+          title,
+          category,
+          date,
+          time,
+          priority,
+          status: nextStatus,
+          memo,
+          createdAt,
+          completedAt: nextStatus === "done" ? createdAt : null,
+        });
+      }
 
       selectedDate = date;
 
-      const addedDate = fromDateString(date);
+      const changedDate = fromDateString(date);
 
-      currentMonth = new Date(addedDate.getFullYear(), addedDate.getMonth(), 1);
+      currentMonth = new Date(
+        changedDate.getFullYear(),
+        changedDate.getMonth(),
+        1,
+      );
 
       resetFilters({
         render: false,
       });
 
       saveTasks();
-      resetTaskForm();
 
-      closeLayer(taskModal, openModalBtn);
+      resetTaskForm();
+      closeTaskModal();
 
       renderAll();
     });
@@ -1731,12 +2240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const layerSettings = new Map([
       [filterModal, closeFilterLayer],
-      [
-        taskModal,
-        () => {
-          closeLayer(taskModal, openModalBtn);
-        },
-      ],
+      [taskModal, closeTaskModal],
       [
         newspaperModal,
         () => {
@@ -1758,7 +2262,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 초기 실행
   function init() {
-    setCustomSelectValue(categoryFilter.value || DEFAULT_FILTERS.category);
+    scheduleTitle.maxLength = TITLE_MAX_LENGTH;
+    scheduleMemo.maxLength = MEMO_MAX_LENGTH;
+
+    updateTaskFormCharacterCounts();
+
+    sortSelect.value = DEFAULT_FILTERS.sort;
+
+    syncAllCustomSelects();
+
+    renderSortDirectionButton();
+    updateSearchPlaceholder();
 
     renderHeaderDate();
     renderAll();
