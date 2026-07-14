@@ -2600,86 +2600,85 @@ body {
   ================================================== */
 
   .headline-rule {
-  height: 6px;
-}
+    height: 6px;
+  }
 
-.masthead {
-  min-height: 132px;
-  padding: 8px 0 10px;
-}
+  .masthead {
+    min-height: 132px;
+    padding: 8px 0 10px;
+  }
 
-/* 날짜 영역과 제목 영역 사이의 세로선 */
-.masthead::before {
-  left: 27%;
-}
+  /* 날짜 영역과 제목 영역 사이의 세로선 */
+  .masthead::before {
+    left: 27%;
+  }
 
-/* 오른쪽 세로선 제거 */
-.masthead::after {
-  display: none;
-}
+  /* 오른쪽 세로선 제거 */
+  .masthead::after {
+    display: none;
+  }
 
-/* 왼쪽 날짜 영역 */
-.masthead-left {
-  flex: 0 0 27%;
-  padding: 0 10px;
-}
+  /* 왼쪽 날짜 영역 */
+  .masthead-left {
+    flex: 0 0 27%;
+    padding: 0 10px;
+  }
 
-/* 오른쪽 날짜 숨김 */
-.masthead-right {
-  display: none;
-}
+  /* 오른쪽 날짜 숨김 */
+  .masthead-right {
+    display: none;
+  }
 
-.today-label {
-  font-size: 0.72rem;
-}
+  .today-label {
+    font-size: 0.72rem;
+  }
 
-.today-date {
-  margin-top: 4px;
-  font-size: 1.05rem;
-  letter-spacing: 1.5px;
-}
+  .today-date {
+    margin-top: 4px;
+    font-size: 1.05rem;
+    letter-spacing: 1.5px;
+  }
 
-.header-sub {
-  margin-top: 4px;
-  font-size: 0.64rem;
-  line-height: 1.4;
-}
+  .header-sub {
+    margin-top: 4px;
+    font-size: 0.64rem;
+    line-height: 1.4;
+  }
 
-/* 제목 영역 */
-.masthead-title {
-  flex: 1;
-  min-width: 0;
-  padding: 0 8px 0 18px;
-  text-align: right;
-}
+  /* 제목 영역 */
+  .masthead-title {
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px 0 18px;
+    text-align: right;
+  }
 
-.toptitle {
-  margin-bottom: 4px;
-  font-size: 0.58rem;
-  letter-spacing: 0.4px;
-  text-align: right;
-}
+  .toptitle {
+    margin-bottom: 4px;
+    font-size: 0.58rem;
+    letter-spacing: 0.4px;
+    text-align: right;
+  }
 
-.masthead-title h1 {
-  margin: 0;
-  font-size: clamp(3.9rem, 7vw, 4.8rem);
-  line-height: 0.82;
-  letter-spacing: 3px;
-  word-spacing: -2px;
-  white-space: nowrap;
-  text-align: right;
-  transform: scaleX(0.78);
-  transform-origin: right;
-}
+  .masthead-title h1 {
+    margin: 0;
+    font-size: clamp(3.9rem, 7vw, 4.8rem);
+    line-height: 0.82;
+    letter-spacing: 3px;
+    word-spacing: -2px;
+    white-space: nowrap;
+    text-align: right;
+    transform: scaleX(0.78);
+    transform-origin: right;
+  }
 
-.subtitle {
-  margin-top: 9px;
-  font-size: 0.58rem;
-  line-height: 1.4;
-  letter-spacing: 0.8px;
-  text-align: right;
-}
-
+  .subtitle {
+    margin-top: 9px;
+    font-size: 0.58rem;
+    line-height: 1.4;
+    letter-spacing: 0.8px;
+    text-align: right;
+  }
 
   /* ==================================================
      3. 내비게이션
@@ -2688,7 +2687,7 @@ body {
   .header-nav {
     min-height: 48px;
     padding: 8px 0;
-    justify-content: flex-start
+    justify-content: flex-start;
   }
 
   .nav-links {
@@ -2828,33 +2827,33 @@ body {
      6. 달력 + 발간 정보 + 선택 날짜
   ================================================== */
 
-   .calendar-panel {
-  display: grid;
+  .calendar-panel {
+    display: grid;
 
-  /* 왼쪽 달력은 유동, 오른쪽은 고정 */
-  grid-template-columns: minmax(0, 1fr) 245px;
+    /* 왼쪽 달력은 유동, 오른쪽은 고정 */
+    grid-template-columns: minmax(0, 1fr) 245px;
 
-  grid-template-areas:
-    "calendar publication"
-    "calendar summary";
+    grid-template-areas:
+      "calendar publication"
+      "calendar summary";
 
-  gap: 14px 18px;
-  align-items: start;
+    gap: 14px 18px;
+    align-items: start;
 
-  /* 너무 넓어지지 않게 제한 */
-  width: min(100%, 820px);
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 16px;
+    /* 너무 넓어지지 않게 제한 */
+    width: min(100%, 820px);
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 16px;
 
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 3px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
 
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 5px 14px rgba(0, 0, 0, 0.04);
-}
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 5px 14px rgba(0, 0, 0, 0.04);
+  }
 
   /*
     calendar-all 자체의 박스를 없애고
@@ -2895,116 +2894,6 @@ body {
   .month-nav {
     min-height: 34px;
   }
-@media (max-width: 767px) {
-  .site-header,
-  .page-body {
-    width: 100%;
-    max-width: 100%;
-    padding: 0 8px;
-  }
-
-  /* 햄버거 메뉴 */
-  .menu-btn {
-    position: fixed;
-    top: 15px;
-    left: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  .site-header {
-    padding-top: 50px;
-  }
-
-  /* 위 검은선 */
-  .headline-rule {
-    height: 5px;
-  }
-
-  /* 헤더 */
-  .masthead {
-    position: relative; /* 추가 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0 12px;
-    border-bottom: 1px solid var(--border-dark);
-  }
-
-  /* 세로선 제거 */
-  .masthead::before,
-  .masthead::after {
-    display: none;
-  }
-
-  /* 날짜 영역 숨김 */
-  .today-label,
-  .today-date {
-    display: none;
-  }
-
-  /* 빨간 문구 */
-  .toptitle {
-    margin-bottom: 2px;
-    font-size: 11px;
-    letter-spacing: 0.5px;
-  }
-
-  /* To-Do List */
-  .masthead-title h1 {
-    font-size: 3.2rem;
-    line-height: 0.9;
-    letter-spacing: 1px;
-    word-spacing: 0;
-    transform: scaleX(0.82);
-    white-space: nowrap;
-  }
-
-  /* 하단 문구 */
-  .subtitle {
-    margin-top: 6px;
-    font-size: 10px;
-    letter-spacing: 0.8px;
-    line-height: 1.3;
-  }
-
-  .header-nav {
-    display: contents;
-  }
-
-  .header-sub {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .menu-btn span {
-    width: 20px;
-  }
-
-  /* 메뉴는 모바일에서 숨김 */
-  .nav-links {
-    display: none;
-  }
-
-  /* 다크/라이트 버튼 */
-  .nav-actions {
-    display: none;
-  }
-
-  .circle1,
-  .circle2 {
-    width: 18px;
-    height: 18px;
-  }
-}
 
   .month-picker-button {
     min-width: 110px;
@@ -3347,422 +3236,550 @@ body {
     scroll-snap-align: start;
   }
 }
-  /* 빈 상태는 전체 열 사용 */
-  .kanban-empty {
-    grid-column: 1 / -1;
+/* 빈 상태는 전체 열 사용 */
+.kanban-empty {
+  grid-column: 1 / -1;
 
-    min-height: 150px;
-    padding: 24px 16px;
-  }
+  min-height: 150px;
+  padding: 24px 16px;
+}
 
-  .kanban-empty-icon {
-    width: 48px;
-    height: 48px;
-  }
+.kanban-empty-icon {
+  width: 48px;
+  height: 48px;
+}
 
-  /* ==================================================
+/* ==================================================
      13. 일반 일정 카드
   ================================================== */
 
-  .kanban-board .task-card {
-    width: 100%;
-    min-width: 0;
-  }
+.kanban-board .task-card {
+  width: 100%;
+  min-width: 0;
+}
 
-  .kanban-board .task-card article {
-    padding: 14px 12px 12px;
-  }
+.kanban-board .task-card article {
+  padding: 14px 12px 12px;
+}
 
-  .kanban-board .task-top {
-    grid-template-columns:
-      20px
-      auto
-      minmax(0, 1fr)
-      20px;
+.kanban-board .task-top {
+  grid-template-columns:
+    20px
+    auto
+    minmax(0, 1fr)
+    20px;
 
-    gap: 7px;
-  }
+  gap: 7px;
+}
 
-  .kanban-board .task-checkbox {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-  }
+.kanban-board .task-checkbox {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+}
 
-  .kanban-board .task-priority {
-    min-width: auto;
-    height: 24px;
+.kanban-board .task-priority {
+  min-width: auto;
+  height: 24px;
 
-    padding: 0 7px;
+  padding: 0 7px;
 
-    border-radius: 4px;
-    font-size: 11px;
-  }
+  border-radius: 4px;
+  font-size: 11px;
+}
 
-  .kanban-board .task-time {
-    padding-left: 13px;
-    font-size: 10px;
-  }
+.kanban-board .task-time {
+  padding-left: 13px;
+  font-size: 10px;
+}
 
-  .kanban-board .task-time::before {
-    width: 8px;
-    height: 8px;
-  }
+.kanban-board .task-time::before {
+  width: 8px;
+  height: 8px;
+}
 
-  .kanban-board .task-time::after {
-    left: 4px;
-    width: 3px;
-    box-shadow: 0 -2px 0 -0.2px #bcbcbc;
-  }
+.kanban-board .task-time::after {
+  left: 4px;
+  width: 3px;
+  box-shadow: 0 -2px 0 -0.2px #bcbcbc;
+}
 
-  .kanban-board .task-close {
-    width: 20px;
-    height: 20px;
-  }
+.kanban-board .task-close {
+  width: 20px;
+  height: 20px;
+}
 
-  .kanban-board .task-close::before,
-  .kanban-board .task-close::after {
-    top: 9px;
-    left: 2px;
+.kanban-board .task-close::before,
+.kanban-board .task-close::after {
+  top: 9px;
+  left: 2px;
 
-    width: 16px;
-    height: 1px;
-  }
+  width: 16px;
+  height: 1px;
+}
 
-  .kanban-board .task-title {
-    margin: 9px 0 0 27px;
+.kanban-board .task-title {
+  margin: 9px 0 0 27px;
 
-    font-size: 14px;
-    line-height: 1.35;
-    letter-spacing: -0.3px;
-  }
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
 
-  .kanban-board .task-desc {
-    margin: 5px 0 0 27px;
+.kanban-board .task-desc {
+  margin: 5px 0 0 27px;
 
-    font-size: 11px;
-    line-height: 1.45;
-  }
+  font-size: 11px;
+  line-height: 1.45;
+}
 
-  .kanban-board .task-footer {
-    margin-top: 10px;
-  }
+.kanban-board .task-footer {
+  margin-top: 10px;
+}
 
-  .kanban-board .task-dropdown {
-    height: 38px;
+.kanban-board .task-dropdown {
+  height: 38px;
 
-    padding: 0 32px 0 10px;
+  padding: 0 32px 0 10px;
 
-    font-size: 12px;
+  font-size: 12px;
 
-    background-position:
-      calc(100% - 14px) 16px,
-      calc(100% - 10px) 16px;
+  background-position:
+    calc(100% - 14px) 16px,
+    calc(100% - 10px) 16px;
 
-    background-size: 5px 5px;
-  }
+  background-size: 5px 5px;
+}
 
-  /* ==================================================
+/* ==================================================
      14. 완료 카드
   ================================================== */
 
-  .kanban-board .task-card.is-done article {
-    grid-template-columns:
-      20px
-      minmax(0, 1fr)
-      20px;
+.kanban-board .task-card.is-done article {
+  grid-template-columns:
+    20px
+    minmax(0, 1fr)
+    20px;
 
-    grid-template-rows: auto auto;
+  grid-template-rows: auto auto;
 
-    column-gap: 9px;
+  column-gap: 9px;
 
-    padding: 13px 12px;
-  }
+  padding: 13px 12px;
+}
 
-  .kanban-board .task-card.is-done .task-checkbox {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
+.kanban-board .task-card.is-done .task-checkbox {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
 
-    margin-top: 1px;
-  }
+  margin-top: 1px;
+}
 
-  .kanban-board .task-card.is-done .task-checkbox::after {
-    font-size: 14px;
-  }
+.kanban-board .task-card.is-done .task-checkbox::after {
+  font-size: 14px;
+}
 
-  .kanban-board .task-card.is-done .task-title {
-    margin: 0;
+.kanban-board .task-card.is-done .task-title {
+  margin: 0;
 
-    font-size: 13px;
-    line-height: 1.35;
-  }
+  font-size: 13px;
+  line-height: 1.35;
+}
 
-  .kanban-board .task-card.is-done .task-desc {
-    margin-top: 5px;
+.kanban-board .task-card.is-done .task-desc {
+  margin-top: 5px;
 
-    font-size: 10px;
-    line-height: 1.4;
-  }
+  font-size: 10px;
+  line-height: 1.4;
+}
 
-  .kanban-board .task-card.is-done .task-close {
-    width: 20px;
-    height: 20px;
-  }
+.kanban-board .task-card.is-done .task-close {
+  width: 20px;
+  height: 20px;
+}
 
-  /* ==================================================
+/* ==================================================
      15. 어제의 신문
   ================================================== */
 
-  .edition-card-container {
-    position: static;
+.edition-card-container {
+  position: static;
 
-    width: 100%;
-    max-width: none;
+  width: 100%;
+  max-width: none;
 
-    margin: 0;
-    padding: 0 12px 12px;
+  margin: 0;
+  padding: 0 12px 12px;
 
-    border-radius: 0;
-  }
+  border-radius: 0;
+}
 
-  .edition-card-container > .card-header {
-    margin: 0 -12px 12px;
-    padding: 12px 14px 10px;
-  }
+.edition-card-container > .card-header {
+  margin: 0 -12px 12px;
+  padding: 12px 14px 10px;
+}
 
-  .edition-card-container .header-title h2 {
-    font-size: 13px;
-    line-height: 1.2;
-  }
+.edition-card-container .header-title h2 {
+  font-size: 13px;
+  line-height: 1.2;
+}
 
-  .edition-card-container .badge {
-    flex-basis: 70px;
+.edition-card-container .badge {
+  flex-basis: 70px;
 
-    min-width: 70px;
-    max-width: 70px;
-    min-height: 30px;
+  min-width: 70px;
+  max-width: 70px;
+  min-height: 30px;
 
-    padding: 4px 7px;
+  padding: 4px 7px;
 
-    font-size: 9px;
-  }
+  font-size: 9px;
+}
 
-  .edition-card-container .content-box {
-    display: grid;
+.edition-card-container .content-box {
+  display: grid;
 
-    grid-template-columns:
-      minmax(0, 1.5fr)
-      minmax(180px, 0.7fr);
+  grid-template-columns:
+    minmax(0, 1.5fr)
+    minmax(180px, 0.7fr);
 
-    grid-template-areas:
-      "edition-header edition-header"
-      "edition-divider edition-divider"
-      "edition-preview edition-preview"
-      "edition-status edition-data";
+  grid-template-areas:
+    "edition-header edition-header"
+    "edition-divider edition-divider"
+    "edition-preview edition-preview"
+    "edition-status edition-data";
 
-    column-gap: 20px;
+  column-gap: 20px;
 
-    padding: 12px 12px 14px;
-  }
+  padding: 12px 12px 14px;
+}
 
-  .edition-card-container .content-header {
-    grid-area: edition-header;
-  }
+.edition-card-container .content-header {
+  grid-area: edition-header;
+}
 
-  .edition-card-container .content-header h2 {
-    font-size: 16px;
-  }
+.edition-card-container .content-header h2 {
+  font-size: 16px;
+}
 
-  .edition-card-container .content-header .sub-text {
-    margin-top: 4px;
-    font-size: 9px;
-  }
+.edition-card-container .content-header .sub-text {
+  margin-top: 4px;
+  font-size: 9px;
+}
 
-  .edition-card-container .double-divider {
-    grid-area: edition-divider;
-    width: 100%;
-    margin: 9px 0;
-  }
+.edition-card-container .double-divider {
+  grid-area: edition-divider;
+  width: 100%;
+  margin: 9px 0;
+}
 
-  .edition-card-container .layout-grid {
-    grid-area: edition-preview;
-  }
+.edition-card-container .layout-grid {
+  grid-area: edition-preview;
+}
 
-  .edition-preview {
-    min-height: 150px;
-    margin-bottom: 12px;
-  }
+.edition-preview {
+  min-height: 150px;
+  margin-bottom: 12px;
+}
 
-  .edition-card-container .status-message {
-    grid-area: edition-status;
+.edition-card-container .status-message {
+  grid-area: edition-status;
 
-    margin: 0;
-    padding: 0 4px;
-  }
+  margin: 0;
+  padding: 0 4px;
+}
 
-  .edition-card-container .status-message h3 {
-    margin-bottom: 6px;
-    font-size: 15px;
-  }
+.edition-card-container .status-message h3 {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
 
-  .edition-card-container .status-message p {
-    font-size: 9px;
-    line-height: 1.55;
-  }
+.edition-card-container .status-message p {
+  font-size: 9px;
+  line-height: 1.55;
+}
 
-  .edition-card-container .data-list {
-    grid-area: edition-data;
-    align-self: start;
+.edition-card-container .data-list {
+  grid-area: edition-data;
+  align-self: start;
 
-    padding: 0;
-  }
+  padding: 0;
+}
 
-  .edition-card-container .data-item {
-    padding: 4px 0;
-  }
+.edition-card-container .data-item {
+  padding: 4px 0;
+}
 
-  .edition-card-container .data-item dt,
-  .edition-card-container .data-item dd {
-    font-size: 9px;
-  }
+.edition-card-container .data-item dt,
+.edition-card-container .data-item dd {
+  font-size: 9px;
+}
 
-  .edition-card-container > .card-footer {
-    margin-top: 10px;
-  }
+.edition-card-container > .card-footer {
+  margin-top: 10px;
+}
 
-  .edition-card-container .view-newspaper-btn {
-    padding: 11px 0;
-    border-radius: 6px;
-    font-size: 12px;
-  }
+.edition-card-container .view-newspaper-btn {
+  padding: 11px 0;
+  border-radius: 6px;
+  font-size: 12px;
+}
 
-  /* ==================================================
+/* ==================================================
      16. 푸터
   ================================================== */
 
-  .site-footer {
-    width: 100%;
-    margin-top: 28px;
-    padding: 18px 0;
-  }
+.site-footer {
+  width: 100%;
+  margin-top: 28px;
+  padding: 18px 0;
+}
 
-  .site-footer small {
-    font-size: 0.75rem;
-  }
+.site-footer small {
+  font-size: 0.75rem;
+}
 
-  /* ==================================================
+/* ==================================================
      17. 일정 등록 팝업
   ================================================== */
 
-  .modal-container {
-    width: min(720px, calc(100vw - 40px));
-    max-height: calc(100vh - 40px);
+.modal-container {
+  width: min(720px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
 
-    padding: 32px 34px 38px;
+  padding: 32px 34px 38px;
 
-    border-radius: 16px;
-  }
+  border-radius: 16px;
+}
 
-  .modal-header h2 {
-    font-size: 30px;
-  }
+.modal-header h2 {
+  font-size: 30px;
+}
 
-  .modal-form {
-    margin-top: 22px;
-    padding-top: 26px;
-  }
+.modal-form {
+  margin-top: 22px;
+  padding-top: 26px;
+}
 
-  .form-group {
-    margin-bottom: 20px;
-  }
+.form-group {
+  margin-bottom: 20px;
+}
 
-  .form-group label {
-    font-size: 15px;
-  }
+.form-group label {
+  font-size: 15px;
+}
 
-  .form-group input,
-  .form-group select {
-    height: 56px;
-  }
+.form-group input,
+.form-group select {
+  height: 56px;
+}
 
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    font-size: 14px;
-  }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  font-size: 14px;
+}
 
-  .form-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
+.form-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
 
-  .modal-footer {
-    grid-template-columns: 150px 1fr;
-  }
+.modal-footer {
+  grid-template-columns: 150px 1fr;
+}
 
-  .ghost-btn,
-  .submit-btn {
-    height: 62px;
-    font-size: 17px;
-  }
+.ghost-btn,
+.submit-btn {
+  height: 62px;
+  font-size: 17px;
+}
 
-  /* ==================================================
+/* ==================================================
      18. 필터 팝업
   ================================================== */
 
-  .filter-modal-container {
-    width: min(680px, calc(100vw - 40px));
-    padding: 32px 38px 40px;
-  }
+.filter-modal-container {
+  width: min(680px, calc(100vw - 40px));
+  padding: 32px 38px 40px;
+}
 
-  .filter-modal-header h2 {
-    font-size: 27px;
-  }
+.filter-modal-header h2 {
+  font-size: 27px;
+}
 
-  .filter-modal-divider {
-    margin: 20px 0 28px;
-  }
+.filter-modal-divider {
+  margin: 20px 0 28px;
+}
 
-  .filter-field select,
-  .custom-select-trigger {
-    height: 56px;
-    font-size: 14px;
-  }
+.filter-field select,
+.custom-select-trigger {
+  height: 56px;
+  font-size: 14px;
+}
 
-  .filter-options span {
-    height: 54px;
-    font-size: 14px;
-  }
+.filter-options span {
+  height: 54px;
+  font-size: 14px;
+}
 
-  .filter-modal-actions {
-    margin-top: 32px;
-  }
+.filter-modal-actions {
+  margin-top: 32px;
+}
 
-  .filter-reset-btn,
-  .filter-apply-btn {
-    height: 60px;
-    font-size: 16px;
-  }
+.filter-reset-btn,
+.filter-apply-btn {
+  height: 60px;
+  font-size: 16px;
+}
 
-  /* ==================================================
+/* ==================================================
      19. 신문 팝업
   ================================================= */
 
-  .newspaper-modal {
-    width: min(840px, calc(100vw - 40px));
-    padding: 26px;
+.newspaper-modal {
+  width: min(840px, calc(100vw - 40px));
+  padding: 26px;
+}
+
+.newspaper-modal-header {
+  padding: 10px 50px 18px;
+}
+
+.newspaper-modal-header h2 {
+  font-size: 42px;
+}
+
+.newspaper-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/*   ========================
+        모바일 반응형 시작
+     ========================*/
+@media (max-width: 767px) {
+  .site-header,
+  .page-body {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 8px;
   }
 
-  .newspaper-modal-header {
-    padding: 10px 50px 18px;
+  /* 햄버거 메뉴 */
+  .menu-btn {
+    position: fixed;
+    top: 15px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
   }
 
-  .newspaper-modal-header h2 {
-    font-size: 42px;
+  .site-header {
+    padding-top: 50px;
   }
 
-  .newspaper-stats {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* 위 검은선 */
+  .headline-rule {
+    height: 5px;
   }
 
+  /* 헤더 */
+  .masthead {
+    position: relative; /* 추가 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 2px;
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  /* 세로선 제거 */
+  .masthead::before,
+  .masthead::after {
+    display: none;
+  }
+
+  /* 날짜 영역 숨김 */
+  .today-label,
+  .today-date {
+    display: none;
+  }
+
+  /* 빨간 문구 */
+  .toptitle {
+    text-align: center;
+    margin-bottom: 2px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  /* To-Do List */
+  .masthead-title h1 {
+    text-align: center; /* 글자를 박스 중앙으로 정렬 */
+    font-size: 3.2rem;
+    line-height: 0.9;
+    letter-spacing: 1px;
+    word-spacing: 0;
+    transform: scaleX(0.82);
+    transform-origin: center; /* 좌우 압축할 때 중앙을 기준으로 압축 */
+    white-space: nowrap;
+  }
+
+  /* 투두 하단 문구 */
+  .subtitle {
+    text-align: center; /* 글자들을 중앙으로 정렬 */
+    width: 100%; /* 부모 박스 안에서 가로 너비를 꽉 채우기 */
+    display: block; /* 너비(width)가 제대로 먹히도록 블록 요소로 지정 */
+
+    margin-top: 6px;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    line-height: 1.3;
+  }
+
+  .header-nav {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 0; /* 기존 12px에서 2px로 대폭 줄여서 위아래 간격을 좁힘 */
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  .header-sub {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .menu-btn span {
+    width: 20px;
+  }
+
+  /* 메뉴는 모바일에서 숨김 */
+  .nav-links {
+    display: none;
+  }
+
+  /* 다크/라이트 버튼 */
+  .nav-actions {
+    display: none;
+  }
+
+  .circle1,
+  .circle2 {
+    width: 18px;
+    height: 18px;
+  }
+}
+/*====================
+  모바일 반응형 여기까지
+  =====================*/
