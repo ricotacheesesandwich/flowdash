@@ -6,7 +6,7 @@
     <title>To-Do List</title>
     <link rel="stylesheet" href="./reset.css" />
     <link rel="stylesheet" href="./style.css" />
-    <link rel="icon" href="SVG\파비콘2.svg" type="todo-icon" />
+    <link rel="icon" href="./SVG/파비콘2.svg" type="image/svg+xml" />
   </head>
   <!-- 김상우 div 시멘틱 하게 변경 -->
   <body>
@@ -352,7 +352,7 @@
               aria-label="날짜 선택"
             ></div>
 
-          <button
+            <button
               id="calendarMobileToggle"
               type="button"
               class="calendar-mobile-toggle"
@@ -420,13 +420,12 @@
         <header class="greeting-area">
           <!-- 독립된 개체가 아니기에 article 태그를 div 로 변경 -->
           <div class="greeting-text">
-            <span class="greeting-label">
-              GOOD MORNING
-              <span id="greetingLabelName">USER</span>
-            </span>
+            <!-- 위쪽 작은 영어 인사말 -->
+            <span id="timeGreeting" class="greeting-label"> HELLO </span>
 
+            <!-- 메인 한국어 인사말 -->
             <h2>
-              안녕하세요,
+              <span id="mainTimeGreeting">안녕하세요</span>,
               <button
                 id="displayUserName"
                 type="button"
@@ -679,22 +678,22 @@
         class="edition-card-container"
         aria-labelledby="editionTitle"
       >
-     <header class="card-header">
-  <div class="header-title">
-    <h2 id="editionTitle">YESTERDAY'S<br />EDITION</h2>
-  </div>
+        <header class="card-header">
+          <div class="header-title">
+            <h2 id="editionTitle">YESTERDAY'S<br />EDITION</h2>
+          </div>
 
-  <span class="badge">자정<br />자동 발간</span>
+          <span class="badge">자정<br />자동 발간</span>
 
-  <button
-    id="closeTabletNewspaper"
-    type="button"
-    class="tablet-newspaper-close"
-    aria-label="신문칸 닫기"
-  >
-    &times;
-  </button>
-</header>
+          <button
+            id="closeTabletNewspaper"
+            type="button"
+            class="tablet-newspaper-close"
+            aria-label="신문칸 닫기"
+          >
+            &times;
+          </button>
+        </header>
         <section class="content-box" aria-labelledby="dailyPaperTitle">
           <header class="content-header">
             <h2 id="dailyPaperTitle">Flow Dash Daily</h2>
@@ -1477,15 +1476,15 @@
     </template>
     <!--김양왕 , div태그 시맨틱하게 변경-->
 
-<button
-  id="tabletNewspaperBtn"
-  type="button"
-  class="tablet-newspaper-btn"
-  aria-label="신문칸 열기"
-  aria-expanded="false"
->
-  <!-- 신문 SVG -->
-</button>
+    <button
+      id="tabletNewspaperBtn"
+      type="button"
+      class="tablet-newspaper-btn"
+      aria-label="신문칸 열기"
+      aria-expanded="false"
+    >
+      <!-- 신문 SVG -->
+    </button>
 
     <script src="app.js"></script>
   </body>
