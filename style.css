@@ -42,6 +42,10 @@
   --filter-active-text: #ffffff;
 
   --filter-overlay: rgba(17, 17, 17, 0.18);
+  
+  /* 신문 버튼 색상 */
+  --newspaper-button-bg: #111111;
+  --newspaper-button-color: #ffffff;
 
   --filter-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5l4 4 4-4' fill='none' stroke='%23111111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
@@ -87,7 +91,11 @@ body.dark-mode {
   --filter-overlay: rgba(0, 0, 0, 0.55);
 
   --filter-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5l4 4 4-4' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+/* 신문 버튼 색상 */
+ --newspaper-button-bg: #ffffff;
+ --newspaper-button-color: #111111;
 }
+
 
 body,
 body * {
@@ -4109,13 +4117,15 @@ body.name-intro-open {
     display: contents;
   }
 
-  .page-body > *,
-  .main-content > * {
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-    order: 10;
-  }
+ .calendar-panel,
+.greeting-area,
+.stats-section,
+.controls,
+.kanban-board,
+.edition-card-container {
+  width: 100%;
+  min-width: 0;
+}
 
   .greeting-area {
     order: 1;
@@ -4729,9 +4739,9 @@ body.name-intro-open {
     font-size: 21px;
   }
   /* ==================================================
-     15. 어제의 신문
+     15. 어제의 신문, 모바일에는 적용X
   ================================================== */
-
+@media (min-width: 768px) and (max-width: 1199px) {
   .edition-card-container {
     position: static;
 
@@ -4766,23 +4776,68 @@ body.name-intro-open {
     font-size: 1.1rem;
   }
 
-  .edition-card-container .content-box {
-    display: grid;
+.edition-card-container .content-box {
+  display: grid;
 
-    grid-template-columns:
-      minmax(0, 1.5fr)
-      minmax(180px, 0.7fr);
+  grid-template-columns:
+    minmax(0, 1.5fr)
+    minmax(180px, 0.7fr);
 
-    grid-template-areas:
-      "edition-header edition-header"
-      "edition-divider edition-divider"
-      "edition-preview edition-preview"
-      "edition-status edition-data";
+  /* 헤더는 작게, 미리보기는 남는 공간을 크게 */
+  grid-template-rows:
+    auto
+    auto
+    minmax(0, 1fr)
+    auto;
 
-    column-gap: 20px;
+  grid-template-areas:
+    "edition-header edition-header"
+    "edition-divider edition-divider"
+    "edition-preview edition-preview"
+    "edition-status edition-data";
 
-    padding: 12px 12px 14px;
-  }
+  column-gap: 20px;
+
+  flex: 1;
+  min-height: 0;
+
+  padding: 8px 12px 12px;
+}
+
+.edition-card-container .content-header {
+  grid-area: edition-header;
+}
+
+.edition-card-container .content-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.15;
+}
+
+.edition-card-container .content-header .sub-text {
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.edition-card-container .double-divider {
+  grid-area: edition-divider;
+  margin: 5px 0 8px;
+}
+
+.edition-card-container .layout-grid {
+  grid-area: edition-preview;
+
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.edition-card-container .edition-preview {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  margin-bottom: 10px;
+}
 
   .edition-card-container .content-header {
     grid-area: edition-header;
@@ -4853,7 +4908,7 @@ body.name-intro-open {
     padding: 11px 0;
     border-radius: 6px;
     font-size: 1.2rem;
-  }
+  }}
 
   /* ==================================================
      16. 푸터
@@ -5028,8 +5083,8 @@ body.name-intro-open {
     border: 0;
     border-radius: 50%;
 
-    background-color: #111111;
-    color: #ffffff;
+    background-color: var(--newspaper-button-bg);
+    color: var(--newspaper-button-color);
 
     cursor: pointer;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -5709,106 +5764,123 @@ body.edition-open {
   =====================*/
 
 /* ==================================================
-   모바일 - 신문칸 팝업
+   모바일 신문칸
+================================================== */
 @media (max-width: 767px) {
   #report.edition-card-container.is-open {
     position: fixed;
 
-    /* 모바일에서는 화면 가장자리 기준으로 배치 */
-    top: 12px;
-    right: 12px;
-    bottom: 12px;
-    left: 12px;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
 
-    /* 태블릿의 중앙 정렬 방식 해제 */
-    width: auto;
-    height: auto;
-    max-width: none;
-    max-height: none;
+    /* 화면 가로 폭에 맞춰 확대 */
+    width: calc(100vw - 20px);
+    max-width: 620px;
+
+    /* 세로 공간도 더 크게 사용 */
+    height: min(88dvh, 860px);
+    max-height: calc(100dvh - 20px);
+
+    display: flex;
+    flex-direction: column;
 
     margin: 0;
-    padding: 0 10px 10px;
+    padding: 0 8px 8px;
 
     box-sizing: border-box;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+  }
 
-    /* top/left 50% 방식 해제 */
-    transform: none;
+  #report.edition-card-container.is-open > .card-header {
+    flex: 0 0 auto;
+  }
 
-    /* 내용이 화면보다 길어지면 신문칸 내부에서 스크롤 */
-    overflow-x: hidden;
+  #report.edition-card-container.is-open .content-box {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    min-height: 0;
+
+    padding: clamp(10px, 2.5vw, 16px);
     overflow-y: auto;
   }
 
-  /* 모바일에서는 본문을 억지로 세로로 늘리지 않음 */
-  #report.edition-card-container.is-open .content-box {
+  #report.edition-card-container.is-open .content-header {
     flex: 0 0 auto;
-    min-height: 0;
+    width: 100%;
   }
 
-  /* 신문 미리보기 영역도 모바일 크기에 맞춤 */
+  #report.edition-card-container.is-open .double-divider {
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  #report.edition-card-container.is-open .layout-grid {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  /* 가로 크기에 비례하여 신문 미리보기 확대 */
   #report.edition-card-container.is-open .edition-preview {
     width: 100%;
-    min-height: clamp(130px, 42vw, 190px);
+
+    height: clamp(230px, 62vw, 300px);
+    min-height: clamp(230px, 62vw, 300px);
+
+    margin-bottom: 14px;
+  }
+}
+
+  #report.edition-card-container.is-open .status-message {
+    flex: 0 0 auto;
+
+    width: 100%;
+    margin: 0 0 6px;
+    padding: 0;
   }
 
-  /* 모바일에서 헤더 간격 축소 */
-  #report.edition-card-container.is-open > .card-header {
-    flex-shrink: 0;
-    gap: 8px;
-    padding: 12px;
-  }
-
-  /* 제목 크기 */
-  #report.edition-card-container.is-open .header-title h2 {
-    font-size: 0.9rem;
-  }
-
-  /* 자정 자동 발간 배지 */
-  #report.edition-card-container.is-open .badge {
-    min-width: 64px;
-    max-width: 64px;
-    min-height: 40px;
-    font-size: 0.7rem;
-  }
-
-  /* 내용 안쪽 여백 축소 */
-  #report.edition-card-container.is-open .content-box {
-    padding: 14px 8px 16px;
-  }
-
-  /* 상태 설명 */
   #report.edition-card-container.is-open .status-message h3 {
-    font-size: 1.05rem;
+    margin: 0 0 6px;
   }
 
   #report.edition-card-container.is-open .status-message p {
-    font-size: 0.75rem;
-    line-height: 1.5;
+    margin: 0;
   }
 
-  /* 발행 정보 */
+  #report.edition-card-container.is-open .data-list {
+    flex: 0 0 auto;
+    display: block;
+
+    width: 100%;
+    margin-top: auto;
+    padding: 18px 0 0;
+  }
+
   #report.edition-card-container.is-open .data-item {
-    gap: 8px;
-    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    padding: 5px 0;
   }
 
-  #report.edition-card-container.is-open .data-item dt,
-  #report.edition-card-container.is-open .data-item dd {
-    font-size: 0.72rem;
+  #report.edition-card-container.is-open > .card-footer {
+    flex: 0 0 auto;
+    margin-top: 10px;
   }
 
-  /* 신문 보기 버튼 */
   #report.edition-card-container.is-open .view-newspaper-btn {
-    padding: 13px 0;
-    font-size: 0.9rem;
+    width: 100%;
+    padding: 15px 0;
   }
+}
 
-  /* 모바일 플로팅 버튼도 조금 작게 */
-  .tablet-newspaper-btn {
-    right: 16px;
-    bottom: 16px;
-
-    width: 56px;
-    height: 56px;
-  }
+.edition-card-container .badge {
+  display: none;
 }
