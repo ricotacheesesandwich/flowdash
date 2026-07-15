@@ -910,6 +910,367 @@ body.dark-mode .filter-btn {
   background-color: var(--border-dark);
 }
 
+/*여기서 부터 입니다 다미쌤*/
+
+/* 기본 초기화 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 0;
+}
+
+/* 모바일 화면 크기로 강제 고정하는 컨테이너 */
+.mobile-kanban-container {
+  width: 360px; /* 시안과 거의 일치하는 모바일 표준 너비 */
+  min-height: 740px;
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. 상단 탭 영역 */
+.kanban-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e2e2;
+  background-color: #ffffff;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 18px 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: #222222;
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 활성화 탭 글자 색상 (시안의 짙은 레드 브라운 계열) */
+.tab-item.active {
+  color: #b33939;
+}
+
+/* 활성화 탭 밑줄 */
+.tab-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px; /* 탭 테두리선과 겹치게 배치 */
+  left: 20%;
+  width: 60%;
+  height: 3px;
+  background-color: #b33939;
+  border-radius: 2px;
+}
+
+/* 2. 카드 본문 영역 */
+.kanban-content {
+  flex: 1;
+  padding: 16px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 3. 개별 카드 디테일 */
+.task-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 카드 상단 헤더 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-group,
+.right-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 체크박스 */
+.card-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dcdcdc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* '낮음' 배지 */
+.badge-low {
+  font-size: 11px;
+  font-weight: 500;
+  color: #444444;
+  padding: 2px 8px;
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+/* 시간 */
+.time-stamp {
+  font-size: 11px;
+  color: #555555;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.clock-icon {
+  font-size: 10px;
+  color: #999999;
+}
+
+/* 삭제 (X) 버튼 */
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888888;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* 카드 텍스트 정보 */
+.card-body {
+  text-align: left;
+  padding-left: 2px;
+}
+
+.task-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111111;
+  margin-bottom: 6px;
+}
+
+.task-desc {
+  font-size: 12px;
+  color: #777777;
+}
+
+/* 카드 하단 셀렉트박스 */
+.status-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.status-select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #111111;
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  background-color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  appearance: none; /* 기본 화살표 숨김 */
+
+  /* 커스텀 화살표 아이콘 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23888888'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+/* 1. PC 및 태블릿 (768px 이상) : 화면에서 완전히 숨깁니다. */
+@media (min-width: 768px) {
+  .mobile-kanban-container {
+    display: none !important;
+  }
+}
+
+/* 2. 모바일 (767px 이하) : 시안대로 가로 크기가 고정되며 노출됩니다. */
+@media (max-width: 767px) {
+  .mobile-kanban-container {
+    display: flex;
+    flex-direction: column;
+    width: 360px; /* 시안 너비 */
+    min-height: 740px;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    margin: 0 auto;
+  }
+}
+
+/* [나머지 카드 및 탭 CSS는 모바일 안쪽에서만 작동하도록 그대로 유지] */
+.kanban-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e2e2;
+  background-color: #ffffff;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 18px 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: #222222;
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #b33939;
+}
+
+.tab-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  width: 60%;
+  height: 3px;
+  background-color: #b33939;
+  border-radius: 2px;
+}
+
+.kanban-content {
+  flex: 1;
+  padding: 16px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 비활성화된 카드를 숨기기 위한 클래스 (JS 연동용) */
+.task-card.hidden {
+  display: none !important;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-group,
+.right-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dcdcdc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.badge-low {
+  font-size: 11px;
+  font-weight: 500;
+  color: #444444;
+  padding: 2px 8px;
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.time-stamp {
+  font-size: 11px;
+  color: #555555;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.clock-icon {
+  font-size: 10px;
+  color: #999999;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888888;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.card-body {
+  text-align: left;
+  padding-left: 2px;
+}
+
+.task-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111111;
+  margin-bottom: 6px;
+}
+
+.task-desc {
+  font-size: 12px;
+  color: #777777;
+}
+
+.status-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.status-select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #111111;
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  background-color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23888888'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+/* 여깁니다 다미쌤*/
 /* .kanban-board */
 .kanban-board {
   display: flex;
@@ -1087,6 +1448,8 @@ body.dark-mode .filter-btn {
 }
 
 .calendar-mobile-toggle {
+  display: none;
+}
   display: none;
 }
 
@@ -4008,6 +4371,7 @@ body.name-intro-open {
   }
 
   .stat-card:last-child .stat-card-value {
+  .stat-card:last-child .stat-card-value {
     font-size: 2.5rem;
   }
 
@@ -4443,9 +4807,12 @@ body.name-intro-open {
   }
 
   @media (max-width: 1199px) {
+  @media (max-width: 1199px) {
     .stat-card:nth-child(2n) {
       border-right: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
     }
+  }
   }
 
   .stats-cards {
@@ -5093,45 +5460,35 @@ body.name-intro-open {
   /* 3. 버튼을 눌렀을 때 기존 신문칸을 화면 위에 띄움 */
   #report.edition-card-container.is-open {
     position: fixed;
+    top: 50%;
+    left: 50%;
     z-index: 1100;
 
-    /* 위아래는 화면에 따라,
-       양옆은 넉넉하게 띄움 */
-    top: 50%;
-    right: clamp(72px, 12vw, 160px);
-    bottom: auto;
-    left: clamp(72px, 12vw, 160px);
+    display: block;
 
-    display: flex;
-    flex-direction: column;
+    width: clamp(560px, 55vw, 720px);
+    height: 68vh;
+    max-height: 780px;
 
-    /* 기존 고정 크기 해제 */
-    width: auto;
-    height: 78vh;
-    max-width: none;
-    max-height: 820px;
-
-    margin: 0;
     box-sizing: border-box;
+    margin: 0;
 
-    transform: translateY(-50%);
-
-    overflow-x: hidden;
     overflow-y: auto;
 
-    background-color: var(--bg-card);
+    transform: translate(-50%, -50%);
 
     box-shadow:
       0 0 0 100vmax rgba(0, 0, 0, 0.4),
       0 20px 60px rgba(0, 0, 0, 0.25);
   }
-}
+  #report.edition-card-container.is-open {
+    display: flex;
+    flex-direction: column;
+  }
 
-#report.edition-card-container.is-open {
-  display: flex;
-  flex-direction: column;
-}
-
+  #report.edition-card-container.is-open .content-box {
+    flex: 1;
+  }
   #report.edition-card-container.is-open .content-box {
     flex: 1;
   }
@@ -5143,20 +5500,38 @@ body.name-intro-open {
     display: flex;
     align-items: center;
     justify-content: center;
+  #report.edition-card-container.is-open > .card-footer {
+    margin-top: 14px;
+  }
+  .tablet-newspaper-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     flex: 0 0 34px;
+    flex: 0 0 34px;
 
+    width: 34px;
+    height: 34px;
+    padding: 0;
     width: 34px;
     height: 34px;
     padding: 0;
 
     border: 0;
     background: transparent;
+    border: 0;
+    background: transparent;
 
     color: var(--text-main);
     font-size: 30px;
     line-height: 1;
+    color: var(--text-main);
+    font-size: 30px;
+    line-height: 1;
 
+    cursor: pointer;
+  }
     cursor: pointer;
   }
 
@@ -5221,6 +5596,7 @@ body.edition-open {
     padding: 0 8px;
   }
 
+  .controls {
   .controls {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));

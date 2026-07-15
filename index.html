@@ -480,7 +480,122 @@
             </div>
           </dl>
         </section>
+       
+          <!--다미쌤 여기에요!-->
+          <div class="mobile-kanban-container">
+            <!-- 상단 탭 메뉴 -->
+            <header class="kanban-tabs">
+              <button class="tab-item active">할 일</button>
+              <button class="tab-item">진행 중</button>
+              <button class="tab-item">완료</button>
+            </header>
 
+            <!-- 카드 리스트 영역 -->
+            <main class="kanban-content">
+              <!-- 카드 1 -->
+              <article class="task-card">
+                <div class="card-header">
+                  <div class="left-group">
+                    <input type="checkbox" class="card-checkbox" />
+                    <span class="badge-low">낮음</span>
+                  </div>
+                  <div class="right-group">
+                    <span class="time-stamp"
+                      ><span class="clock-icon">🕒</span> 08:00</span
+                    >
+                    <button class="delete-btn" aria-label="삭제">
+                      &times;
+                    </button>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <h4 class="task-title">독서 30분</h4>
+                  <p class="task-desc">집중력 회복용 독서</p>
+                </div>
+
+                <div class="card-footer">
+                  <div class="status-select-wrapper">
+                    <select class="status-select">
+                      <option value="todo" selected>할 일</option>
+                      <option value="progress">진행 중</option>
+                      <option value="done">완료</option>
+                    </select>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 카드 2 -->
+              <article class="task-card">
+                <div class="card-header">
+                  <div class="left-group">
+                    <input type="checkbox" class="card-checkbox" />
+                    <span class="badge-low">낮음</span>
+                  </div>
+                  <div class="right-group">
+                    <span class="time-stamp"
+                      ><span class="clock-icon">🕒</span> 08:00</span
+                    >
+                    <button class="delete-btn" aria-label="삭제">
+                      &times;
+                    </button>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <h4 class="task-title">독서 30분</h4>
+                  <p class="task-desc">집중력 회복용 독서</p>
+                </div>
+
+                <div class="card-footer">
+                  <div class="status-select-wrapper">
+                    <select class="status-select">
+                      <option value="todo" selected>할 일</option>
+                      <option value="progress">진행 중</option>
+                      <option value="done">완료</option>
+                    </select>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 카드 3 -->
+              <article class="task-card">
+                <div class="card-header">
+                  <div class="left-group">
+                    <input type="checkbox" class="card-checkbox" />
+                    <span class="badge-low">낮음</span>
+                  </div>
+                  <div class="right-group">
+                    <span class="time-stamp"
+                      ><span class="clock-icon">🕒</span> 08:00</span
+                    >
+                    <button class="delete-btn" aria-label="삭제">
+                      &times;
+                    </button>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <h4 class="task-title">독서 30분</h4>
+                  <p class="task-desc">집중력 회복용 독서</p>
+                </div>
+
+                <div class="card-footer">
+                  <div class="status-select-wrapper">
+                    <select class="status-select">
+                      <option value="todo" selected>할 일</option>
+                      <option value="progress">진행 중</option>
+                      <option value="done">완료</option>
+                    </select>
+                  </div>
+                </div>
+              </article>
+            </main>
+          </div>
+          <script src="kanban.js"></script>
+        </html>
+         <!---여기까지에요 다미쌤!-->
+         
         <!-- 1.검색창 관련 묶음이기에 div가 아닌 section 태그로 분류
         2.사용자가 입력하여 기입하는 기능이기에 from 사용. 
         3.검색이라 text가 아닌 search로 수정함
