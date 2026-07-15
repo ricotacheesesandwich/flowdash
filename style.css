@@ -5467,11 +5467,7 @@ body.mobile-menu-open {
   #report.edition-card-container.is-open {
     display: flex;
     flex-direction: column;
-  }
-    box-shadow:
-      0 0 0 100vmax rgba(0, 0, 0, 0.4),
-      0 20px 60px rgba(0, 0, 0, 0.25);
-  }
+  }  }
   #report.edition-card-container.is-open {
     display: flex;
     flex-direction: column;
@@ -6366,8 +6362,10 @@ body.mobile-menu-open .menu-btn span {
   width: 25px;
   height: 2px;
 
-  background-color: var(--text-main);
+  background-color: var(--text-main);}
 /*    모바일 신문칸 */
+@media (max-width: 767px) {
+  /* 모바일 신문칸 */
 @media (max-width: 767px) {
   #report.edition-card-container.is-open {
     position: fixed;
@@ -6377,11 +6375,9 @@ body.mobile-menu-open .menu-btn span {
     right: auto;
     bottom: auto;
 
-    /* 화면 가로 폭에 맞춰 확대 */
     width: calc(100vw - 20px);
     max-width: 620px;
 
-    /* 세로 공간도 더 크게 사용 */
     height: min(88dvh, 860px);
     max-height: calc(100dvh - 20px);
 
@@ -6430,13 +6426,11 @@ body.mobile-menu-open .menu-btn span {
   /* 가로 크기에 비례하여 신문 미리보기 확대 */
   #report.edition-card-container.is-open .edition-preview {
     width: 100%;
-
     height: clamp(230px, 62vw, 300px);
     min-height: clamp(230px, 62vw, 300px);
 
     margin-bottom: 14px;
   }
-}
 
   #report.edition-card-container.is-open .status-message {
     flex: 0 0 auto;
@@ -6481,8 +6475,16 @@ body.mobile-menu-open .menu-btn span {
     width: 100%;
     padding: 15px 0;
   }
-}
 
-.edition-card-container .badge {
-  display: none;
+  .edition-card-container .badge {
+    display: none;
+  }
+}}
+/* 햄버거 메뉴가 열리면 신문 버튼 숨김 */
+body.mobile-menu-open .tablet-newspaper-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: opacity .2s ease;
 }
