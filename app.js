@@ -67,6 +67,102 @@ document.addEventListener("DOMContentLoaded", () => {
     status: "all",
   });
 
+  //여기서부터 입니다 다미쌤
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".tab-item");
+    const contentArea = document.querySelector(".kanban-content");
+
+    // 1. 현재 선택된 탭 상태 ('todo', 'progress', 'done')
+    let currentTab = "todo";
+
+    // 2. 탭 메뉴 클릭 이벤트 등록
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        // 기존 active 제거 후 클릭한 탭 활성화
+        tabs.forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        // 탭 이름 매핑
+        const tabName = tab.textContent.trim();
+        if (tabName === "할 일") {
+          currentTab = "todo";
+        } else if (tabName === "진행 중") {
+          currentTab = "progress";
+        } else if (tabName === "완료") {
+          currentTab = "done";
+        }
+
+        // 화면 카드 필터링 갱신
+        filterCards();
+      });
+    });
+
+    // 3. 카드 상태 변경 및 삭제 연동 (이벤트 위임)
+    contentArea.addEventListener("change", (e) => {
+      const target = e.target;
+      const card = target.closest(".task-card");
+      if (!card) return;
+
+      // A. 셀렉트 박스 값이 바뀌었을 때
+      if (target.classList.contains("status-select")) {
+        const selectValue = target.value;
+        const checkbox = card.querySelector(".card-checkbox");
+
+        if (selectValue === "done") {
+          if (checkbox) checkbox.checked = true;
+        } else {
+          if (checkbox) checkbox.checked = false;
+        }
+
+        filterCards(); // 카드 소속이 바뀌었으니 탭 화면에서 필터링 다시 계산
+      }
+
+      // B. 체크박스 클릭했을 때
+      if (target.classList.contains("card-checkbox")) {
+        const select = card.querySelector(".status-select");
+        if (target.checked) {
+          if (select) select.value = "done";
+        } else {
+          if (select) select.value = "todo";
+        }
+
+        filterCards();
+      }
+    });
+
+    // C. 삭제(X) 버튼 클릭했을 때
+    contentArea.addEventListener("click", (e) => {
+      if (e.target.classList.contains("delete-btn")) {
+        const card = e.target.closest(".task-card");
+        if (card && confirm("이 일정을 삭제하시겠습니까?")) {
+          card.remove();
+        }
+      }
+    });
+
+    // 4. 현재 탭 상태에 맞는 카드만 보여주는 필터링 함수
+    function filterCards() {
+      const cards = document.querySelectorAll(".task-card");
+
+      cards.forEach((card) => {
+        const select = card.querySelector(".status-select");
+        if (select) {
+          // 카드의 현재 선택값과 클릭한 상단 탭 값이 다르면 숨김(.hidden) 처리
+          if (select.value === currentTab) {
+            card.classList.remove("hidden");
+          } else {
+            card.classList.add("hidden");
+          }
+        }
+      });
+    }
+
+    // 초기 화면 로딩 시 '할 일(todo)' 탭에 있는 카드만 걸러서 보여주기
+    filterCards();
+  });
+  //여기까지 입니다.
+
   const categoryLabels = {
     work: "업무",
     personal: "개인",

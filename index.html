@@ -6,9 +6,10 @@
     <title>To-Do List</title>
     <link rel="stylesheet" href="./reset.css" />
     <link rel="stylesheet" href="./style.css" />
-    <link rel="icon" href="./SVG/파비콘2.svg" type="image/svg+xml" />
+    <link rel="icon" href="SVG\파비콘2.svg" type="todo-icon" />
   </head>
   <!-- 김상우 div 시멘틱 하게 변경 -->
+
   <body>
     <section
       id="nameIntro"
@@ -482,12 +483,13 @@
         <header class="greeting-area">
           <!-- 독립된 개체가 아니기에 article 태그를 div 로 변경 -->
           <div class="greeting-text">
-            <!-- 위쪽 작은 영어 인사말 -->
-            <span id="timeGreeting" class="greeting-label"> HELLO </span>
+            <span class="greeting-label">
+              GOOD MORNING
+              <span id="greetingLabelName">USER</span>
+            </span>
 
-            <!-- 메인 한국어 인사말 -->
             <h2>
-              <span id="mainTimeGreeting">안녕하세요</span>,
+              안녕하세요,
               <button
                 id="displayUserName"
                 type="button"
@@ -544,10 +546,10 @@
         </section>
 
         <!-- 1.검색창 관련 묶음이기에 div가 아닌 section 태그로 분류
-        2.사용자가 입력하여 기입하는 기능이기에 from 사용. 
-        3.검색이라 text가 아닌 search로 수정함
-        4.js 연결용 id 추가
-        -->
+      2.사용자가 입력하여 기입하는 기능이기에 from 사용. 
+      3.검색이라 text가 아닌 search로 수정함
+      4.js 연결용 id 추가
+    -->
         <section class="controls" aria-label="일정 검색과 필터">
           <form class="search-bar" role="search">
             <span class="search-icon" aria-hidden="true">⌕</span>
@@ -704,7 +706,14 @@
           class="kanban-board"
           aria-label="일정 상태 보드"
         >
-          <section class="kanban-col" aria-labelledby="todoTitle">
+          <!-- 상단 탭 메뉴 -->
+          <header class="kanban-tabs">
+            <button class="tab-item active">할 일</button>
+            <button class="tab-item">진행 중</button>
+            <button class="tab-item">완료</button>
+          </header>
+
+          <section class="kanban-col on" aria-labelledby="todoTitle">
             <header class="kanban-header">
               <h3 id="todoTitle">할 일</h3>
               <span id="todoCount" class="count-badge">0</span>
@@ -1549,6 +1558,7 @@
     </button>
 
     <script src="app.js"></script>
+    <script src="kanban.js"></script>
   </body>
 </html>
 <!-- 전체수정 완료 김태은 -->
