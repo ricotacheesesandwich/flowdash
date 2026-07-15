@@ -3484,6 +3484,16 @@ body.dark-mode #taskModal input[type="time"] {
   height: 26px;
 }
 
+/* 신문 팝업 X 아이콘 기본 색상 */
+#closeNewspaper svg polygon {
+  fill: #111111;
+}
+
+/* 다크모드 신문 팝업 X 아이콘 색상 */
+body.dark-mode #closeNewspaper svg polygon {
+  fill: #ffffff;
+}
+
 .newspaper-body {
   padding-top: 26px;
 }
