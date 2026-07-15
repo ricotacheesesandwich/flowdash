@@ -4,6 +4,8 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 
+@import "//cdn.jsdelivr.net/npm/font-kopub@1.0";
+
 :root {
   /* 라이트모드 */
   --bg-main: #f4f4f4;
@@ -49,6 +51,10 @@ body.dark-mode {
   --bg-card: #141414; /* 좌우 달력 및 에디션 카드 배경 */
   --bg-inner: #252525; /* 중앙 칸반 보드 내부 배경 */
   --bg-grid: #1c1e22; /* 검색바 및 투모로우 그리드 영역 */
+
+  --kanban-column-bg: #141414;
+  --kanban-header-bg: #141414;
+  --kanban-body-bg: #252525;
 
   --text-main: #ffffff; /* 메인 글자색 (화이트로 반전) */
   --text-title: #ffffff;
@@ -532,9 +538,89 @@ body {
 .controls {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+
   width: 100%;
   margin: 20px auto;
+}
+
+.control-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* 새 일정 등록 */
+.add-btn {
+  flex: 0 0 170px;
+
+  width: 170px;
+  min-width: 170px;
+  height: 62px;
+  padding: 0 18px;
+
+  border-radius: 999px;
+  background-color: var(--border-dark);
+  color: var(--bg-main);
+
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* 할 일 초기화 */
+.reset-btn {
+  flex: 0 0 180px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  width: 180px;
+  min-width: 180px;
+  height: 62px;
+  padding: 0 16px;
+
+  border: 2px solid var(--point-red);
+  border-radius: 999px;
+
+  background-color: transparent;
+  color: var(--point-red);
+
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.15s ease;
+}
+
+.reset-btn:hover {
+  border-color: var(--point-red);
+  background-color: var(--point-red);
+  color: #ffffff;
+}
+
+.reset-btn:active {
+  transform: translateY(1px);
+}
+
+/* 초기화 버튼 휴지통 */
+.reset-btn svg {
+  display: block;
+  flex: 0 0 20px;
+
+  width: 20px;
+  height: 22px;
+}
+
+.reset-btn svg .cls-1 {
+  fill: currentColor;
 }
 
 .search-bar {
@@ -553,11 +639,10 @@ body {
 }
 
 .search-bar input {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-
-  padding-right: 42px;
+  flex: 1 1 auto;
+  min-width: 100px;
+  width: auto;
+  padding: 0;
 
   border: none;
   outline: none;
@@ -567,6 +652,64 @@ body {
   font-size: 18px;
 }
 
+/* 검색어와 필터 초기화 X 버튼 */
+.search-clear-btn {
+  position: static;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  padding: 0;
+
+  color: var(--text-main);
+
+  transform: none;
+}
+
+.search-clear-btn svg {
+  display: block;
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  stroke: currentColor;
+}
+
+.search-clear-btn[hidden] {
+  display: none;
+}
+
+/* 검색창 오른쪽의 적용된 필터 */
+.active-filter-text {
+  flex: 0 1 46%;
+  min-width: 0;
+
+  margin-left: 18px;
+  padding-left: 22px;
+
+  overflow: hidden;
+
+  border-left: 1px solid var(--border-light);
+
+  color: var(--text-light);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 34px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active-filter-text[hidden] {
+  display: none;
+}
+
 .search-bar input[type="search"]::-webkit-search-cancel-button {
   display: none;
 
@@ -574,35 +717,10 @@ body {
   -webkit-appearance: none;
 }
 
-.search-clear-btn {
-  position: absolute;
-  top: 50%;
-  right: 18px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 24px;
-  height: 24px;
-  padding: 0;
-
-  color: var(--text-main);
-  font-size: 27px;
-  font-weight: 500;
-  line-height: 1;
-
-  transform: translateY(-50%);
-}
-
-.search-clear-btn[hidden] {
-  display: none;
-}
-
 .control-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -618,52 +736,87 @@ body {
   border: 1px solid var(--border-light);
   border-radius: 12px;
   background: var(--bg-card);
+
+  /* 라이트 모드 아이콘 색상 */
+  color: #9b9a9b;
 }
 
-/* 필터 버튼 내부 SVG 크기 */
+/* SVG 내부의 고정 색상을 버튼 color로 변경 */
+.filter-btn svg .cls-1 {
+  fill: currentColor;
+}
+
 .filter-btn svg {
   width: 26px;
   height: 26px;
   flex-shrink: 0;
 }
+
+/* 다크 모드에서는 필터 아이콘을 흰색으로 표시 */
+body.dark-mode .filter-btn {
+  color: #ffffff;
+}
+
 .add-btn {
-  min-width: 230px;
+  flex: 0 0 170px;
+
+  width: 170px;
+  min-width: 170px;
   height: 62px;
-  padding: 0 28px;
+  padding: 0 18px;
+
   border-radius: 999px;
   background-color: var(--border-dark);
   color: var(--bg-main);
-  font-size: 18px;
+
+  font-size: 16px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 /* 오름차순·내림차순 전환 버튼 */
 
 .sort-direction-btn {
-  flex: 0 0 130px;
+  flex: 0 0 62px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
 
+  width: 62px;
   height: 62px;
-  padding: 0 16px;
+  padding: 0;
 
   border: 1px solid #d9d9d9;
   border-radius: 12px;
 
   background-color: var(--bg-card);
-  color: var(--text-main);
-
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
+  color: var(--point-red);
 }
 
-.sort-direction-btn strong {
-  color: #bd3131;
-  font-weight: 800;
+.sort-direction-icon {
+  display: none;
+  flex-shrink: 0;
+
+  width: 26px;
+  height: 26px;
+
+  fill: currentColor;
+}
+
+/* 기본 상태는 오름차순 */
+#sortAscendingIcon {
+  display: block;
+}
+
+/* 내림차순 상태가 되면 오름차순 숨김 */
+#sortDirectionButton.is-desc #sortAscendingIcon {
+  display: none;
+}
+
+/* 내림차순 상태가 되면 내림차순 표시 */
+#sortDirectionButton.is-desc #sortDescendingIcon {
+  display: block;
 }
 
 .sort-direction-btn:hover {
@@ -674,14 +827,58 @@ body {
   transform: translateY(1px);
 }
 .reset-btn {
-  min-width: 230px;
+  flex: 0 0 180px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  width: 180px;
+  min-width: 180px;
   height: 62px;
-  padding: 0 28px;
+  padding: 0 16px;
+
+  border: 2px solid var(--point-red);
   border-radius: 999px;
-  background-color: #c9331e;
-  color: #ffffff;
-  font-size: 18px;
+
+  background-color: transparent;
+  color: var(--point-red);
+
+  font-size: 16px;
   font-weight: 700;
+  white-space: nowrap;
+
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.15s ease;
+}
+
+/* 마우스를 올리면 붉은색으로 채움 */
+.reset-btn:hover {
+  border-color: var(--point-red);
+  background-color: var(--point-red);
+  color: #ffffff;
+}
+
+/* 누르는 순간 살짝 내려감 */
+.reset-btn:active {
+  transform: translateY(1px);
+}
+/* 일정 초기화 휴지통 아이콘 */
+.reset-btn svg {
+  display: block;
+  flex: 0 0 20px;
+
+  width: 20px;
+  height: 22px;
+}
+
+/* SVG 안에 직접 지정된 회색을 흰색으로 변경 */
+.reset-btn svg .cls-1 {
+  fill: currentColor;
 }
 
 .search-icon {
@@ -716,11 +913,14 @@ body {
 
 .kanban-col {
   flex: 1;
-  background-color: #ffffff;
-  border: 1px solid #e5e5e5;
-  border-radius: 6px;
+
   display: flex;
   flex-direction: column;
+
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+
   overflow: hidden;
 }
 
@@ -728,9 +928,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   padding: 20px;
+
   border-bottom: 2px solid var(--border-dark);
-  background-color: var(--bg-main);
+  background-color: var(--bg-card);
 }
 
 .kanban-header h3 {
@@ -754,14 +956,17 @@ body {
 }
 
 .kanban-body {
-  list-style: none;
-  margin: 0;
-  padding: 15px;
-  background-color: var(--bg-main);
-  min-height: 500px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  min-height: 500px;
+  margin: 0;
+  padding: 15px;
+
+  list-style: none;
+
+  background-color: var(--bg-card);
 }
 
 /* 일정이 3개를 초과하면 목록 내부 스크롤 */
@@ -816,12 +1021,17 @@ body {
   width: 64px;
   height: 64px;
   margin-bottom: 18px;
-  color: #b5b5b5;
+  color: #c9c9c9;
 }
 
 .kanban-empty-icon svg {
+  display: block;
+
   width: 100%;
   height: 100%;
+
+  fill: none;
+  stroke: currentColor;
 }
 
 .kanban-empty-title {
@@ -942,8 +1152,8 @@ body {
 }
 
 .kanban-board .task-priority.priority-low {
-  background-color: #cf7c72;
-  color: #ffffff;
+  background-color: #e6b800;
+  color: #111111;
 }
 
 .kanban-board .task-priority.priority-normal {
@@ -1078,18 +1288,34 @@ body {
   background-color: rgba(189, 49, 49, 0.12);
 }
 
+.kanban-board .task-schedule-time {
+  display: block;
+
+  margin-top: 30px;
+
+  color: var(--text-main);
+
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+
 /* 제목 */
 
 .kanban-board .task-title,
 .kanban-board .task-card.is-done .task-title {
   display: block;
-  margin: 27px 0 0;
+
+  margin: 8px 0 0;
 
   color: var(--text-main);
-  font-size: 26px;
+
+  font-size: 28px;
   font-weight: 800;
-  line-height: 1.3;
-  letter-spacing: -0.7px;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+
   text-align: left;
   text-decoration: none;
 
@@ -1101,12 +1327,15 @@ body {
 .kanban-board .task-desc,
 .kanban-board .task-card.is-done .task-desc {
   display: block;
-  margin: 6px 0 0;
+
+  margin: 8px 0 0;
 
   color: var(--text-main);
-  font-size: 15px;
+
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
+
   text-align: left;
   white-space: pre-wrap;
 
@@ -1118,12 +1347,12 @@ body {
 .kanban-board .task-footer,
 .kanban-board .task-card.is-done .task-footer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) 108px;
+  gap: 12px;
   align-items: end;
 
   margin-top: auto;
-  padding-top: 28px;
+  padding-top: 34px;
 }
 
 /* 등록·완료 시간 */
@@ -1136,9 +1365,10 @@ body {
 }
 
 .kanban-board .task-history-row {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
   gap: 7px;
+  align-items: center;
 
   min-width: 0;
 
@@ -1150,44 +1380,23 @@ body {
 
 .kanban-board .task-history-time {
   min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* 시계 아이콘 */
+/* 실제 SVG 시계 아이콘 */
 
 .kanban-board .task-history-icon {
-  position: relative;
-  flex: 0 0 14px;
+  display: block;
+  flex-shrink: 0;
 
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
 
-  border: 2px solid #c4c4c4;
-  border-radius: 50%;
-}
-
-.kanban-board .task-history-icon::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 5px;
-
-  width: 2px;
-  height: 4px;
-
-  background-color: #c4c4c4;
-}
-
-.kanban-board .task-history-icon::after {
-  content: "";
-  position: absolute;
-  top: 6px;
-  left: 5px;
-
-  width: 4px;
-  height: 2px;
-
-  background-color: #c4c4c4;
+  color: #c4c4c4;
 }
 
 /* 상태 선택창 */
@@ -1195,31 +1404,34 @@ body {
 .kanban-board .task-dropdown,
 .kanban-board .task-card.is-done .task-dropdown {
   display: block;
+  justify-self: end;
 
-  width: 100%;
-  height: 50px;
-  padding: 0 36px 0 14px;
+  width: 108px;
+  height: 42px;
+  padding: 0 25px 0 10px;
 
   border: 1px solid #cccccc;
   border-radius: 6px;
 
   background-color: var(--bg-card);
   background-image:
-    linear-gradient(45deg, transparent 50%, #bbbbbb 50%),
-    linear-gradient(135deg, #bbbbbb 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, #aaaaaa 50%),
+    linear-gradient(135deg, #aaaaaa 50%, transparent 50%);
   background-position:
-    calc(100% - 17px) 21px,
-    calc(100% - 12px) 21px;
+    calc(100% - 14px) 17px,
+    calc(100% - 9px) 17px;
   background-repeat: no-repeat;
-  background-size: 6px 6px;
+  background-size: 5px 5px;
 
   color: var(--text-main);
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 800;
 
   appearance: none;
   -webkit-appearance: none;
+
   outline: none;
+  box-shadow: none;
 }
 
 .kanban-board .task-card.is-done {
@@ -1245,7 +1457,7 @@ body {
 }
 
 .kanban-board .task-card.is-done.priority-low .task-checkbox {
-  background-color: #cf7c72;
+  background-color: #e6b800;
 }
 
 .kanban-board .task-card.is-done.priority-normal .task-checkbox {
@@ -1917,14 +2129,50 @@ body {
 
 .close-btn {
   flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 40px;
   height: 40px;
+  padding: 0;
+
   color: var(--text-main);
   font-size: 34px;
   font-weight: 300;
   line-height: 1;
 }
 
+/* 필터와 일정 등록 팝업의 X 아이콘 크기 */
+#filterModal .close-btn svg,
+#taskModal .close-btn svg {
+  display: block;
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+}
+
+/* 필터 X 기본 색상 */
+#filterModal #closeFilterModal svg polygon {
+  fill: #231815;
+}
+
+/* 일정 등록 X 기본 색상 */
+#taskModal #closeModal svg polygon {
+  fill: #231815;
+}
+
+/* 다크 모드일 때 필터 X 흰색 */
+body.dark-mode #filterModal #closeFilterModal svg polygon {
+  fill: #ffffff;
+}
+
+/* 다크 모드일 때 일정 등록 X 흰색 */
+body.dark-mode #taskModal #closeModal svg polygon {
+  fill: #ffffff;
+}
 /* =========================================================
    경고·삭제 확인 팝업
 ========================================================= */
@@ -2126,7 +2374,7 @@ body.dark-mode .message-modal-backdrop {
 }
 
 .form-group label {
-  color: #111111;
+  color: var(--text-main);
   font-size: 18px;
   font-weight: 800;
 }
@@ -2175,6 +2423,35 @@ body.dark-mode .message-modal-backdrop {
 
 .form-row .form-group {
   min-width: 0;
+}
+
+/* 날짜·시간 기본 아이콘 */
+#taskModal input[type="date"]::-webkit-calendar-picker-indicator,
+#taskModal input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+/* 다크모드 날짜·시간 아이콘 */
+body.dark-mode #taskModal input[type="date"]::-webkit-calendar-picker-indicator,
+body.dark-mode
+  #taskModal
+  input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 1;
+}
+
+/* 새 일정 등록창의 입력값 */
+#taskModal input,
+#taskModal textarea,
+#taskModal .custom-select-trigger,
+#taskModal .custom-select-value {
+  color: var(--text-main);
+}
+
+body.dark-mode #taskModal input[type="date"],
+body.dark-mode #taskModal input[type="time"] {
+  color: #ffffff;
 }
 
 /* 제목·메모 라벨과 글자 수 */
@@ -2763,7 +3040,25 @@ body.dark-mode .message-modal-backdrop {
   position: absolute;
   top: 12px;
   right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
   color: var(--text-main);
+}
+
+/* 신문 팝업 X 아이콘 크기 */
+.newspaper-modal-header .close-btn svg {
+  display: block;
+  flex-shrink: 0;
+
+  width: 26px;
+  height: 26px;
 }
 
 .newspaper-body {
@@ -3138,6 +3433,28 @@ body.name-intro-open {
   cursor: text;
 }
 
+.greeting-name-input {
+  display: inline-block;
+
+  min-width: 1ch;
+  max-width: 20ch;
+  margin: 0;
+  padding: 0 2px 1px;
+
+  border: 0;
+  border-bottom: 2px solid var(--point-red);
+  outline: none;
+
+  background-color: transparent;
+  color: inherit;
+
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  vertical-align: baseline;
+}
 .greeting-user-name:hover {
   border-bottom-color: currentColor;
 }
@@ -4066,11 +4383,18 @@ body.name-intro-open {
   }
 
   .sort-direction-btn {
-    flex: 0 0 118px;
+    flex: 0 0 52px;
+
+    width: 52px;
     height: 52px;
-    padding: 0 12px;
+    padding: 0;
+
     border-radius: 9px;
-    font-size: 13px;
+  }
+
+  .sort-direction-icon {
+    width: 23px;
+    height: 23px;
   }
 
   /* ==================================================
