@@ -518,11 +518,7 @@
         <!-- 1.통계의 내용이기에 ul로 배열하는 것이 아닌 하나의 묶음임을 감안하여 ul로 변경 
           2.같은 디자인의 카드이기에 dl class명 통일
           3.js 를 위한 id 추가 -->
-        <section
-          id="taskBoard"
-          class="stats-section"
-          aria-labelledby="statsTitle"
-        >
+        <section class="stats-section" aria-labelledby="statsTitle">
           <h2 id="statsTitle" class="sr-only">선택한 날짜의 일정 통계</h2>
 
           <dl class="stats-cards">
@@ -709,12 +705,16 @@
 
         <!-- 1.div를 section으로 변경, 2. span 을 h3 으로 변경 3.id 추가  -->
         <!-- 4.html 에서 표시될 부분만 표시 ul에 해당되는 일정을 js 로 추가되어 나타나도록 할 예정. -->
-        <section class="kanban-board" aria-label="일정 상태 보드">
+        <section
+          id="taskBoard"
+          class="kanban-board"
+          aria-label="일정 상태 보드"
+        >
           <!-- 상단 탭 메뉴 -->
           <header class="kanban-tabs">
-            <button class="tab-item active">할 일</button>
-            <button class="tab-item">진행 중</button>
-            <button class="tab-item">완료</button>
+            <button type="button" class="tab-item active">할 일</button>
+            <button type="button" class="tab-item">진행 중</button>
+            <button type="button" class="tab-item">완료</button>
           </header>
 
           <section class="kanban-col on" aria-labelledby="todoTitle">

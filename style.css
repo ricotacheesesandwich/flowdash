@@ -573,10 +573,10 @@ body {
 
 /* 새 일정 등록 */
 .add-btn {
-  flex: 0 0 170px;
+  flex: 0 0 200px;
 
-  width: 170px;
-  min-width: 170px;
+  width: 200px;
+  min-width: 200px;
   height: 62px;
   padding: 0 18px;
 
@@ -591,17 +591,17 @@ body {
 
 /* 할 일 초기화 */
 .reset-btn {
-  flex: 0 0 180px;
+  flex: 0 0 155px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 7px;
 
-  width: 180px;
-  min-width: 180px;
+  width: 155px;
+  min-width: 155px;
   height: 62px;
-  padding: 0 16px;
+  padding: 0 12px;
 
   border: 2px solid var(--point-red);
   border-radius: 999px;
@@ -651,7 +651,7 @@ body {
   align-items: center;
 
   height: 62px;
-  padding: 0 18px;
+  padding: 0 16px;
 
   background-color: var(--bg-card);
   border: 1px solid #d9d9d9;
@@ -707,18 +707,19 @@ body {
 
 /* 검색창 오른쪽의 적용된 필터 */
 .active-filter-text {
-  flex: 0 1 46%;
+  flex: 0 1 auto;
+  max-width: 46%;
   min-width: 0;
 
   margin-left: 18px;
-  padding-left: 22px;
+  padding-left: 18px;
 
   overflow: hidden;
 
   border-left: 1px solid var(--border-light);
 
   color: var(--text-light);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 34px;
 
@@ -775,23 +776,6 @@ body {
 /* 다크 모드에서는 필터 아이콘을 흰색으로 표시 */
 body.dark-mode .filter-btn {
   color: #ffffff;
-}
-
-.add-btn {
-  flex: 0 0 170px;
-
-  width: 170px;
-  min-width: 170px;
-  height: 62px;
-  padding: 0 18px;
-
-  border-radius: 999px;
-  background-color: var(--border-dark);
-  color: var(--bg-main);
-
-  font-size: 16px;
-  font-weight: 700;
-  white-space: nowrap;
 }
 
 /* 오름차순·내림차순 전환 버튼 */
@@ -4022,6 +4006,19 @@ body.mobile-menu-open {
   display: none;
 }
 
+/* 신문에 완료 기사로 발간되어 상태가 고정된 일정 */
+.task-card.is-status-locked .task-checkbox,
+.task-card.is-status-locked .task-dropdown {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* 일정 수정창의 잠긴 상태 선택창 */
+.custom-select.is-disabled .custom-select-trigger {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 /* 1920px 이상에서 햄버거 메뉴 숨김 */
 @media (min-width: 768px) {
   .menu-btn {
@@ -4908,8 +4905,6 @@ body.mobile-menu-open {
 
   .add-btn,
   .reset-btn {
-    flex: 1 1 0;
-
     width: auto;
     min-width: 0;
     height: 52px;
@@ -4918,6 +4913,14 @@ body.mobile-menu-open {
 
     font-size: clamp(0.72rem, 1.4vw, 0.9rem);
     white-space: nowrap;
+  }
+
+  .add-btn {
+    flex: 1.3 1 0;
+  }
+
+  .reset-btn {
+    flex: 1 1 0;
   }
 
   .sort-direction-btn {
@@ -4930,9 +4933,11 @@ body.mobile-menu-open {
     border-radius: 9px;
   }
 
+  .filter-btn svg,
   .sort-direction-icon {
-    width: 23px;
-    height: 23px;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
   }
 
   /* ==================================================

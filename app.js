@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 공통
   const STORAGE_KEY = "flowdash-tasks-v1";
   const USER_NAME_KEY = "flowdash-user-name";
+  const EDITION_STORAGE_KEY = "flowdash-editions-v1";
 
   const TITLE_MAX_LENGTH = 40;
   const MEMO_MAX_LENGTH = 100;
@@ -382,9 +383,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tasks = loadTasks();
 
+  /* 자정 기준으로 발간되어 고정된 신문 */
+  let publishedEditions = loadPublishedEditions();
+
   /* 현재 화면에 표시 중인 사용자 이름 */
   let currentUserName = "";
-
   /* null이면 새 일정 등록, 값이 있으면 일정 수정 */
   let editingTaskId = null;
   let messageConfirmAction = null;
@@ -557,6 +560,119 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.warn("일정을 저장하지 못했습니다.", error);
     }
+  }
+
+  /* 발간된 신문 불러오기 */
+  function loadPublishedEditions() {
+    try {
+      const savedData = localStorage.getItem(EDITION_STORAGE_KEY) || "{}";
+
+      const savedEditions = JSON.parse(savedData);
+
+      if (
+        savedEditions &&
+        typeof savedEditions === "object" &&
+        !Array.isArray(savedEditions)
+      ) {
+        return savedEditions;
+      }
+
+      return {};
+    } catch (error) {
+      console.warn("발간된 신문을 불러오지 못했습니다.", error);
+
+      return {};
+    }
+  }
+
+  /* 발간된 신문 저장하기 */
+  function savePublishedEditions() {
+    try {
+      localStorage.setItem(
+        EDITION_STORAGE_KEY,
+        JSON.stringify(publishedEditions),
+      );
+    } catch (error) {
+      console.warn("발간된 신문을 저장하지 못했습니다.", error);
+    }
+  }
+
+  /* 해당 날짜의 현재 상태를 신문용 복사본으로 생성 */
+  function createEditionSnapshot(dateString) {
+    /*
+    원본 일정과 연결되지 않도록 새 객체로 복사합니다.
+    이후 원본 일정을 수정해도 이 배열은 변하지 않습니다.
+  */
+    const snapshotTasks = getTasksForDate(dateString).map((task) => ({
+      ...task,
+    }));
+
+    const counts = getStatusCounts(snapshotTasks);
+    const total = snapshotTasks.length;
+
+    const rate = total === 0 ? 0 : Math.round((counts.done / total) * 100);
+
+    return {
+      date: dateString,
+      publishedAt: Date.now(),
+      selectedTasks: snapshotTasks,
+      counts,
+      total,
+      rate,
+    };
+  }
+
+  /* 지난 날짜의 신문을 한 번만 발간 */
+  function publishEdition(dateString) {
+    /*
+    오늘과 미래 날짜는 아직 발간하지 않습니다.
+  */
+    if (!dateString || dateString >= todayString) {
+      return null;
+    }
+
+    /*
+    이미 발간된 신문은 절대로 다시 덮어쓰지 않습니다.
+  */
+    if (!publishedEditions[dateString]) {
+      publishedEditions[dateString] = createEditionSnapshot(dateString);
+
+      savePublishedEditions();
+    }
+
+    return publishedEditions[dateString];
+  }
+
+  /* 사이트가 자정에 닫혀 있었던 경우 지난 신문 생성 */
+  function publishExistingPastEditions() {
+    const pastDates = [...new Set(tasks.map((task) => task.date))].filter(
+      (dateString) => dateString < todayString,
+    );
+
+    pastDates.forEach((dateString) => {
+      publishEdition(dateString);
+    });
+  }
+
+  /* 신문에 표시할 데이터 가져오기 */
+  function getEditionState(dateString = selectedDate) {
+    const publishedEdition = publishEdition(dateString);
+
+    /*
+    지난 날짜라면 저장된 발간본을 반환합니다.
+  */
+    if (publishedEdition) {
+      return publishedEdition;
+    }
+
+    /*
+    오늘이나 미래 날짜는 현재 일정 상태를 사용합니다.
+  */
+    return {
+      date: dateString,
+      publishedAt: null,
+      ...getDateState(dateString),
+    };
   }
 
   // 데이터 조회 및 통계
@@ -1604,12 +1720,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    /*
+    지난 날짜의 일정이라면 변경 전에 신문을 고정합니다.
+    이미 발간된 신문이 있으면 아무것도 덮어쓰지 않습니다.
+  */
+    publishEdition(targetTask.date);
+
     const previousStatus = targetTask.status;
 
     targetTask.status = nextStatus;
-
-    /* 상태 변경도 수정 시간으로 기록 */
-    targetTask.updatedAt = Date.now();
 
     /* 완료 상태로 바뀐 순간의 날짜와 시간 저장 */
     if (nextStatus === "done" && previousStatus !== "done") {
@@ -1653,6 +1772,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       onConfirm: () => {
         const deletedDate = targetTask.date;
+
+        /*
+    삭제 전에 발간 당시 상태를 저장합니다.
+  */
+        publishEdition(deletedDate);
 
         tasks = tasks.filter((task) => task.id !== taskId);
 
@@ -1761,12 +1885,13 @@ document.addEventListener("DOMContentLoaded", () => {
     editionPreview.classList.toggle("is-empty", completedTasks.length === 0);
   }
 
-  function renderEditionCard(state) {
-    const { selectedTasks, counts, total, rate } = state;
+  function renderEditionCard() {
+    const { date, publishedAt, selectedTasks, counts, total, rate } =
+      getEditionState(selectedDate);
 
-    editionSubText.textContent = `${formatSelectedDate(selectedDate)} 기록`;
+    editionSubText.textContent = `${formatSelectedDate(date)} 기록`;
 
-    publishTime.textContent = "00:00 예정";
+    publishTime.textContent = publishedAt ? "00:00 발간" : "00:00 예정";
 
     publishRate.textContent = `${rate}%`;
 
@@ -1774,12 +1899,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     publishDoneCount.textContent = `${counts.done}개 / ${total}개`;
 
-    /*
-  일정 완료 여부에 따라
-  신문 미리보기 블록을 다시 생성합니다.
-*/
     renderEditionPreview(selectedTasks);
 
+    /*
+    발간된 지난 날짜의 신문
+  */
+    if (publishedAt) {
+      if (total === 0) {
+        editionStatusTitle.textContent = "등록된 일정 없이 발간되었습니다";
+
+        editionStatusText.textContent =
+          "자정 기준으로 등록된 일정이 없었던 날짜입니다.";
+
+        return;
+      }
+
+      editionStatusTitle.textContent = `${counts.done}개의 일정이 기사로 발간되었습니다`;
+
+      editionStatusText.textContent =
+        "발간 이후의 일정 수정과 완료 여부는 이 신문에 반영되지 않습니다.";
+
+      return;
+    }
+
+    /*
+    아직 발간 전인 오늘의 기록
+  */
     if (total === 0) {
       editionStatusTitle.textContent = "오늘의 기록을 기다리는 중";
 
@@ -1806,14 +1951,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderNewspaper() {
-    const { selectedTasks, counts, total, rate } = getDateState();
+    const { date, publishedAt, selectedTasks, counts, total, rate } =
+      getEditionState(selectedDate);
 
     /*
-    신문에는 완료된 일정만 기사로 표시합니다.
+    신문에는 발간 당시 완료된 일정만 기사로 표시합니다.
   */
     const completedTasks = getCompletedNewspaperTasks(selectedTasks);
 
-    newspaperTitle.textContent = "오늘의 일정 신문";
+    newspaperTitle.textContent = publishedAt
+      ? "발간된 일정 신문"
+      : "오늘의 일정 신문";
 
     const issue = document.createElement("div");
     const issueDate = document.createElement("span");
@@ -1828,9 +1976,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     issue.className = "newspaper-issue";
 
-    issueDate.textContent = formatKoreanDate(selectedDate);
+    issueDate.textContent = formatKoreanDate(date);
 
-    issueNumber.textContent = `DAILY ISSUE · ${selectedDate.replaceAll("-", "")}`;
+    issueNumber.textContent = `DAILY ISSUE · ${date.replaceAll("-", "")}`;
 
     issue.append(issueDate, issueNumber);
 
@@ -2459,6 +2607,12 @@ document.addEventListener("DOMContentLoaded", () => {
     today = now;
     todayString = nextTodayString;
 
+    /*
+  날짜가 바뀐 직후 전날의 상태를 신문으로 저장합니다.
+  이후 전날 일정을 수정해도 저장본은 변하지 않습니다.
+*/
+    publishEdition(previousTodayString);
+
     renderHeaderDate();
     // renderDailyQuote(); 김상우
 
@@ -3076,6 +3230,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const previousStatus = targetTask.status;
+        const previousDate = targetTask.date;
+
+        /*
+    원래 날짜와 변경할 날짜가 지난 날짜라면
+    수정 전 상태로 신문을 고정합니다.
+  */
+        publishEdition(previousDate);
+        publishEdition(date);
 
         targetTask.title = title;
         targetTask.category = category;
@@ -3097,6 +3259,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } else {
         /* 새 일정 등록 */
+
+        /*
+    지난 날짜에 뒤늦게 일정을 등록하더라도
+    이미 발간된 신문에는 들어가지 않게 합니다.
+  */
+        publishEdition(date);
 
         const createdAt = Date.now();
 
@@ -3183,6 +3351,12 @@ document.addEventListener("DOMContentLoaded", () => {
         returnFocus: resetTasksBtn,
 
         onConfirm: () => {
+          /*
+    지난 날짜의 일정을 전부 삭제해도
+    발간된 신문은 삭제되지 않습니다.
+  */
+          publishEdition(selectedDate);
+
           tasks = tasks.filter((task) => task.date !== selectedDate);
 
           saveTasks();
@@ -3242,6 +3416,13 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSearchPlaceholder();
 
     renderHeaderDate();
+
+    /*
+  사이트가 자정에 열려 있지 않았어도
+  실행 시 지난 날짜의 신문을 한 번만 발간합니다.
+*/
+    publishExistingPastEditions();
+
     // renderDailyQuote();김상우
     renderAll();
     updateCountdown();
