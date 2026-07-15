@@ -158,10 +158,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const clearSearchButton = document.querySelector("#clearSearchButton");
 
+  const activeFilterText = document.querySelector("#activeFilterText");
+
   // 오름차순·내림차순
   const sortDirectionButton = document.querySelector("#sortDirectionButton");
-
-  const sortDirectionText = document.querySelector("#sortDirectionText");
 
   // 필터
   const filterToggle = document.querySelector("#filterToggle");
@@ -350,19 +350,65 @@ document.addEventListener("DOMContentLoaded", () => {
     )}`;
   }
 
-  /* 카드 하단의 시간 한 줄 생성 */
+  /* 일정 시간을 AM/PM 형식으로 변환 */
+  function formatScheduleTime(timeString) {
+    if (!timeString) {
+      return "시간 미정";
+    }
+
+    const [hourValue, minute] = timeString.split(":").map(Number);
+
+    if (Number.isNaN(hourValue) || Number.isNaN(minute)) {
+      return timeString;
+    }
+
+    const period = hourValue >= 12 ? "PM" : "AM";
+
+    const hour = hourValue % 12 || 12;
+
+    return `${period} ${hour}:${pad(minute)}`;
+  }
+
   function createTaskHistoryRow(label, timestamp) {
     const row = document.createElement("div");
-    const icon = document.createElement("span");
+
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+    const circle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle",
+    );
+
+    const hands = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path",
+    );
+
     const time = document.createElement("time");
 
     const formattedTime = formatTaskTimestamp(timestamp);
 
     row.className = "task-history-row";
-    row.setAttribute("aria-label", `${label}: ${formattedTime}`);
 
-    icon.className = "task-history-icon";
+    row.setAttribute("aria-label", `${label} 시간: ${formattedTime}`);
+
+    icon.classList.add("task-history-icon");
+
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("fill", "none");
+    icon.setAttribute("stroke", "currentColor");
+    icon.setAttribute("stroke-width", "1.8");
+    icon.setAttribute("stroke-linecap", "round");
+    icon.setAttribute("stroke-linejoin", "round");
     icon.setAttribute("aria-hidden", "true");
+
+    circle.setAttribute("cx", "12");
+    circle.setAttribute("cy", "12");
+    circle.setAttribute("r", "9");
+
+    hands.setAttribute("d", "M12 7v5l3 2");
+
+    icon.append(circle, hands);
 
     time.className = "task-history-time";
     time.textContent = formattedTime;
@@ -837,17 +883,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function openNameIntro(mode = "create") {
-    const isEditMode = mode === "edit";
-
-    nameIntro.dataset.mode = mode;
+  function openNameIntro() {
     nameIntro.hidden = false;
 
     document.body.classList.add("name-intro-open");
 
-    nameInput.value = isEditMode ? currentUserName : "";
+    nameInput.value = "";
 
-    nameConfirmButton.textContent = isEditMode ? "SAVE" : "CONFIRM";
+    nameConfirmButton.textContent = "CONFIRM";
 
     nameIntroError.textContent = "";
 
@@ -855,10 +898,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.requestAnimationFrame(() => {
       nameInput.focus();
-
-      if (isEditMode) {
-        nameInput.select();
-      }
     });
   }
 
@@ -885,6 +924,95 @@ document.addEventListener("DOMContentLoaded", () => {
     closeNameIntro();
   }
 
+  function startUserNameEdit() {
+    const openedEditInput = document.querySelector("#userNameEditInput");
+
+    if (openedEditInput) {
+      return;
+    }
+
+    const editInput = document.createElement("input");
+
+    let editFinished = false;
+
+    editInput.id = "userNameEditInput";
+    editInput.className = "greeting-name-input";
+
+    editInput.type = "text";
+    editInput.maxLength = 20;
+    editInput.value = currentUserName;
+
+    /*
+    입력한 글자 수에 맞춰
+    입력창 너비를 조절합니다.
+  */
+    function updateEditInputWidth() {
+      const visibleLength = Math.max(editInput.value.length, 1);
+
+      editInput.style.width = `${visibleLength + 0.5}ch`;
+    }
+
+    updateEditInputWidth();
+
+    /*
+    기존 이름 버튼의 정확한 자리를
+    입력창으로 교체합니다.
+  */
+    displayUserName.replaceWith(editInput);
+
+    editInput.focus();
+    editInput.select();
+
+    function finishUserNameEdit(shouldSave) {
+      if (editFinished) {
+        return;
+      }
+
+      editFinished = true;
+
+      if (shouldSave) {
+        const nextUserName = normalizeUserName(editInput.value);
+
+        if (nextUserName) {
+          localStorage.setItem(USER_NAME_KEY, nextUserName);
+
+          renderUserName(nextUserName);
+        }
+      }
+
+      /*
+      입력창을 다시 기존 이름 버튼으로 교체합니다.
+    */
+      editInput.replaceWith(displayUserName);
+
+      displayUserName.focus();
+    }
+
+    editInput.addEventListener("input", () => {
+      updateEditInputWidth();
+    });
+
+    editInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+
+        finishUserNameEdit(true);
+
+        return;
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+
+        finishUserNameEdit(false);
+      }
+    });
+
+    editInput.addEventListener("blur", () => {
+      finishUserNameEdit(true);
+    });
+  }
+
   function initializeUserName() {
     const storedName = localStorage.getItem(USER_NAME_KEY);
 
@@ -894,22 +1022,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const hasValidName = !invalidNames.includes(savedUserName);
 
-    /*
-    저장된 이름이 없거나 잘못된 값이면
-    최초 이름 설정 화면 표시
-  */
     if (!hasValidName) {
       localStorage.removeItem(USER_NAME_KEY);
 
-      openNameIntro("create");
+      openNameIntro();
 
       return;
     }
 
-    /*
-    정상적인 이름이 저장되어 있으면
-    홈 화면에 이름 적용 후 인트로 숨김
-  */
     renderUserName(savedUserName);
     closeNameIntro();
   }
@@ -1020,29 +1140,28 @@ document.addEventListener("DOMContentLoaded", () => {
     item.setAttribute("role", "status");
 
     item.innerHTML = `
-    <span class="kanban-empty-icon" aria-hidden="true">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <circle cx="11" cy="11" r="7"></circle>
-        <path d="m20 20-4-4"></path>
-      </svg>
-    </span>
+  <span class="kanban-empty-icon" aria-hidden="true">
+    <svg id="_레이어_1" data-name="레이어 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 235.2 277.1">
+  <defs>
+  </defs>
+  <path class="cls-1" d="M52.38,76.97c-9.52,0-17.23,7.71-17.23,17.23s7.71,17.22,17.23,17.22,17.22-7.71,17.22-17.22-7.71-17.23-17.22-17.23ZM52.38,100.58c-3.53,0-6.39-2.85-6.39-6.38s2.86-6.39,6.39-6.39,6.38,2.86,6.38,6.39-2.85,6.38-6.38,6.38Z"/>
+  <rect class="cls-1" x="89.99" y="85.49" width="98.32" height="12.26" rx="6.13" ry="6.13"/>
+  <path class="cls-1" d="M52.38,136.58c-9.52,0-17.23,7.71-17.23,17.23s7.71,17.22,17.23,17.22,17.22-7.71,17.22-17.22-7.71-17.23-17.22-17.23ZM52.38,160.19c-3.53,0-6.39-2.85-6.39-6.38s2.86-6.39,6.39-6.39,6.38,2.86,6.38,6.39-2.85,6.38-6.38,6.38Z"/>
+  <rect class="cls-1" x="89.99" y="145.1" width="98.32" height="12.26" rx="6.13" ry="6.13"/>
+  <path class="cls-1" d="M52.38,196.2c-9.52,0-17.23,7.71-17.23,17.23s7.71,17.22,17.23,17.22,17.22-7.71,17.22-17.22-7.71-17.23-17.22-17.23ZM52.38,219.81c-3.53,0-6.39-2.85-6.39-6.38s2.86-6.39,6.39-6.39,6.38,2.86,6.38,6.39-2.85,6.38-6.38,6.38Z"/>
+  <rect class="cls-1" x="89.99" y="204.71" width="98.32" height="12.26" rx="6.13" ry="6.13"/>
+  <path class="cls-1" d="M208.89,13.36h-31.96c-2.43-7.74-9.66-13.36-18.2-13.36h-73.73c-8.55,0-15.78,5.62-18.2,13.36H26.31C11.78,13.36,0,25.14,0,39.67v211.12c0,14.53,11.78,26.31,26.31,26.31h182.58c14.53,0,26.31-11.78,26.31-26.31V39.67c0-14.53-11.78-26.31-26.31-26.31ZM78.45,13.36s.06-.07.09-.1c1.49-1.49,3.56-2.42,5.84-2.42h74.32c2.33,0,4.43.97,5.93,2.52,1.44,1.49,2.33,3.51,2.33,5.74,0,2.04-.75,3.92-1.98,5.36-.14.17-.28.33-.44.48-1.49,1.49-3.56,2.42-5.84,2.42h-74.32c-2.51,0-4.76-1.12-6.27-2.9-1.24-1.44-1.99-3.31-1.99-5.36,0-2.23.89-4.26,2.33-5.74ZM224.7,250.17c0,9.03-7.32,16.35-16.35,16.35H26.86c-9.03,0-16.35-7.32-16.35-16.35V40.81c0-9.03,7.32-16.35,16.35-16.35h39.83c2.31,7.94,9.63,13.73,18.31,13.73h73.73c8.68,0,16-5.79,18.31-13.73h31.31c9.03,0,16.35,7.32,16.35,16.35v209.36Z"/>
+</svg>
+  </span>
 
-    <strong class="kanban-empty-title">
-      ${message.title}
-    </strong>
+  <strong class="kanban-empty-title">
+    ${message.title}
+  </strong>
 
-    <p class="kanban-empty-description">
-      ${message.description}
-    </p>
-  `;
+  <p class="kanban-empty-description">
+    ${message.description}
+  </p>
+`;
 
     return item;
   }
@@ -1155,6 +1274,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editButton = document.createElement("button");
     const deleteButton = document.createElement("button");
 
+    const scheduleTime = document.createElement("time");
     const title = document.createElement("h4");
     const memo = document.createElement("p");
 
@@ -1183,7 +1303,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     priority.className = `task-priority priority-${task.priority}`;
-
     priority.textContent = priorityLabels[task.priority] || task.priority;
 
     /* 점 세 개 메뉴 */
@@ -1195,7 +1314,6 @@ document.addEventListener("DOMContentLoaded", () => {
     menuButton.dataset.action = "toggle-task-menu";
 
     menuButton.setAttribute("aria-label", `${task.title} 일정 메뉴 열기`);
-
     menuButton.setAttribute("aria-haspopup", "menu");
     menuButton.setAttribute("aria-expanded", "false");
 
@@ -1214,16 +1332,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     deleteButton.type = "button";
     deleteButton.className = "task-action-button delete";
-
     deleteButton.dataset.action = "delete-task";
     deleteButton.setAttribute("role", "menuitem");
     deleteButton.textContent = "삭제";
 
     actionMenu.append(editButton, deleteButton);
-
     menuWrapper.append(menuButton, actionMenu);
-
     top.append(checkbox, priority, menuWrapper);
+
+    /* 일정 시간 */
+
+    scheduleTime.className = "task-schedule-time";
+    scheduleTime.dateTime = task.time;
+    scheduleTime.textContent = formatScheduleTime(task.time);
+
+    scheduleTime.setAttribute("aria-label", `일정 시간 ${task.time || "미정"}`);
 
     /* 제목 */
 
@@ -1235,14 +1358,26 @@ document.addEventListener("DOMContentLoaded", () => {
     memo.className = "task-desc";
     memo.textContent = task.memo || "등록된 메모가 없습니다.";
 
-    /* 등록·완료 시간 */
+    /* 등록·수정 시간 */
+
+    /* 상태에 따른 시간 기록 */
 
     history.className = "task-history";
 
-    history.append(createTaskHistoryRow("등록 시간", task.createdAt));
+    /* 첫 번째 줄은 모든 상태에서 등록 시간 */
+    history.append(createTaskHistoryRow("등록", task.createdAt));
 
-    if (task.completedAt) {
-      history.append(createTaskHistoryRow("완료 시간", task.completedAt));
+    /*
+  완료 상태:
+  등록 시간 + 완료 시간
+
+  할 일·진행 중 상태:
+  등록 시간 + 수정 시간
+*/
+    if (task.status === "done") {
+      history.append(createTaskHistoryRow("완료", task.completedAt));
+    } else {
+      history.append(createTaskHistoryRow("수정", task.updatedAt));
     }
 
     /* 상태 선택창 */
@@ -1262,10 +1397,12 @@ document.addEventListener("DOMContentLoaded", () => {
       statusSelect.append(option);
     });
 
+    /* 카드 하단 */
+
     footer.className = "task-footer";
     footer.append(history, statusSelect);
 
-    article.append(top, title, memo, footer);
+    article.append(top, scheduleTime, title, memo, footer);
 
     item.append(article);
 
@@ -1307,6 +1444,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const previousStatus = targetTask.status;
 
     targetTask.status = nextStatus;
+
+    /* 상태 변경도 수정 시간으로 기록 */
+    targetTask.updatedAt = Date.now();
 
     /* 완료 상태로 바뀐 순간의 날짜와 시간 저장 */
     if (nextStatus === "done" && previousStatus !== "done") {
@@ -1764,58 +1904,58 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderSortDirectionButton() {
-    const currentDirection = activeFilters.direction;
+    const isDescending = activeFilters.direction === "desc";
 
-    const nextDirection = currentDirection === "asc" ? "desc" : "asc";
+    sortDirectionButton.classList.toggle("is-desc", isDescending);
 
-    sortDirectionText.textContent = directionLabels[currentDirection];
+    const currentDirectionText = isDescending ? "내림차순" : "오름차순";
+
+    const nextDirectionText = isDescending ? "오름차순" : "내림차순";
 
     sortDirectionButton.setAttribute(
       "aria-label",
-      `현재 ${directionLabels[currentDirection]} 정렬, ` +
-        `${directionLabels[nextDirection]}으로 변경`,
-    );
-
-    sortDirectionButton.classList.toggle(
-      "is-desc",
-      currentDirection === "desc",
+      `현재 ${currentDirectionText} 정렬, ${nextDirectionText}으로 변경`,
     );
   }
 
   function updateSearchPlaceholder() {
     const filterDescriptions = [];
 
-    if (activeFilters.category !== "all") {
-      filterDescriptions.push(categoryLabels[activeFilters.category]);
-    }
-
-    if (activeFilters.priority !== "all") {
-      filterDescriptions.push(
-        `중요도 ${priorityLabels[activeFilters.priority]}`,
-      );
+    if (activeFilters.sort !== DEFAULT_FILTERS.sort) {
+      filterDescriptions.push(sortLabels[activeFilters.sort]);
     }
 
     if (activeFilters.status !== "all") {
       filterDescriptions.push(statusLabels[activeFilters.status]);
     }
 
-    const hasChangedSetting =
-      filterDescriptions.length > 0 ||
-      activeFilters.sort !== DEFAULT_FILTERS.sort ||
-      activeFilters.direction !== DEFAULT_FILTERS.direction;
-
-    if (!hasChangedSetting) {
-      searchInput.placeholder = "일정 검색";
-
-      return;
+    if (activeFilters.priority !== "all") {
+      filterDescriptions.push(priorityLabels[activeFilters.priority]);
     }
 
-    filterDescriptions.push(
-      sortLabels[activeFilters.sort],
-      directionLabels[activeFilters.direction],
-    );
+    if (activeFilters.category !== "all") {
+      filterDescriptions.push(categoryLabels[activeFilters.category]);
+    }
 
-    searchInput.placeholder = `적용: ${filterDescriptions.join(" · ")}`;
+    searchInput.placeholder = "일정 검색";
+
+    const hasVisibleFilter = filterDescriptions.length > 0;
+
+    activeFilterText.hidden = !hasVisibleFilter;
+
+    activeFilterText.textContent = hasVisibleFilter
+      ? filterDescriptions.join(", ")
+      : "";
+
+    /*
+    필터 변경 후 X 표시 상태도 다시 확인
+  */
+    updateSearchClearButton();
+  }
+
+  function updateSearchClearButton() {
+    const hasSearchKeyword = searchInput.value.trim().length > 0;
+    clearSearchButton.hidden = !hasSearchKeyword;
   }
 
   function getCustomSelectParts(customSelect) {
@@ -2003,7 +2143,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateCountdown() {
     const now = new Date();
-
     updateCurrentDate(now);
 
     const nextMidnight = new Date(
@@ -2205,15 +2344,13 @@ document.addEventListener("DOMContentLoaded", () => {
       saveUserName();
     });
 
-    /* 홈 화면 이름을 더블클릭하면 수정 화면 열기 */
-    displayUserName.addEventListener("dblclick", () => {
-      openNameIntro("edit");
-    });
+    // 이름을 더블클릭하면
+    // 이름 자리에서 바로 수정
 
-    /*
-  키보드 사용자는 이름에 포커스 후
-  Enter 또는 Space로 수정 화면을 열 수 있음
-*/
+    displayUserName.addEventListener("dblclick", startUserNameEdit);
+
+    // 키보드 Enter 또는 Space로 수정
+
     displayUserName.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") {
         return;
@@ -2221,7 +2358,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       event.preventDefault();
 
-      openNameIntro("edit");
+      startUserNameEdit();
     });
 
     calendarPickerButton.addEventListener("click", () => {
@@ -2335,19 +2472,19 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
     });
 
-    function updateClearSearchButton() {
-      clearSearchButton.hidden = searchInput.value.length === 0;
-    }
-
     searchInput.addEventListener("input", () => {
-      updateClearSearchButton();
+      updateSearchClearButton();
       renderTaskBoard();
     });
 
     clearSearchButton.addEventListener("click", () => {
+      /*
+    검색어만 삭제하고
+    현재 적용된 필터는 유지합니다.
+  */
       searchInput.value = "";
 
-      updateClearSearchButton();
+      updateSearchClearButton();
       renderTaskBoard();
 
       searchInput.focus();
@@ -2452,13 +2589,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const priority = schedulePriority.value;
       const nextStatus = scheduleStatus.value;
 
+      const isEditing = Boolean(editingTaskId);
+
       if (!title || !category || !date || !time) {
         openMessageModal({
           variant: "notice",
 
           title: "입력 내용을 확인해주세요",
 
-          message: "제목, 분류, 날짜, 시간을 " + "모두 입력해주세요.",
+          message: "제목, 분류, 날짜, 시간을 모두 입력해주세요.",
 
           confirmText: "확인",
           returnFocus: scheduleTitle,
@@ -2473,8 +2612,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           title: "제목이 너무 깁니다",
 
-          message:
-            `할 일 제목은 ${TITLE_MAX_LENGTH}자까지 ` + "입력할 수 있습니다.",
+          message: `할 일 제목은 ${TITLE_MAX_LENGTH}자까지 입력할 수 있습니다.`,
 
           confirmText: "확인",
           returnFocus: scheduleTitle,
@@ -2489,8 +2627,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           title: "메모가 너무 깁니다",
 
-          message:
-            `할 일 메모는 ${MEMO_MAX_LENGTH}자까지 ` + "입력할 수 있습니다.",
+          message: `할 일 메모는 ${MEMO_MAX_LENGTH}자까지 입력할 수 있습니다.`,
 
           confirmText: "확인",
           returnFocus: scheduleMemo,
@@ -2518,6 +2655,9 @@ document.addEventListener("DOMContentLoaded", () => {
         targetTask.status = nextStatus;
         targetTask.memo = memo;
 
+        /* 일정을 수정한 현재 시각 저장 */
+        targetTask.updatedAt = Date.now();
+
         if (nextStatus === "done" && previousStatus !== "done") {
           targetTask.completedAt = Date.now();
         }
@@ -2539,20 +2679,32 @@ document.addEventListener("DOMContentLoaded", () => {
           priority,
           status: nextStatus,
           memo,
+
           createdAt,
+
+          /* 새 일정은 아직 수정되지 않음 */
+          updatedAt: null,
+
           completedAt: nextStatus === "done" ? createdAt : null,
         });
       }
 
-      selectedDate = date;
+      /*
+        여기부터는 신규 등록과 수정에
+        공통으로 실행되는 코드
+      */
 
-      const changedDate = fromDateString(date);
+      if (!isEditing) {
+        selectedDate = date;
 
-      currentMonth = new Date(
-        changedDate.getFullYear(),
-        changedDate.getMonth(),
-        1,
-      );
+        const changedDate = fromDateString(date);
+
+        currentMonth = new Date(
+          changedDate.getFullYear(),
+          changedDate.getMonth(),
+          1,
+        );
+      }
 
       resetFilters({
         render: false,
@@ -2672,12 +2824,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 수정
-/* 하루마다 바뀌는 명언
+// 하루마다 바뀌는 명언
 document.addEventListener("DOMContentLoaded", () => {
   const quoteElement = document.querySelector(".word");
 
   const quotes = [
-   "작은 실천이 <br> 큰 변화를 만든다.",
+    "작은 실천이 <br> 큰 변화를 만든다.",
     "꾸준함은 <br> 가장 강력한 재능이다.",
     "오늘의 한 걸음이 <br> 내일의 방향이 된다.",
     "완벽보다 완료가 <br> 당신을 앞으로 보낸다.",
@@ -2688,14 +2840,13 @@ document.addEventListener("DOMContentLoaded", () => {
     "오늘 끝낸 일 하나가 <br> 자신감을 키운다.",
     "좋은 하루의 기사는 <br> 작은 실천에서 시작됩니다.",
     "삶이 있는 한 <br> 희망은 있다 ",
-    "우리집 강아지는 <br> 복슬강아지"
+    "우리집 강아지는 <br> 복슬강아지",
   ];
 
   // 직전에 표시했던 명언 번호
   const previousIndex = Number(sessionStorage.getItem("previousQuoteIndex"));
 
   let randomIndex;
-
   do {
     randomIndex = Math.floor(Math.random() * quotes.length);
   } while (quotes.length > 1 && randomIndex === previousIndex);
@@ -2703,4 +2854,4 @@ document.addEventListener("DOMContentLoaded", () => {
   quoteElement.innerHTML = quotes[randomIndex];
 
   sessionStorage.setItem("previousQuoteIndex", randomIndex);
-});*/
+});
