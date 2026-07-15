@@ -131,7 +131,7 @@
           <span></span>
         </button>
         <ul class="nav-links">
-          <li><a href="#dashboard">DASHBOARD</a></li>
+          <li><a href="#dashboard" href="#greeting">DASHBOARD</a></li>
           <li><a href="#taskBoard">TASKS</a></li>
           <li><a href="#calendar">CALENDAR</a></li>
           <li><a href="#report">REPORT</a></li>
@@ -171,7 +171,7 @@
       <nav class="mobile-menu-nav" aria-label="모바일 메뉴">
         <ul>
           <li>
-            <a href="#dashboard" class="mobile-menu-link is-active">
+            <a href="#greeting" class="mobile-menu-link is-active">
               DASHBOARD
             </a>
           </li>
@@ -208,7 +208,7 @@
     <!-- 김상우 div 시멘틱 하게 변경 -->
     <!-- 앵커포인트 추가를 위해 id 추가 -->
     <!-- 스크린 리더기용 라벨 추가 -->
-    <main id="dashboard" class="page-body">
+    <main class="page-body">
       <aside class="calendar-panel" aria-label="달력과 발간 정보">
         <!--전체를 담는 section태그 추가-->
         <section class="calendar-all">
@@ -479,8 +479,12 @@
 
       <!-- 
 //정종범 div 많이 지우고 header footer 삽입, ul, li, span 삽입 -->
-      <section class="main-content" aria-label="오늘의 일정 대시보드">
-        <header class="greeting-area">
+      <section
+        id="dashboard"
+        class="main-content"
+        aria-label="오늘의 일정 대시보드"
+      >
+        <header id="greeting" class="greeting-area">
           <!-- 독립된 개체가 아니기에 article 태그를 div 로 변경 -->
           <div class="greeting-text">
             <span class="greeting-label">
@@ -514,7 +518,11 @@
         <!-- 1.통계의 내용이기에 ul로 배열하는 것이 아닌 하나의 묶음임을 감안하여 ul로 변경 
           2.같은 디자인의 카드이기에 dl class명 통일
           3.js 를 위한 id 추가 -->
-        <section class="stats-section" aria-labelledby="statsTitle">
+        <section
+          id="taskBoard"
+          class="stats-section"
+          aria-labelledby="statsTitle"
+        >
           <h2 id="statsTitle" class="sr-only">선택한 날짜의 일정 통계</h2>
 
           <dl class="stats-cards">
@@ -701,11 +709,7 @@
 
         <!-- 1.div를 section으로 변경, 2. span 을 h3 으로 변경 3.id 추가  -->
         <!-- 4.html 에서 표시될 부분만 표시 ul에 해당되는 일정을 js 로 추가되어 나타나도록 할 예정. -->
-        <section
-          id="taskBoard"
-          class="kanban-board"
-          aria-label="일정 상태 보드"
-        >
+        <section class="kanban-board" aria-label="일정 상태 보드">
           <!-- 상단 탭 메뉴 -->
           <header class="kanban-tabs">
             <button class="tab-item active">할 일</button>
@@ -1554,32 +1558,99 @@
       aria-label="신문칸 열기"
       aria-expanded="false"
     >
-      <svg id="_레이어_1" data-name="레이어 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.9 268.9">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #fff;
-      }
+      <svg
+        id="_레이어_1"
+        data-name="레이어 1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 268.9 268.9"
+      >
+        <defs>
+          <style>
+            .cls-1 {
+              fill: #fff;
+            }
 
-      .cls-2 {
-        fill: #ab2c24;
-      }
-    </style>
-  </defs>
-  <circle class="cls-2" cx="134.45" cy="134.45" r="134.45"/>
-  <g>
-    <rect class="cls-1" x="83.58" y="78.87" width="117.48" height="10.26"/>
-    <rect class="cls-1" x="83.58" y="103.46" width="51.68" height="44.13"/>
-    <rect class="cls-1" x="83.58" y="158.62" width="51.68" height="7.16"/>
-    <rect class="cls-1" x="83.58" y="178.94" width="51.68" height="7.16"/>
-    <rect class="cls-1" x="149.19" y="103.24" width="51.88" height="7.35" transform="translate(-.69 1.14) rotate(-.37)"/>
-    <rect class="cls-1" x="149.19" y="121.63" width="51.88" height="7.35" transform="translate(-.81 1.15) rotate(-.37)"/>
-    <rect class="cls-1" x="149.19" y="140.6" width="51.88" height="7.35" transform="translate(-.94 1.15) rotate(-.37)"/>
-    <rect class="cls-1" x="149.19" y="158.98" width="51.88" height="7.35" transform="translate(-1.06 1.15) rotate(-.37)"/>
-    <rect class="cls-1" x="149.19" y="178.34" width="51.88" height="7.35" transform="translate(-1.18 1.15) rotate(-.37)"/>
-    <path class="cls-1" d="M223.52,55.78H62.6c-1.38,0-2.51,1.12-2.51,2.51v22.26h-22.96v115.94c0,7.39,5.99,13.38,13.38,13.38h10.55c.26,0,.53-.01.79-.02.23.07.49.11.75.11h150.62c7.07,0,12.81-5.73,12.81-12.81V58.29c0-1.39-1.12-2.51-2.51-2.51ZM52.62,205.93c-6.35,0-11.49-5.14-11.49-11.49v-109.54h18.96c0,39.76,0,79.52,0,119.29-.01.34-.09,1-.57,1.4-.38.32-.85.34-1.09.34-1.05.02-3.11.04-5.82,0ZM220.05,195.53c0,4.9-3.97,8.88-8.88,8.88H68.4c-.83,0-1.55-.43-1.96-1.07-.24-.36-.37-.79-.37-1.26V63.66c0-1.29,1.04-2.33,2.33-2.33h149.33c1.28,0,2.32,1.04,2.32,2.33v131.87Z"/>
-  </g>
-</svg>
+            .cls-2 {
+              fill: #ab2c24;
+            }
+          </style>
+        </defs>
+        <circle class="cls-2" cx="134.45" cy="134.45" r="134.45" />
+        <g>
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="78.87"
+            width="117.48"
+            height="10.26"
+          />
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="103.46"
+            width="51.68"
+            height="44.13"
+          />
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="158.62"
+            width="51.68"
+            height="7.16"
+          />
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="178.94"
+            width="51.68"
+            height="7.16"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="103.24"
+            width="51.88"
+            height="7.35"
+            transform="translate(-.69 1.14) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="121.63"
+            width="51.88"
+            height="7.35"
+            transform="translate(-.81 1.15) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="140.6"
+            width="51.88"
+            height="7.35"
+            transform="translate(-.94 1.15) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="158.98"
+            width="51.88"
+            height="7.35"
+            transform="translate(-1.06 1.15) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="178.34"
+            width="51.88"
+            height="7.35"
+            transform="translate(-1.18 1.15) rotate(-.37)"
+          />
+          <path
+            class="cls-1"
+            d="M223.52,55.78H62.6c-1.38,0-2.51,1.12-2.51,2.51v22.26h-22.96v115.94c0,7.39,5.99,13.38,13.38,13.38h10.55c.26,0,.53-.01.79-.02.23.07.49.11.75.11h150.62c7.07,0,12.81-5.73,12.81-12.81V58.29c0-1.39-1.12-2.51-2.51-2.51ZM52.62,205.93c-6.35,0-11.49-5.14-11.49-11.49v-109.54h18.96c0,39.76,0,79.52,0,119.29-.01.34-.09,1-.57,1.4-.38.32-.85.34-1.09.34-1.05.02-3.11.04-5.82,0ZM220.05,195.53c0,4.9-3.97,8.88-8.88,8.88H68.4c-.83,0-1.55-.43-1.96-1.07-.24-.36-.37-.79-.37-1.26V63.66c0-1.29,1.04-2.33,2.33-2.33h149.33c1.28,0,2.32,1.04,2.32,2.33v131.87Z"
+          />
+        </g>
+      </svg>
     </button>
 
     <script src="app.js"></script>
