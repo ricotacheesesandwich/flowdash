@@ -118,7 +118,14 @@
       </section>
 
       <nav class="header-nav" aria-label="주요 메뉴">
-        <button class="menu-btn" aria-label="Menu">
+        <button
+          id="menuButton"
+          type="button"
+          class="menu-btn"
+          aria-label="메뉴 열기"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+        >
           <span></span>
           <span></span>
           <span></span>
@@ -128,7 +135,6 @@
           <li><a href="#taskBoard">TASKS</a></li>
           <li><a href="#calendar">CALENDAR</a></li>
           <li><a href="#report">REPORT</a></li>
-          <li><a href="#archive">ARCHIVE</a></li>
         </ul>
         <div class="nav-actions" aria-label="화면 테마 변경">
           <!-- 서클별로 css다르게 적용되기에 class 명을 다르게 설정함
@@ -142,6 +148,62 @@
         </div>
       </nav>
     </header>
+
+    <!-- 모바일 메뉴 배경 -->
+    <div
+      id="mobileMenuOverlay"
+      class="mobile-menu-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 모바일 사이드 메뉴 -->
+    <aside
+      id="mobileMenu"
+      class="mobile-menu"
+      aria-label="모바일 주요 메뉴"
+      aria-hidden="true"
+    >
+      <div class="mobile-menu-brand">
+        <p>THE PERSONAL SCHEDULE JOURNAL</p>
+        <h2>To-Do List</h2>
+      </div>
+
+      <nav class="mobile-menu-nav" aria-label="모바일 메뉴">
+        <ul>
+          <li>
+            <a href="#dashboard" class="mobile-menu-link is-active">
+              DASHBOARD
+            </a>
+          </li>
+
+          <li>
+            <a href="#taskBoard" class="mobile-menu-link"> TASKS </a>
+          </li>
+
+          <li>
+            <a href="#calendar" class="mobile-menu-link"> CALENDAR </a>
+          </li>
+
+          <li>
+            <a href="#report" class="mobile-menu-link"> REPORT </a>
+          </li>
+        </ul>
+      </nav>
+
+      <footer class="mobile-menu-theme">
+        <p>테마 변경</p>
+
+        <div class="mobile-theme-actions" aria-label="화면 테마 변경">
+          <button
+            type="button"
+            class="circle2"
+            aria-label="라이트 모드"
+          ></button>
+
+          <button type="button" class="circle1" aria-label="다크 모드"></button>
+        </div>
+      </footer>
+    </aside>
 
     <!-- 김상우 div 시멘틱 하게 변경 -->
     <!-- 앵커포인트 추가를 위해 id 추가 -->

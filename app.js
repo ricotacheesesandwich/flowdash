@@ -1,21 +1,22 @@
 // dark mode
 const bodyElement = document.body;
-const darkBtn = document.querySelector(".circle1");
-const lightBtn = document.querySelector(".circle2");
 
-if (darkBtn) {
-  darkBtn.addEventListener("click", () => {
+const darkButtons = document.querySelectorAll(".circle1");
+const lightButtons = document.querySelectorAll(".circle2");
+
+darkButtons.forEach((button) => {
+  button.addEventListener("click", () => {
     bodyElement.classList.add("dark-mode");
     localStorage.setItem("theme", "dark");
   });
-}
+});
 
-if (lightBtn) {
-  lightBtn.addEventListener("click", () => {
+lightButtons.forEach((button) => {
+  button.addEventListener("click", () => {
     bodyElement.classList.remove("dark-mode");
     localStorage.setItem("theme", "light");
   });
-}
+});
 
 const savedTheme = localStorage.getItem("theme");
 
@@ -49,6 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainTimeGreeting = document.querySelector("#mainTimeGreeting");
 
   const displayUserName = document.querySelector("#displayUserName");
+  // 모바일 메뉴
+  const menuButton = document.querySelector("#menuButton");
+
+  const mobileMenu = document.querySelector("#mobileMenu");
+
+  const mobileMenuOverlay = document.querySelector("#mobileMenuOverlay");
+
+  const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
+
   const DEFAULT_FILTERS = Object.freeze({
     category: "all",
     sort: "created",
@@ -1127,7 +1137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateNameConfirmButton();
 
     window.requestAnimationFrame(() => {
-      nameInput.focus();
+      mobileMenu.querySelector(".mobile-menu-link")?.focus();
     });
   }
 
@@ -2679,6 +2689,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (mobileMenu.classList.contains("is-open")) {
+      closeMobileMenu();
+
+      return;
+    }
+
     if (!nameIntro.hidden) {
       const savedUserName = localStorage.getItem(USER_NAME_KEY);
 
@@ -2737,8 +2753,76 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 모바일 메뉴 열기
+  function openMobileMenu() {
+    if (!isMobileViewport()) {
+      return;
+    }
+
+    mobileMenu.classList.add("is-open");
+    mobileMenuOverlay.classList.add("is-open");
+
+    mobileMenu.setAttribute("aria-hidden", "false");
+    menuButton.setAttribute("aria-expanded", "true");
+    menuButton.setAttribute("aria-label", "메뉴 닫기");
+
+    document.body.classList.add("mobile-menu-open");
+
+    window.requestAnimationFrame(() => {
+      mobileMenuClose.focus();
+    });
+  }
+
+  // 모바일 메뉴 닫기
+  function closeMobileMenu({ restoreFocus = true } = {}) {
+    mobileMenu.classList.remove("is-open");
+    mobileMenuOverlay.classList.remove("is-open");
+
+    mobileMenu.setAttribute("aria-hidden", "true");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "메뉴 열기");
+
+    document.body.classList.remove("mobile-menu-open");
+
+    if (restoreFocus) {
+      menuButton.focus();
+    }
+  }
+
+  // 모바일 메뉴 열기·닫기 전환
+  function toggleMobileMenu() {
+    const isOpen = mobileMenu.classList.contains("is-open");
+
+    if (isOpen) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  }
+
   // 이벤트 연결
   function bindEvents() {
+    // 모바일 햄버거 메뉴
+    menuButton.addEventListener("click", toggleMobileMenu);
+
+    mobileMenuOverlay.addEventListener("click", () => {
+      closeMobileMenu();
+    });
+
+    mobileMenuLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenuLinks.forEach((menuLink) => {
+          menuLink.classList.remove("is-active");
+        });
+
+        link.classList.add("is-active");
+
+        closeMobileMenu({
+          restoreFocus: false,
+        });
+      });
+    });
+
     nameInput.addEventListener("input", () => {
       updateNameConfirmButton();
     });
@@ -2878,8 +2962,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("resize", () => {
       updateMobileCalendarLayout();
-    });
 
+      if (!isMobileViewport()) {
+        closeMobileMenu({
+          restoreFocus: false,
+        });
+      }
+    });
     dateGrid.addEventListener("click", handleDateGridClick);
 
     taskBoard.addEventListener("click", handleTaskBoardClick);
