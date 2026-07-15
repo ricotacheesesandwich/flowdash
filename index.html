@@ -351,6 +351,20 @@
               role="grid"
               aria-label="날짜 선택"
             ></div>
+
+          <button
+              id="calendarMobileToggle"
+              type="button"
+              class="calendar-mobile-toggle"
+              aria-controls="dateGrid"
+              aria-expanded="false"
+              aria-label="달력 펼치기"
+            >
+              <span
+                class="calendar-mobile-toggle-icon"
+                aria-hidden="true"
+              ></span>
+            </button>
           </section>
 
           <!-- 1.js 용 aria-label 추가
@@ -665,13 +679,22 @@
         class="edition-card-container"
         aria-labelledby="editionTitle"
       >
-        <header class="card-header">
-          <div class="header-title">
-            <h2 id="editionTitle">YESTERDAY'S<br />EDITION</h2>
-          </div>
-          <span class="badge">자정<br />자동 발간</span>
-        </header>
+     <header class="card-header">
+  <div class="header-title">
+    <h2 id="editionTitle">YESTERDAY'S<br />EDITION</h2>
+  </div>
 
+  <span class="badge">자정<br />자동 발간</span>
+
+  <button
+    id="closeTabletNewspaper"
+    type="button"
+    class="tablet-newspaper-close"
+    aria-label="신문칸 닫기"
+  >
+    &times;
+  </button>
+</header>
         <section class="content-box" aria-labelledby="dailyPaperTitle">
           <header class="content-header">
             <h2 id="dailyPaperTitle">Flow Dash Daily</h2>
@@ -1453,6 +1476,16 @@
       </li>
     </template>
     <!--김양왕 , div태그 시맨틱하게 변경-->
+
+<button
+  id="tabletNewspaperBtn"
+  type="button"
+  class="tablet-newspaper-btn"
+  aria-label="신문칸 열기"
+  aria-expanded="false"
+>
+  <!-- 신문 SVG -->
+</button>
 
     <script src="app.js"></script>
   </body>
