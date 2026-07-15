@@ -6,9 +6,81 @@
     <title>To-Do List</title>
     <link rel="stylesheet" href="./reset.css" />
     <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" href="SVG\파비콘2.svg" type="todo-icon" />
   </head>
+  <!-- 김상우 div 시멘틱 하게 변경 -->
+
   <body>
-    <!-- 김상우 div 시멘틱 하게 변경 -->
+    <section
+      id="nameIntro"
+      class="name-intro"
+      aria-labelledby="nameIntroTitle"
+      hidden
+    >
+      <div class="name-intro-content">
+        <header class="name-intro-brand">
+          <svg class="name-intro-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <rect x="10" y="12" width="28" height="26" rx="1"></rect>
+
+            <path d="M15 18h8v14h-8z"></path>
+            <path d="M27 18h7"></path>
+            <path d="M27 23h7"></path>
+            <path d="M27 28h7"></path>
+            <path d="M27 33h7"></path>
+          </svg>
+
+          <div class="name-intro-edition">
+            <span class="name-intro-line"></span>
+            <span class="name-intro-dot" aria-hidden="true"></span>
+
+            <strong>DAILY EDITION</strong>
+
+            <span class="name-intro-dot" aria-hidden="true"></span>
+            <span class="name-intro-line"></span>
+          </div>
+
+          <p>Your day. Your story</p>
+        </header>
+
+        <h1 id="nameIntroTitle" class="name-intro-title">What is your name?</h1>
+
+        <p class="name-intro-description">
+          당신만의 하루를 기록할 수 있도록 이름을 입력해주세요.
+        </p>
+
+        <div class="name-intro-divider" aria-hidden="true">
+          <span></span>
+          <i></i>
+          <span></span>
+        </div>
+
+        <form id="nameForm" class="name-intro-form" novalidate>
+          <label class="sr-only" for="nameInput"> 사용자 이름 </label>
+
+          <input
+            id="nameInput"
+            type="text"
+            maxlength="20"
+            autocomplete="name"
+            placeholder="Enter your name"
+          />
+
+          <p
+            id="nameIntroError"
+            class="name-intro-error"
+            aria-live="polite"
+          ></p>
+
+          <button
+            id="nameConfirmButton"
+            type="submit"
+            class="name-confirm-button"
+          >
+            CONFIRM
+          </button>
+        </form>
+      </div>
+    </section>
     <header class="site-header">
       <!-- 장식선 추가 장식이라 안읽힘 -->
       <div class="headline-rule" aria-hidden="true"></div>
@@ -46,17 +118,23 @@
       </section>
 
       <nav class="header-nav" aria-label="주요 메뉴">
-        <button class="menu-btn" aria-label="Menu">
+        <button
+          id="menuButton"
+          type="button"
+          class="menu-btn"
+          aria-label="메뉴 열기"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+        >
           <span></span>
           <span></span>
           <span></span>
         </button>
         <ul class="nav-links">
-          <li><a href="#dashboard">DASHBOARD</a></li>
+          <li><a href="#dashboard" href="#greeting">DASHBOARD</a></li>
           <li><a href="#taskBoard">TASKS</a></li>
           <li><a href="#calendar">CALENDAR</a></li>
           <li><a href="#report">REPORT</a></li>
-          <li><a href="#archive">ARCHIVE</a></li>
         </ul>
         <div class="nav-actions" aria-label="화면 테마 변경">
           <!-- 서클별로 css다르게 적용되기에 class 명을 다르게 설정함
@@ -71,10 +149,66 @@
       </nav>
     </header>
 
+    <!-- 모바일 메뉴 배경 -->
+    <div
+      id="mobileMenuOverlay"
+      class="mobile-menu-overlay"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 모바일 사이드 메뉴 -->
+    <aside
+      id="mobileMenu"
+      class="mobile-menu"
+      aria-label="모바일 주요 메뉴"
+      aria-hidden="true"
+    >
+      <div class="mobile-menu-brand">
+        <p>THE PERSONAL SCHEDULE JOURNAL</p>
+        <h2>To-Do List</h2>
+      </div>
+
+      <nav class="mobile-menu-nav" aria-label="모바일 메뉴">
+        <ul>
+          <li>
+            <a href="#greeting" class="mobile-menu-link is-active">
+              DASHBOARD
+            </a>
+          </li>
+
+          <li>
+            <a href="#taskBoard" class="mobile-menu-link"> TASKS </a>
+          </li>
+
+          <li>
+            <a href="#calendar" class="mobile-menu-link"> CALENDAR </a>
+          </li>
+
+          <li>
+            <a href="#report" class="mobile-menu-link"> REPORT </a>
+          </li>
+        </ul>
+      </nav>
+
+      <footer class="mobile-menu-theme">
+        <p>테마 변경</p>
+
+        <div class="mobile-theme-actions" aria-label="화면 테마 변경">
+          <button
+            type="button"
+            class="circle2"
+            aria-label="라이트 모드"
+          ></button>
+
+          <button type="button" class="circle1" aria-label="다크 모드"></button>
+        </div>
+      </footer>
+    </aside>
+
     <!-- 김상우 div 시멘틱 하게 변경 -->
     <!-- 앵커포인트 추가를 위해 id 추가 -->
     <!-- 스크린 리더기용 라벨 추가 -->
-    <main id="dashboard" class="page-body">
+    <main class="page-body">
       <aside class="calendar-panel" aria-label="달력과 발간 정보">
         <!--전체를 담는 section태그 추가-->
         <section class="calendar-all">
@@ -155,7 +289,18 @@
                     class="picker-nav-button"
                     aria-label="이전 연도"
                   >
-                    ‹
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                      />
+                    </svg>
                   </button>
 
                   <button
@@ -174,7 +319,18 @@
                     class="picker-nav-button"
                     aria-label="다음 연도"
                   >
-                    ›
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                      />
+                    </svg>
                   </button>
                 </header>
 
@@ -194,7 +350,18 @@
                     class="picker-nav-button"
                     aria-label="이전 10년"
                   >
-                    ‹
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                      />
+                    </svg>
                   </button>
 
                   <strong id="yearRangeLabel" class="year-range-label">
@@ -207,7 +374,18 @@
                     class="picker-nav-button"
                     aria-label="다음 10년"
                   >
-                    ›
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                      />
+                    </svg>
                   </button>
                 </header>
 
@@ -236,6 +414,20 @@
               role="grid"
               aria-label="날짜 선택"
             ></div>
+
+            <button
+              id="calendarMobileToggle"
+              type="button"
+              class="calendar-mobile-toggle"
+              aria-controls="dateGrid"
+              aria-expanded="false"
+              aria-label="달력 펼치기"
+            >
+              <span
+                class="calendar-mobile-toggle-icon"
+                aria-hidden="true"
+              ></span>
+            </button>
           </section>
 
           <!-- 1.js 용 aria-label 추가
@@ -274,7 +466,7 @@
         <section class="publication-card">
           <p class="publication-label">NEXT PUBLICATION</p>
           <p class="publication-text">
-            오늘의 일정은 <strong>자정 00:00</strong>에 자동으로 신문
+            하루 일정이 끝나면 <strong>자정 00:00</strong>에 자동으로 신문이
             발간됩니다.
           </p>
           <!-- js 용 아이디 추가 -->
@@ -287,12 +479,32 @@
 
       <!-- 
 //정종범 div 많이 지우고 header footer 삽입, ul, li, span 삽입 -->
-      <section class="main-content" aria-label="오늘의 일정 대시보드">
-        <header class="greeting-area">
+      <section
+        id="dashboard"
+        class="main-content"
+        aria-label="오늘의 일정 대시보드"
+      >
+        <header id="greeting" class="greeting-area">
           <!-- 독립된 개체가 아니기에 article 태그를 div 로 변경 -->
           <div class="greeting-text">
-            <span class="greeting-label">GOOD MORNING USER</span>
-            <h2>안녕하세요, USER님.</h2>
+            <span class="greeting-label">
+              GOOD MORNING
+              <span id="greetingLabelName">USER</span>
+            </span>
+
+            <h2>
+              안녕하세요,
+              <button
+                id="displayUserName"
+                type="button"
+                class="greeting-user-name"
+                title="이름을 더블클릭하면 수정할 수 있습니다."
+                aria-label="사용자 이름 수정"
+              >
+                USER</button
+              >님.
+            </h2>
+
             <p>
               오늘의 일정은 기사가 되고, 완료된 하루는 자정에 신문으로
               발간됩니다.
@@ -306,7 +518,11 @@
         <!-- 1.통계의 내용이기에 ul로 배열하는 것이 아닌 하나의 묶음임을 감안하여 ul로 변경 
           2.같은 디자인의 카드이기에 dl class명 통일
           3.js 를 위한 id 추가 -->
-        <section class="stats-section" aria-labelledby="statsTitle">
+        <section
+          id="taskBoard"
+          class="stats-section"
+          aria-labelledby="statsTitle"
+        >
           <h2 id="statsTitle" class="sr-only">선택한 날짜의 일정 통계</h2>
 
           <dl class="stats-cards">
@@ -338,21 +554,85 @@
         </section>
 
         <!-- 1.검색창 관련 묶음이기에 div가 아닌 section 태그로 분류
-        2.사용자가 입력하여 기입하는 기능이기에 from 사용. 
-        3.검색이라 text가 아닌 search로 수정함
-        4.js 연결용 id 추가
-        -->
+      2.사용자가 입력하여 기입하는 기능이기에 from 사용. 
+      3.검색이라 text가 아닌 search로 수정함
+      4.js 연결용 id 추가
+    -->
         <section class="controls" aria-label="일정 검색과 필터">
           <form class="search-bar" role="search">
-            <label class="sr-only" for="searchInput">일정 검색</label>
             <span class="search-icon" aria-hidden="true">⌕</span>
+
             <input
               id="searchInput"
               type="search"
               placeholder="일정 검색"
               autocomplete="off"
             />
+
+            <button
+              id="clearSearchButton"
+              class="search-clear-btn"
+              type="button"
+              aria-label="검색어 초기화"
+              hidden
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <path d="M5 5L19 19"></path>
+                <path d="M19 5L5 19"></path>
+              </svg>
+            </button>
+
+            <!-- 적용된 필터가 표시되는 영역 -->
+            <span
+              id="activeFilterText"
+              class="active-filter-text"
+              aria-live="polite"
+              hidden
+            ></span>
           </form>
+
+          <button
+            id="sortDirectionButton"
+            type="button"
+            class="sort-direction-btn"
+            aria-label="현재 오름차순 정렬, 내림차순으로 변경"
+          >
+            <!-- 오름차순 아이콘 -->
+            <svg
+              id="sortAscendingIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="sort-direction-icon is-visible"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.5.5 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"
+              />
+            </svg>
+
+            <!-- 내림차순 아이콘 -->
+            <svg
+              id="sortDescendingIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="sort-direction-icon"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M3.5 3.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 12.293zm4 .5a.5.5 0 0 1 0-1h1a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h5a.5.5 0 0 1 0 1zM7 12.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5"
+              />
+            </svg>
+          </button>
 
           <div class="control-actions">
             <button
@@ -363,7 +643,26 @@
               aria-controls="filterModal"
               aria-expanded="false"
             >
-              ⚙
+              <svg
+                id="_레이어_1"
+                data-name="레이어 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 105.87 94.39"
+              >
+                <defs></defs>
+                <path
+                  class="cls-1"
+                  d="M90.16,9.55c-2.08-5.58-7.44-9.55-13.74-9.55s-11.65,3.98-13.73,9.55H0v10.26h62.68c2.08,5.58,7.44,9.55,13.73,9.55s11.66-3.98,13.74-9.55h15.71v-10.26h-15.71ZM76.42,20.2c-3.04,0-5.51-2.47-5.51-5.52s2.47-5.52,5.51-5.52,5.52,2.47,5.52,5.52-2.47,5.52-5.52,5.52Z"
+                />
+                <path
+                  class="cls-1"
+                  d="M27.25,32.48c-6.3,0-11.65,3.98-13.73,9.55H0v10.26h13.52c2.08,5.58,7.44,9.55,13.73,9.55s11.66-3.98,13.74-9.55h64.88v-10.26H41c-2.08-5.58-7.44-9.55-13.74-9.55ZM27.25,52.68c-3.04,0-5.51-2.47-5.51-5.52s2.47-5.52,5.51-5.52,5.52,2.47,5.52,5.52-2.47,5.52-5.52,5.52Z"
+                />
+                <path
+                  class="cls-1"
+                  d="M76.42,65.03c-6.3,0-11.65,3.98-13.73,9.55H0v10.26h62.68c2.08,5.58,7.44,9.55,13.73,9.55s11.66-3.98,13.74-9.55h15.71v-10.26h-15.71c-2.08-5.58-7.44-9.55-13.74-9.55ZM76.42,85.23c-3.04,0-5.51-2.47-5.51-5.52s2.47-5.52,5.51-5.52,5.52,2.47,5.52,5.52-2.47,5.52-5.52,5.52Z"
+                />
+              </svg>
             </button>
 
             <button id="openModal" type="button" class="add-btn">
@@ -371,6 +670,38 @@
             </button>
 
             <button id="resetTasksBtn" type="button" class="reset-btn">
+              <svg
+                id="_레이어_1"
+                data-name="레이어 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 79.36 85.63"
+              >
+                <defs></defs>
+                <path
+                  class="cls-1"
+                  d="M76.84,15.36h-20.67c-.71-8.61-7.56-15.36-15.91-15.36s-15.2,6.75-15.91,15.36H2.52c-.7,0-1.32.28-1.78.73-.46.46-.74,1.08-.74,1.78,0,1.39,1.13,2.52,2.52,2.52h5.16l5.67,52.82c.75,7.07,6.71,12.42,13.82,12.42h26.31c7.18,0,13.18-5.48,13.84-12.63l4.82-52.61h4.7c.7,0,1.32-.28,1.78-.74.46-.46.74-1.08.74-1.78,0-1.39-1.13-2.51-2.52-2.51ZM40.26,4.07c6.08,0,11.07,4.95,11.65,11.29h-23.3c.58-6.34,5.57-11.29,11.65-11.29ZM63.77,69.52c-.57,6.62-5.79,11.67-12.05,11.67h-22.91c-6.18,0-11.37-4.94-12.03-11.47l-4.99-49.33h56.23l-4.25,49.13Z"
+                />
+                <rect
+                  class="cls-1"
+                  x="28.42"
+                  y="31.7"
+                  width="4.73"
+                  height="38.13"
+                  rx="2.37"
+                  ry="2.37"
+                  transform="translate(-3.03 1.96) rotate(-3.48)"
+                />
+                <rect
+                  class="cls-1"
+                  x="46.56"
+                  y="31.7"
+                  width="4.73"
+                  height="38.13"
+                  rx="2.37"
+                  ry="2.37"
+                  transform="translate(94.68 104.41) rotate(-176.52)"
+                />
+              </svg>
               할일 초기화
             </button>
           </div>
@@ -378,12 +709,15 @@
 
         <!-- 1.div를 section으로 변경, 2. span 을 h3 으로 변경 3.id 추가  -->
         <!-- 4.html 에서 표시될 부분만 표시 ul에 해당되는 일정을 js 로 추가되어 나타나도록 할 예정. -->
-        <section
-          id="taskBoard"
-          class="kanban-board"
-          aria-label="일정 상태 보드"
-        >
-          <section class="kanban-col" aria-labelledby="todoTitle">
+        <section class="kanban-board" aria-label="일정 상태 보드">
+          <!-- 상단 탭 메뉴 -->
+          <header class="kanban-tabs">
+            <button class="tab-item active">할 일</button>
+            <button class="tab-item">진행 중</button>
+            <button class="tab-item">완료</button>
+          </header>
+
+          <section class="kanban-col on" aria-labelledby="todoTitle">
             <header class="kanban-header">
               <h3 id="todoTitle">할 일</h3>
               <span id="todoCount" class="count-badge">0</span>
@@ -423,9 +757,18 @@
           <div class="header-title">
             <h2 id="editionTitle">YESTERDAY'S<br />EDITION</h2>
           </div>
-          <span class="badge">자정<br />자동 발간</span>
-        </header>
 
+          <span class="badge">자정<br />자동 발간</span>
+
+          <button
+            id="closeTabletNewspaper"
+            type="button"
+            class="tablet-newspaper-close"
+            aria-label="신문칸 닫기"
+          >
+            &times;
+          </button>
+        </header>
         <section class="content-box" aria-labelledby="dailyPaperTitle">
           <header class="content-header">
             <h2 id="dailyPaperTitle">Flow Dash Daily</h2>
@@ -504,7 +847,18 @@
             class="close-btn"
             aria-label="필터 닫기"
           >
-            &times;
+            <svg
+              id="_레이어_1"
+              data-name="레이어 1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 205.84 205.84"
+            >
+              <defs></defs>
+              <polygon
+                class="cls-1"
+                points="205.84 13.5 192.33 0 102.92 89.41 13.5 0 0 13.5 89.41 102.92 0 192.33 13.5 205.84 102.92 116.42 192.33 205.84 205.84 192.33 116.42 102.92 205.84 13.5"
+              />
+            </svg>
           </button>
         </header>
 
@@ -609,12 +963,83 @@
           </div>
 
           <label class="filter-field" for="sortSelect">
-            <span>정렬기준</span>
-            <select id="sortSelect">
-              <option value="date">날짜순</option>
-              <option value="time">시간순</option>
-              <option value="priority">중요도순</option>
-            </select>
+            <div class="filter-field">
+              <span>정렬기준</span>
+
+              <div class="custom-select" data-custom-select>
+                <select
+                  id="sortSelect"
+                  class="custom-select-native"
+                  aria-label="정렬기준"
+                >
+                  <option value="created" selected>등록순</option>
+                  <option value="date">날짜순</option>
+                  <option value="time">시간순</option>
+                  <option value="priority">중요도순</option>
+                </select>
+
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span class="custom-select-value">등록순</span>
+                  <span class="custom-select-arrow" aria-hidden="true"></span>
+                </button>
+
+                <ul
+                  class="custom-select-list"
+                  role="listbox"
+                  aria-label="정렬기준 선택"
+                  hidden
+                >
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="created"
+                      role="option"
+                    >
+                      등록순
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="date"
+                      role="option"
+                    >
+                      날짜순
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="time"
+                      role="option"
+                    >
+                      시간순
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="priority"
+                      role="option"
+                    >
+                      중요도순
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </label>
         </div>
 
@@ -688,24 +1113,48 @@
     >
       <article class="modal-container">
         <header class="modal-header">
-          <h2 id="modalTitle">새 기사 일정 등록</h2>
+          <h2 id="modalTitle">일정 등록</h2>
           <button
             id="closeModal"
             type="button"
             class="close-btn"
             aria-label="닫기"
           >
-            &times;
+            <svg
+              id="_레이어_1"
+              data-name="레이어 1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 205.84 205.84"
+            >
+              <defs></defs>
+              <polygon
+                class="cls-1"
+                points="205.84 13.5 192.33 0 102.92 89.41 13.5 0 0 13.5 89.41 102.92 0 192.33 13.5 205.84 102.92 116.42 192.33 205.84 205.84 192.33 116.42 102.92 205.84 13.5"
+              />
+            </svg>
           </button>
         </header>
 
-        <form id="taskForm" class="modal-form">
+        <form id="taskForm" class="modal-form" novalidate>
           <section class="form-group">
-            <label for="scheduleTitle">제목</label>
+            <header class="form-label-row">
+              <label for="scheduleTitle">제목</label>
+
+              <span
+                id="titleCharacterCount"
+                class="character-count"
+                aria-live="polite"
+              >
+                0 / 40
+              </span>
+            </header>
+
             <input
               id="scheduleTitle"
               name="title"
               type="text"
+              maxlength="40"
+              aria-describedby="titleCharacterCount"
               placeholder="예: 프로젝트 기획서 초안 작성"
               required
             />
@@ -713,13 +1162,81 @@
 
           <section class="form-group">
             <label for="scheduleCategory">분류</label>
-            <select id="scheduleCategory" name="category" required>
-              <option value="" disabled selected hidden>카테고리</option>
-              <option value="work">업무</option>
-              <option value="personal">개인</option>
-              <option value="health">건강</option>
-              <option value="study">공부</option>
-            </select>
+
+            <div class="custom-select" data-custom-select>
+              <select
+                id="scheduleCategory"
+                class="custom-select-native"
+                name="category"
+                required
+              >
+                <option value="work" selected>업무</option>
+                <option value="personal">개인</option>
+                <option value="health">건강</option>
+                <option value="study">공부</option>
+              </select>
+
+              <button
+                type="button"
+                class="custom-select-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span class="custom-select-value">업무</span>
+                <span class="custom-select-arrow" aria-hidden="true"></span>
+              </button>
+
+              <ul
+                class="custom-select-list"
+                role="listbox"
+                aria-label="일정 분류 선택"
+                hidden
+              >
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="work"
+                    role="option"
+                  >
+                    업무
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="personal"
+                    role="option"
+                  >
+                    개인
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="health"
+                    role="option"
+                  >
+                    건강
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    class="custom-select-option"
+                    data-value="study"
+                    role="option"
+                  >
+                    공부
+                  </button>
+                </li>
+              </ul>
+            </div>
           </section>
 
           <fieldset class="form-row">
@@ -743,28 +1260,155 @@
 
             <section class="form-group">
               <label for="schedulePriority">중요도</label>
-              <select id="schedulePriority" name="priority">
-                <option value="high">높음</option>
-                <option value="normal" selected>중간</option>
-                <option value="low">낮음</option>
-              </select>
+
+              <div class="custom-select" data-custom-select>
+                <select
+                  id="schedulePriority"
+                  class="custom-select-native"
+                  name="priority"
+                >
+                  <option value="low">낮음</option>
+                  <option value="normal" selected>보통</option>
+                  <option value="high">높음</option>
+                </select>
+
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span class="custom-select-value">보통</span>
+                  <span class="custom-select-arrow" aria-hidden="true"></span>
+                </button>
+
+                <ul
+                  class="custom-select-list"
+                  role="listbox"
+                  aria-label="일정 중요도 선택"
+                  hidden
+                >
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="low"
+                      role="option"
+                    >
+                      낮음
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="normal"
+                      role="option"
+                    >
+                      보통
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="high"
+                      role="option"
+                    >
+                      높음
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </section>
 
             <section class="form-group">
               <label for="scheduleStatus">상태</label>
-              <select id="scheduleStatus" name="status">
-                <option value="todo" selected>할 일</option>
-                <option value="progress">진행 중</option>
-                <option value="done">완료</option>
-              </select>
+
+              <div class="custom-select" data-custom-select>
+                <select
+                  id="scheduleStatus"
+                  class="custom-select-native"
+                  name="status"
+                >
+                  <option value="todo" selected>할 일</option>
+                  <option value="progress">진행 중</option>
+                  <option value="done">완료</option>
+                </select>
+
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span class="custom-select-value">할 일</span>
+                  <span class="custom-select-arrow" aria-hidden="true"></span>
+                </button>
+
+                <ul
+                  class="custom-select-list"
+                  role="listbox"
+                  aria-label="일정 상태 선택"
+                  hidden
+                >
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="todo"
+                      role="option"
+                    >
+                      할 일
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="progress"
+                      role="option"
+                    >
+                      진행 중
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type="button"
+                      class="custom-select-option"
+                      data-value="done"
+                      role="option"
+                    >
+                      완료
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </section>
           </fieldset>
 
           <section class="form-group">
-            <label for="scheduleMemo">메모</label>
+            <header class="form-label-row">
+              <label for="scheduleMemo">메모</label>
+
+              <span
+                id="memoCharacterCount"
+                class="character-count"
+                aria-live="polite"
+              >
+                0 / 100
+              </span>
+            </header>
+
             <textarea
               id="scheduleMemo"
               name="memo"
+              maxlength="100"
+              aria-describedby="memoCharacterCount"
               placeholder="일정에 필요한 메모를 적어주세요."
             ></textarea>
           </section>
@@ -773,7 +1417,9 @@
             <button type="button" id="resetFormBtn" class="ghost-btn">
               비우기
             </button>
-            <button type="submit" class="submit-btn">일정 등록하기</button>
+            <button id="taskSubmitBtn" type="submit" class="submit-btn">
+              일정 등록하기
+            </button>
           </footer>
         </form>
       </article>
@@ -791,17 +1437,77 @@
       <article class="newspaper-modal">
         <header class="newspaper-modal-header">
           <p>FLOW DASH DAILY</p>
+
           <h2 id="newspaperTitle">발간된 신문</h2>
+
           <button
             id="closeNewspaper"
             type="button"
             class="close-btn"
             aria-label="닫기"
           >
-            &times;
+            <svg
+              id="_레이어_1"
+              data-name="레이어 1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 205.84 205.84"
+            >
+              <polygon
+                class="cls-1"
+                points="205.84 13.5 192.33 0 102.92 89.41 13.5 0 0 13.5 89.41 102.92 0 192.33 13.5 205.84 102.92 116.42 192.33 205.84 205.84 192.33 116.42 102.92 205.84 13.5"
+              />
+            </svg>
           </button>
         </header>
+
         <section id="newspaperBody" class="newspaper-body"></section>
+      </article>
+    </section>
+
+    <!-- 공통 경고·삭제 확인 팝업 -->
+    <section
+      id="messageModal"
+      class="modal-backdrop message-modal-backdrop"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="messageModalTitle"
+      aria-describedby="messageModalText"
+      aria-hidden="true"
+      data-variant="notice"
+      hidden
+    >
+      <article class="message-modal">
+        <p id="messageModalLabel" class="message-modal-label">NOTICE</p>
+
+        <h2 id="messageModalTitle" class="message-modal-title">
+          내용을 확인해주세요
+        </h2>
+
+        <p id="messageModalText" class="message-modal-text">
+          입력 내용을 다시 확인해주세요.
+        </p>
+
+        <footer
+          id="messageModalActions"
+          class="message-modal-actions is-single"
+        >
+          <button
+            id="messageCancelButton"
+            type="button"
+            class="message-cancel-button"
+            hidden
+          >
+            취소
+          </button>
+
+          <button
+            id="messageConfirmButton"
+            type="button"
+            class="message-confirm-button"
+          >
+            확인
+          </button>
+        </footer>
       </article>
     </section>
 
@@ -817,7 +1523,18 @@
             <span class="task-priority"></span>
             <time class="task-time"></time>
             <button type="button" class="task-close" aria-label="일정 삭제">
-              ×
+              <svg
+                id="_레이어_1"
+                data-name="레이어 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 205.84 205.84"
+              >
+                <defs></defs>
+                <polygon
+                  class="cls-1"
+                  points="205.84 13.5 192.33 0 102.92 89.41 13.5 0 0 13.5 89.41 102.92 0 192.33 13.5 205.84 102.92 116.42 192.33 205.84 205.84 192.33 116.42 102.92 205.84 13.5"
+                />
+              </svg>
             </button>
           </header>
           <h4 class="task-title"></h4>
@@ -834,7 +1551,110 @@
     </template>
     <!--김양왕 , div태그 시맨틱하게 변경-->
 
+    <button
+      id="tabletNewspaperBtn"
+      type="button"
+      class="tablet-newspaper-btn"
+      aria-label="신문칸 열기"
+      aria-expanded="false"
+    >
+      <svg
+        id="_레이어_1"
+        data-name="레이어 1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 268.9 268.9"
+      >
+        <defs>
+          <style>
+            .cls-1 {
+              fill: #fff;
+            }
+
+            .cls-2 {
+              fill: #ab2c24;
+            }
+          </style>
+        </defs>
+        <circle class="cls-2" cx="134.45" cy="134.45" r="134.45" />
+        <g>
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="78.87"
+            width="117.48"
+            height="10.26"
+          />
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="103.46"
+            width="51.68"
+            height="44.13"
+          />
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="158.62"
+            width="51.68"
+            height="7.16"
+          />
+          <rect
+            class="cls-1"
+            x="83.58"
+            y="178.94"
+            width="51.68"
+            height="7.16"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="103.24"
+            width="51.88"
+            height="7.35"
+            transform="translate(-.69 1.14) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="121.63"
+            width="51.88"
+            height="7.35"
+            transform="translate(-.81 1.15) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="140.6"
+            width="51.88"
+            height="7.35"
+            transform="translate(-.94 1.15) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="158.98"
+            width="51.88"
+            height="7.35"
+            transform="translate(-1.06 1.15) rotate(-.37)"
+          />
+          <rect
+            class="cls-1"
+            x="149.19"
+            y="178.34"
+            width="51.88"
+            height="7.35"
+            transform="translate(-1.18 1.15) rotate(-.37)"
+          />
+          <path
+            class="cls-1"
+            d="M223.52,55.78H62.6c-1.38,0-2.51,1.12-2.51,2.51v22.26h-22.96v115.94c0,7.39,5.99,13.38,13.38,13.38h10.55c.26,0,.53-.01.79-.02.23.07.49.11.75.11h150.62c7.07,0,12.81-5.73,12.81-12.81V58.29c0-1.39-1.12-2.51-2.51-2.51ZM52.62,205.93c-6.35,0-11.49-5.14-11.49-11.49v-109.54h18.96c0,39.76,0,79.52,0,119.29-.01.34-.09,1-.57,1.4-.38.32-.85.34-1.09.34-1.05.02-3.11.04-5.82,0ZM220.05,195.53c0,4.9-3.97,8.88-8.88,8.88H68.4c-.83,0-1.55-.43-1.96-1.07-.24-.36-.37-.79-.37-1.26V63.66c0-1.29,1.04-2.33,2.33-2.33h149.33c1.28,0,2.32,1.04,2.32,2.33v131.87Z"
+          />
+        </g>
+      </svg>
+    </button>
+
     <script src="app.js"></script>
+    <script src="kanban.js"></script>
   </body>
 </html>
 <!-- 전체수정 완료 김태은 -->
