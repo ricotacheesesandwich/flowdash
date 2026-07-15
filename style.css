@@ -3649,6 +3649,15 @@ body.name-intro-open {
   }
 }
 
+body.mobile-menu-open {
+  overflow: hidden;
+}
+
+.mobile-menu,
+.mobile-menu-overlay {
+  display: none;
+}
+
 /* 1920px 이상에서 햄버거 메뉴 숨김 */
 @media (min-width: 768px) {
   .menu-btn {
@@ -5077,33 +5086,33 @@ body.name-intro-open {
   flex-direction: column;
 }
 
-  #report.edition-card-container.is-open .content-box {
-    flex: 1;
-  }
+#report.edition-card-container.is-open .content-box {
+  flex: 1;
+}
 
-  #report.edition-card-container.is-open > .card-footer {
-    margin-top: 14px;
-  }
-  .tablet-newspaper-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#report.edition-card-container.is-open > .card-footer {
+  margin-top: 14px;
+}
+.tablet-newspaper-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    flex: 0 0 34px;
+  flex: 0 0 34px;
 
-    width: 34px;
-    height: 34px;
-    padding: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
 
-    border: 0;
-    background: transparent;
+  border: 0;
+  background: transparent;
 
-    color: var(--text-main);
-    font-size: 30px;
-    line-height: 1;
+  color: var(--text-main);
+  font-size: 30px;
+  line-height: 1;
 
-    cursor: pointer;
-  }
+  cursor: pointer;
+}
 
 #newspaperModal {
   z-index: 1200;
@@ -5707,108 +5716,257 @@ body.edition-open {
 /*====================
   모바일 반응형 여기까지
   =====================*/
-
 /* ==================================================
-   모바일 - 신문칸 팝업
-@media (max-width: 767px) {
-  #report.edition-card-container.is-open {
-    position: fixed;
+     모바일 사이드 메뉴
+  ================================================== */
 
-    /* 모바일에서는 화면 가장자리 기준으로 배치 */
-    top: 12px;
-    right: 12px;
-    bottom: 12px;
-    left: 12px;
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 890;
 
-    /* 태블릿의 중앙 정렬 방식 해제 */
-    width: auto;
-    height: auto;
-    max-width: none;
-    max-height: none;
+  display: block;
 
-    margin: 0;
-    padding: 0 10px 10px;
+  background-color: rgba(17, 17, 17, 0.22);
 
-    box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 
-    /* top/left 50% 방식 해제 */
-    transform: none;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
 
-    /* 내용이 화면보다 길어지면 신문칸 내부에서 스크롤 */
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+.mobile-menu-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 
-  /* 모바일에서는 본문을 억지로 세로로 늘리지 않음 */
-  #report.edition-card-container.is-open .content-box {
-    flex: 0 0 auto;
-    min-height: 0;
-  }
+  transition:
+    opacity 0.25s ease,
+    visibility 0s;
+}
 
-  /* 신문 미리보기 영역도 모바일 크기에 맞춤 */
-  #report.edition-card-container.is-open .edition-preview {
-    width: 100%;
-    min-height: clamp(130px, 42vw, 190px);
-  }
+.mobile-menu {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 900;
 
-  /* 모바일에서 헤더 간격 축소 */
-  #report.edition-card-container.is-open > .card-header {
-    flex-shrink: 0;
-    gap: 8px;
-    padding: 12px;
-  }
+  display: flex;
+  flex-direction: column;
 
-  /* 제목 크기 */
-  #report.edition-card-container.is-open .header-title h2 {
-    font-size: 0.9rem;
-  }
+  width: min(82vw, 380px);
+  min-width: 246px;
 
-  /* 자정 자동 발간 배지 */
-  #report.edition-card-container.is-open .badge {
-    min-width: 64px;
-    max-width: 64px;
-    min-height: 40px;
-    font-size: 0.7rem;
-  }
+  /* 좌우 padding을 제거해야 선이 메뉴 끝까지 붙음 */
+  padding: 0 0 36px;
 
-  /* 내용 안쪽 여백 축소 */
-  #report.edition-card-container.is-open .content-box {
-    padding: 14px 8px 16px;
-  }
+  overflow-y: auto;
 
-  /* 상태 설명 */
-  #report.edition-card-container.is-open .status-message h3 {
-    font-size: 1.05rem;
-  }
+  background-color: var(--bg-card);
+  color: var(--text-main);
 
-  #report.edition-card-container.is-open .status-message p {
-    font-size: 0.75rem;
-    line-height: 1.5;
-  }
+  box-shadow: 5px 0 16px rgba(0, 0, 0, 0.16);
 
-  /* 발행 정보 */
-  #report.edition-card-container.is-open .data-item {
-    gap: 8px;
-    padding: 6px 0;
-  }
+  visibility: hidden;
+  pointer-events: none;
 
-  #report.edition-card-container.is-open .data-item dt,
-  #report.edition-card-container.is-open .data-item dd {
-    font-size: 0.72rem;
-  }
+  transform: translateX(-100%);
 
-  /* 신문 보기 버튼 */
-  #report.edition-card-container.is-open .view-newspaper-btn {
-    padding: 13px 0;
-    font-size: 0.9rem;
-  }
+  transition:
+    transform 0.28s ease,
+    visibility 0s linear 0.28s;
+}
 
-  /* 모바일 플로팅 버튼도 조금 작게 */
-  .tablet-newspaper-btn {
-    right: 16px;
-    bottom: 16px;
+.mobile-menu.is-open {
+  visibility: visible;
+  pointer-events: auto;
 
-    width: 56px;
-    height: 56px;
-  }
+  transform: translateX(0);
+
+  transition:
+    transform 0.28s ease,
+    visibility 0s;
+}
+
+/* 상단 햄버거 버튼 영역 */
+
+/* 로고 영역 */
+
+.mobile-menu-brand {
+  flex-shrink: 0;
+
+  width: 100%;
+  margin-top: 82px;
+  padding: 28px 24px 32px;
+
+  border-top: 6px solid var(--border-dark);
+  border-bottom: 4px double var(--border-dark);
+
+  text-align: center;
+}
+
+.mobile-menu-brand p {
+  margin: 0 0 7px;
+
+  color: var(--point-red);
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.mobile-menu-brand h2 {
+  margin: 0;
+
+  color: var(--text-main);
+  font-family: "Playfair Display", Georgia, serif;
+
+  font-size: clamp(55px, 14vw, 55px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -4px;
+  white-space: nowrap;
+
+  transform: scaleX(0.88);
+  transform-origin: center;
+}
+
+/* 메뉴 목록 */
+
+.mobile-menu-nav {
+  flex-shrink: 0;
+
+  /* 선은 메뉴 전체가 아니라 안쪽에 들어오도록 좌우 여백 적용 */
+  padding: 28px 44px 0;
+}
+
+.mobile-menu-nav ul {
+  width: 100%;
+}
+
+.mobile-menu-nav li {
+  width: 100%;
+
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mobile-menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 74px;
+  padding: 18px 0;
+
+  color: var(--text-main);
+
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+
+  text-align: center;
+}
+
+.mobile-menu-link:hover,
+.mobile-menu-link.is-active {
+  color: var(--point-red);
+}
+
+.mobile-menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 58px;
+  padding: 25px 0;
+
+  color: var(--text-main);
+
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  text-align: center;
+}
+
+.mobile-menu-link:hover,
+.mobile-menu-link.is-active {
+  color: var(--point-red);
+}
+
+/* 테마 변경 */
+
+.mobile-menu-theme {
+  margin: auto 44px 0;
+  padding-top: 24px;
+
+  border-top: 1px solid var(--border-light);
+
+  text-align: center;
+}
+
+.mobile-menu-theme p {
+  margin: 0 0 18px;
+
+  color: var(--text-main);
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mobile-theme-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.mobile-theme-actions .circle1,
+.mobile-theme-actions .circle2 {
+  display: block;
+
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  border: 1px solid var(--text-main);
+  border-radius: 50%;
+}
+
+.mobile-theme-actions .circle1 {
+  background-color: #000000;
+}
+
+.mobile-theme-actions .circle2 {
+  background-color: #ffffff;
+}
+
+body.mobile-menu-open .menu-btn {
+  position: fixed;
+  top: 25px;
+  left: 24px;
+  z-index: 920;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+}
+
+body.mobile-menu-open .menu-btn span {
+  width: 25px;
+  height: 2px;
+
+  background-color: var(--text-main);
 }
