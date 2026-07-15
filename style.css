@@ -418,7 +418,6 @@ body {
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.5px;
-  transform: translateY(-6px);
 }
 
 .greeting-text h2 {
@@ -1030,8 +1029,15 @@ body.dark-mode .filter-btn {
   width: 100%;
   height: 100%;
 
-  fill: none;
-  stroke: currentColor;
+  fill: currentColor;
+  stroke: none;
+}
+
+/* SVG 내부 도형도 면으로 표시 */
+.kanban-empty-icon svg path,
+.kanban-empty-icon svg rect {
+  fill: currentColor;
+  stroke: none;
 }
 
 .kanban-empty-title {
@@ -1931,13 +1937,75 @@ body.dark-mode .filter-btn {
 
 /* 회색 기사 영역 */
 
+/* 신문 카드 안쪽 기사 배치 미리보기 */
 .edition-preview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  grid-auto-rows: minmax(44px, 1fr);
+
+  gap: 6px;
+
   width: 100%;
+  height: 210px;
   min-height: 210px;
   margin-bottom: 14px;
+  padding: 6px;
+
+  overflow: hidden;
+
   background-color: var(--bg-card);
 }
 
+/* 완료 일정이 없을 때는 빈 사각형 유지 */
+.edition-preview.is-empty {
+  display: block;
+}
+
+/* 완료 일정 하나를 나타내는 기사 블록 */
+.edition-preview-item {
+  min-width: 0;
+  min-height: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  background-color: var(--priority-color);
+
+  opacity: 0.9;
+}
+
+/* 중요도별 색상 */
+/* 신문 미리보기 블록에만 중요도 색상 적용 */
+.edition-preview-item.priority-high {
+  --priority-color: #bd3131;
+}
+
+.edition-preview-item.priority-normal {
+  --priority-color: #5c7faf;
+}
+
+.edition-preview-item.priority-low {
+  --priority-color: #e6b800;
+}
+
+/*
+  중요도 높음:
+  왼쪽의 큰 메인 기사처럼 표시
+*/
+.edition-preview-item.priority-high {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/*
+  중요도 보통·낮음:
+  오른쪽의 작은 기사처럼 표시
+*/
+.edition-preview-item.priority-normal,
+.edition-preview-item.priority-low {
+  grid-column: span 2;
+  grid-row: span 1;
+}
 /* 기록 대기 안내 */
 .edition-card-container .status-message {
   margin: 0 0 14px;
@@ -3100,17 +3168,121 @@ body.dark-mode #taskModal input[type="time"] {
   border-top: 4px double var(--text-muted);
 }
 
-.newspaper-columns {
-  columns: 3;
-  column-gap: 28px;
-  column-rule: 1px solid #c7c1b7;
+/* =========================================================
+   신문 기사 그리드
+========================================================= */
+
+/* 신문 기사 그리드 */
+.newspaper-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  grid-auto-rows: minmax(170px, auto);
+
+  width: 100%;
+  padding: 0;
+
+  /* 기사 사이가 붙도록 간격 제거 */
+  gap: 0;
+
+  /* 전체 지면의 위쪽과 왼쪽 선 */
+  border-top: 1px solid var(--border-light);
+  border-left: 1px solid var(--border-light);
 }
 
+/* 기사 한 칸 */
 .newspaper-article {
-  break-inside: avoid;
-  margin-bottom: 22px;
+  min-width: 0;
+  margin: 0;
+  padding: 26px 28px;
+
+  /* 각 칸의 오른쪽과 아래쪽 선 */
+  border: 0;
+  border-right: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+
+  background-color: transparent;
+  color: var(--text-main);
+
+  overflow: hidden;
 }
 
+/* 중요도 높음: 메인 기사 */
+.newspaper-article.priority-high {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* 중요도 보통·낮음: 일반 기사 */
+.newspaper-article.priority-normal,
+.newspaper-article.priority-low {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+/* 기사 상단 시간·분류·중요도 */
+.newspaper-article-meta {
+  margin: 0 0 12px;
+
+  color: var(--text-light);
+
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+/* 기사 제목 */
+.newspaper-article h3 {
+  margin: 0 0 14px;
+
+  color: var(--text-main);
+
+  font-family: "KoPubBatang", "KoPub Batang", Georgia, serif;
+
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.7px;
+
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 기사 본문 */
+.newspaper-article-text {
+  margin: 0;
+
+  color: var(--text-main);
+
+  font-family: "KoPubBatang", "KoPub Batang", Georgia, serif;
+
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: -0.15px;
+
+  text-align: justify;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+/* 완료 기사가 없을 때 */
+.newspaper-empty-article {
+  grid-column: 1 / -1;
+
+  min-height: 180px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-top-color: var(--border-dark);
+
+  text-align: center;
+}
 .newspaper-article h3 {
   margin-bottom: 7px;
   font-family: Georgia, serif;
@@ -4905,33 +5077,33 @@ body.name-intro-open {
   flex-direction: column;
 }
 
-#report.edition-card-container.is-open .content-box {
-  flex: 1;
-}
+  #report.edition-card-container.is-open .content-box {
+    flex: 1;
+  }
 
-#report.edition-card-container.is-open > .card-footer {
-  margin-top: 14px;
-}
-.tablet-newspaper-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  #report.edition-card-container.is-open > .card-footer {
+    margin-top: 14px;
+  }
+  .tablet-newspaper-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  flex: 0 0 34px;
+    flex: 0 0 34px;
 
-  width: 34px;
-  height: 34px;
-  padding: 0;
+    width: 34px;
+    height: 34px;
+    padding: 0;
 
-  border: 0;
-  background: transparent;
+    border: 0;
+    background: transparent;
 
-  color: var(--text-main);
-  font-size: 30px;
-  line-height: 1;
+    color: var(--text-main);
+    font-size: 30px;
+    line-height: 1;
 
-  cursor: pointer;
-}
+    cursor: pointer;
+  }
 
 #newspaperModal {
   z-index: 1200;
@@ -5538,7 +5710,6 @@ body.edition-open {
 
 /* ==================================================
    모바일 - 신문칸 팝업
-================================================== */
 @media (max-width: 767px) {
   #report.edition-card-container.is-open {
     position: fixed;

@@ -42,7 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const nameIntroError = document.querySelector("#nameIntroError");
 
-  const greetingLabelName = document.querySelector("#greetingLabelName");
+  /* 위쪽 작은 영어 인사말 */
+  const timeGreeting = document.querySelector("#timeGreeting");
+
+  /* 큰 한국어 인사말 */
+  const mainTimeGreeting = document.querySelector("#mainTimeGreeting");
 
   const displayUserName = document.querySelector("#displayUserName");
   const DEFAULT_FILTERS = Object.freeze({
@@ -222,6 +226,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const editionStatusTitle = document.querySelector("#editionStatusTitle");
 
   const editionStatusText = document.querySelector("#editionStatusText");
+
+  /* 신문 카드 안쪽의 사각형 미리보기 */
+  const editionPreview = document.querySelector(".edition-preview");
 
   const publishTime = document.querySelector("#publishTime");
   const publishRate = document.querySelector("#publishRate");
@@ -578,6 +585,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return new Set(getTasksForDate(dateString).map((task) => task.status));
   }
 
+  /* 헤더의 오늘 날짜 출력 */
   function renderHeaderDate() {
     const formatted = todayString.replaceAll("-", ".");
 
@@ -589,6 +597,40 @@ document.addEventListener("DOMContentLoaded", () => {
       element.textContent = formatted;
       element.dateTime = todayString;
     });
+  }
+
+  /* 시간대별 인사말 */
+
+  function updateTimeGreeting(now = new Date()) {
+    if (!timeGreeting || !mainTimeGreeting) {
+      return;
+    }
+
+    const currentHour = now.getHours();
+
+    /* 기본 인사말 */
+    let englishGreeting = "HELLO";
+    let koreanGreeting = "안녕하세요";
+
+    /* 오전 5시부터 오전 10시 59분 */
+    if (currentHour >= 5 && currentHour < 11) {
+      englishGreeting = "GOOD MORNING";
+      koreanGreeting = "좋은 아침이에요";
+    } else if (currentHour >= 11 && currentHour < 17) {
+      /* 오전 11시부터 오후 4시 59분 */
+      englishGreeting = "GOOD AFTERNOON";
+      koreanGreeting = "좋은 오후에요";
+    } else if (currentHour >= 17 && currentHour < 22) {
+      /* 오후 5시부터 오후 9시 59분 */
+      englishGreeting = "GOOD EVENING";
+      koreanGreeting = "좋은 저녁이에요";
+    }
+
+    /* 위쪽 작은 문구 */
+    timeGreeting.textContent = englishGreeting;
+
+    /* 큰 메인 문구 */
+    mainTimeGreeting.textContent = koreanGreeting;
   }
 
   // function hashDateString(dateString) {
@@ -960,7 +1002,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderUserName(name) {
     currentUserName = name;
 
-    greetingLabelName.textContent = name;
     displayUserName.textContent = name;
 
     displayUserName.setAttribute("aria-label", `${name} 이름 수정`);
@@ -1624,6 +1665,73 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${hours}시간 ${remainingMinutes}분`;
   }
 
+  /*
+  완료된 일정만 중요도순으로 가져옵니다.
+
+  높음 → 보통 → 낮음 순서로 배치하고,
+  중요도가 같으면 일정 시간순으로 배치합니다.
+*/
+  function getCompletedNewspaperTasks(targetTasks) {
+    return targetTasks
+      .filter((task) => task.status === "done")
+      .sort((firstTask, secondTask) => {
+        const firstPriority = priorityOrder[firstTask.priority] ?? 99;
+        const secondPriority = priorityOrder[secondTask.priority] ?? 99;
+
+        const priorityDifference = firstPriority - secondPriority;
+
+        if (priorityDifference !== 0) {
+          return priorityDifference;
+        }
+
+        return firstTask.time.localeCompare(secondTask.time);
+      });
+  }
+
+  /*
+  신문 카드의 미리보기 안에 들어갈
+  네모 한 칸을 생성합니다.
+*/
+  function createEditionPreviewItem(task) {
+    const item = document.createElement("div");
+    const hiddenText = document.createElement("span");
+
+    item.className = `edition-preview-item priority-${task.priority}`;
+
+    item.dataset.taskId = task.id;
+    item.title = task.title;
+
+    hiddenText.className = "sr-only";
+    hiddenText.textContent = `${task.title}, ${
+      priorityLabels[task.priority] || task.priority
+    } 중요도 완료 일정`;
+
+    item.append(hiddenText);
+
+    return item;
+  }
+
+  /*
+  완료된 일정만 신문 미리보기 사각형에 표시합니다.
+*/
+  function renderEditionPreview(targetTasks) {
+    if (!editionPreview) {
+      return;
+    }
+
+    const completedTasks = getCompletedNewspaperTasks(targetTasks);
+
+    const fragment = document.createDocumentFragment();
+
+    completedTasks.forEach((task) => {
+      fragment.append(createEditionPreviewItem(task));
+    });
+
+    editionPreview.replaceChildren(fragment);
+
+    editionPreview.classList.toggle("is-empty", completedTasks.length === 0);
+  }
+
   function renderEditionCard(state) {
     const { selectedTasks, counts, total, rate } = state;
 
@@ -1636,6 +1744,12 @@ document.addEventListener("DOMContentLoaded", () => {
     publishDuration.textContent = calculateTimeSpan(selectedTasks);
 
     publishDoneCount.textContent = `${counts.done}개 / ${total}개`;
+
+    /*
+  일정 완료 여부에 따라
+  신문 미리보기 블록을 다시 생성합니다.
+*/
+    renderEditionPreview(selectedTasks);
 
     if (total === 0) {
       editionStatusTitle.textContent = "오늘의 기록을 기다리는 중";
@@ -1665,115 +1779,207 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderNewspaper() {
     const { selectedTasks, counts, total, rate } = getDateState();
 
+    /*
+    신문에는 완료된 일정만 기사로 표시합니다.
+  */
+    const completedTasks = getCompletedNewspaperTasks(selectedTasks);
+
     newspaperTitle.textContent = "오늘의 일정 신문";
 
     const issue = document.createElement("div");
-
     const issueDate = document.createElement("span");
-
     const issueNumber = document.createElement("span");
 
     const headline = document.createElement("h3");
-
     const lead = document.createElement("p");
-
     const rule = document.createElement("hr");
 
-    const columns = document.createElement("div");
-
+    const articleGrid = document.createElement("div");
     const stats = document.createElement("div");
 
     issue.className = "newspaper-issue";
 
     issueDate.textContent = formatKoreanDate(selectedDate);
 
-    issueNumber.textContent = `DAILY ISSUE · ${selectedDate.replaceAll(
-      "-",
-      "",
-    )}`;
+    issueNumber.textContent = `DAILY ISSUE · ${selectedDate.replaceAll("-", "")}`;
 
     issue.append(issueDate, issueNumber);
 
+    /* 신문 제목 */
+
     headline.className = "newspaper-headline";
 
-    if (total === 0) {
-      headline.textContent = "아직 기록되지 않은 하루";
+    if (completedTasks.length === 0) {
+      headline.textContent = "아직 완성되지 않은 오늘의 기사";
     } else if (counts.done === total) {
       headline.textContent = "오늘의 모든 일정, 성공적으로 마무리";
     } else {
-      headline.textContent = `${total}개의 일정 속에서 이어진 오늘의 기록`;
+      headline.textContent = `${completedTasks.length}개의 완료 기록이 만든 오늘의 신문`;
     }
+
+    /* 신문 설명 */
 
     lead.className = "newspaper-lead";
 
-    lead.textContent =
-      total === 0
-        ? "선택한 날짜에 등록된 일정이 없습니다. 새 일정을 등록하면 이곳에 하루의 기록이 기사처럼 정리됩니다."
-        : `선택한 날짜에는 총 ${total}개의 일정이 등록되었으며, 그중 ${counts.done}개가 완료되었습니다. 현재 달성률은 ${rate}%입니다.`;
+    if (total === 0) {
+      lead.textContent =
+        "선택한 날짜에 등록된 일정이 없습니다. " +
+        "일정을 등록하고 완료하면 이곳에 기사가 만들어집니다.";
+    } else {
+      lead.textContent =
+        `선택한 날짜에는 총 ${total}개의 일정이 등록되었으며, ` +
+        `그중 ${completedTasks.length}개가 기사로 완성되었습니다. ` +
+        `현재 달성률은 ${rate}%입니다.`;
+    }
 
     rule.className = "newspaper-rule";
 
-    columns.className = "newspaper-columns";
+    /*
+    기존 columns 방식이 아니라
+    미리보기와 동일한 grid 방식 사용
+  */
+    articleGrid.className = "newspaper-grid";
 
-    if (total === 0) {
+    if (completedTasks.length === 0) {
       const emptyArticle = document.createElement("article");
-
       const emptyTitle = document.createElement("h3");
-
       const emptyText = document.createElement("p");
 
-      emptyArticle.className = "newspaper-article";
+      emptyArticle.className = "newspaper-article newspaper-empty-article";
 
-      emptyTitle.textContent = "등록된 기사가 없습니다";
+      emptyTitle.textContent = "완료된 기사가 없습니다";
 
       emptyText.textContent =
-        "새 일정 등록 버튼을 눌러 오늘의 첫 기사를 작성해보세요.";
+        "일정을 완료하면 중요도에 따라 " + "신문 기사 칸이 이곳에 배치됩니다.";
 
       emptyArticle.append(emptyTitle, emptyText);
-
-      columns.append(emptyArticle);
+      articleGrid.append(emptyArticle);
     } else {
-      [...selectedTasks]
-        .sort((firstTask, secondTask) =>
-          firstTask.time.localeCompare(secondTask.time),
-        )
-        .forEach((task) => {
-          const article = document.createElement("article");
+      completedTasks.forEach((task) => {
+        const article = document.createElement("article");
 
-          const articleTitle = document.createElement("h3");
+        const articleMeta = document.createElement("p");
+        const articleTitle = document.createElement("h3");
+        const articleText = document.createElement("p");
 
-          const articleText = document.createElement("p");
+        article.className = `newspaper-article priority-${task.priority}`;
 
-          article.className = "newspaper-article";
+        article.dataset.taskId = task.id;
 
-          articleTitle.textContent = `${task.time} · ${task.title}`;
+        articleMeta.className = "newspaper-article-meta";
 
-          articleText.textContent = `${
-            categoryLabels[task.category] || task.category
-          } 일정으로 등록되었으며 중요도는 ${
-            priorityLabels[task.priority] || task.priority
-          }, 현재 상태는 ${statusLabels[task.status] || task.status}입니다. ${
-            task.memo || "추가 메모는 기록되지 않았습니다."
-          }`;
+        /*
+  시간은 본문 문장에 자연스럽게 포함하므로
+  상단에는 분류와 중요도만 표시합니다.
+*/
+        articleMeta.textContent =
+          `${categoryLabels[task.category] || "일반"} · ` +
+          `${priorityLabels[task.priority] || "보통"} 중요도`;
 
-          article.append(articleTitle, articleText);
+        articleTitle.textContent = task.title || "이름 없는 일정";
 
-          columns.append(article);
-        });
+        articleText.className = "newspaper-article-text";
+
+        /*
+  일정 정보를 신문 기사 문장으로 변환합니다.
+*/
+        articleText.textContent = createNewspaperArticleText(task);
+
+        article.append(articleMeta, articleTitle, articleText);
+
+        articleGrid.append(article);
+      });
     }
+
+    /*
+  24시간 형식의 시간을
+  신문 문장용 오전·오후 표현으로 바꿉니다.
+
+  09:00 → 오전 9시경
+  13:30 → 오후 1시 30분경
+*/
+    function formatNewspaperTime(timeString) {
+      if (!timeString) {
+        return "예정된 시간에";
+      }
+
+      const [hourValue, minuteValue] = timeString.split(":").map(Number);
+
+      if (Number.isNaN(hourValue) || Number.isNaN(minuteValue)) {
+        return "예정된 시간에";
+      }
+
+      const period = hourValue < 12 ? "오전" : "오후";
+      const hour = hourValue % 12 || 12;
+
+      if (minuteValue === 0) {
+        return `${period} ${hour}시경`;
+      }
+
+      return `${period} ${hour}시 ${minuteValue}분경`;
+    }
+
+    /*
+  중요도에 따라 기사 문장을 다르게 만듭니다.
+*/
+    function getPriorityArticleSentence(priority) {
+      const prioritySentences = {
+        high: "높은 집중도와 강도를 요구하는 일정이었지만, 흐름을 잃지 않고 계획대로 수월하게 마무리한 것으로 전해졌다.",
+
+        normal:
+          "일정한 집중력을 유지하며 안정적으로 업무를 수행했고, 계획한 과정을 무리 없이 마친 것으로 전해졌다.",
+
+        low: "비교적 가벼운 강도로 진행됐으며, 차분한 흐름을 유지하면서 여유롭게 마무리한 것으로 전해졌다.",
+      };
+
+      return (
+        prioritySentences[priority] ||
+        "계획한 일정을 차분히 수행하고 모든 과정을 마친 것으로 기록됐다."
+      );
+    }
+
+    /*
+  일정 하나를 신문 기사 본문으로 바꿉니다.
+*/
+    function createNewspaperArticleText(task) {
+      const timeText = formatNewspaperTime(task.time);
+
+      const categoryText = categoryLabels[task.category] || "일반";
+
+      const prioritySentence = getPriorityArticleSentence(task.priority);
+
+      const titleText = task.title?.trim() || "이름 없는 일정";
+
+      const memoText = task.memo?.trim();
+
+      let articleText =
+        `${timeText}, ‘${titleText}’ 일정이 진행됐다. ` +
+        `해당 일정은 ${categoryText} 분야의 활동으로 분류됐으며, ` +
+        prioritySentence;
+
+      /*
+    메모가 있는 경우 기사 뒤에 추가합니다.
+  */
+      if (memoText) {
+        articleText +=
+          ` 일정에 관한 추가 기록에는 ` + `“${memoText}”라고 적혀 있다.`;
+      }
+
+      return articleText;
+    }
+
+    /* 하단 통계 */
 
     stats.className = "newspaper-stats";
 
     [
       ["전체 일정", `${total}개`],
-      ["할 일", `${counts.todo}개`],
-      ["진행 중", `${counts.progress}개`],
+      ["완료 기사", `${counts.done}개`],
+      ["남은 일정", `${total - counts.done}개`],
       ["달성률", `${rate}%`],
     ].forEach(([label, value]) => {
       const stat = document.createElement("div");
-
       const statLabel = document.createElement("span");
-
       const statValue = document.createElement("strong");
 
       stat.className = "newspaper-stat";
@@ -1782,11 +1988,17 @@ document.addEventListener("DOMContentLoaded", () => {
       statValue.textContent = value;
 
       stat.append(statLabel, statValue);
-
       stats.append(stat);
     });
 
-    newspaperBody.replaceChildren(issue, headline, lead, rule, columns, stats);
+    newspaperBody.replaceChildren(
+      issue,
+      headline,
+      lead,
+      rule,
+      articleGrid,
+      stats,
+    );
   }
 
   // 일정 변경 화면 갱신
@@ -2236,7 +2448,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateCountdown() {
     const now = new Date();
+
     updateCurrentDate(now);
+
+    /* 현재 시간에 맞춰 인사말 변경 */
+    updateTimeGreeting(now);
 
     const nextMidnight = new Date(
       now.getFullYear(),
