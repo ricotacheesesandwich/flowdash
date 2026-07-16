@@ -1,4 +1,8 @@
-/* 웹폰트는 index.html에서 불러옵니다. */
+/*프리텐다드 글꼴*/
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+/*바탕체 글꼴*/
+@import url("https://cdn.jsdelivr.net/npm/font-kopub@1.0");
 
 :root {
   /* 라이트모드 */
@@ -90,27 +94,8 @@ body.dark-mode {
   --newspaper-button-color: #ffffff;
 }
 
-/* 테마 전환이 필요한 주요 화면 요소에만 적용 */
-body,
-.site-header,
-.page-body,
-.calendar-all,
-.calendar-card,
-.summary-card,
-.publication-card,
-.stats-cards,
-.stat-card,
-.search-bar,
-.filter-btn,
-.sort-direction-btn,
-.reset-btn,
-.kanban-col,
-.kanban-header,
-.kanban-body,
-.task-card,
-.modal-container,
-.filter-modal-container,
-.newspaper-modal {
+body.is-theme-changing,
+body.is-theme-changing * {
   transition:
     background-color 0.5s ease,
     color 0.5s ease,
@@ -141,8 +126,6 @@ body {
 .headline-rule {
   width: 100%;
   height: 8px;
-  margin-bottom: 0;
-  border: 0;
   background-color: var(--border-dark);
 }
 
@@ -433,7 +416,6 @@ body {
 
 /* 전체 3단 레이아웃 */
 .page-body {
-  width: 100%;
   margin: 28px auto 0;
   display: grid;
   grid-template-columns:
@@ -1132,19 +1114,16 @@ body.dark-mode .filter-btn {
   flex-direction: column;
   gap: 12px;
 
-  height: 500px;
   margin: 0;
   padding: 15px;
   background-color: var(--bg-card);
-
-  overflow-y: auto;
 }
 
-/* 일정이 3개를 초과하면 목록 내부 스크롤 */
+/* 일정이 3개 이상이어도 칸반 높이는 유지하고 내부만 스크롤 */
 .kanban-body.has-scroll {
-  height: var(--task-list-max-height);
-  min-height: 0;
-  max-height: var(--task-list-max-height);
+  height: 500px;
+  min-height: 500px;
+  max-height: 500px;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -3057,6 +3036,10 @@ body.dark-mode #taskModal input[type="time"] {
   animation-delay: 0.14s;
 }
 
+.custom-select.is-open li:nth-child(6) .custom-select-option {
+  animation-delay: 0.17s;
+}
+
 @keyframes customSelectOptionDrop {
   from {
     opacity: 0;
@@ -4558,8 +4541,10 @@ body.mobile-menu-open {
     width: 100%;
   }
 
-  .stat-card:nth-child(2n) {
-    border-right: 1px solid var(--border-light);
+  @media (max-width: 1199px) {
+    .stat-card:nth-child(2n) {
+      border-right: 1px solid var(--border-light);
+    }
   }
 
   .stats-cards {
@@ -5317,7 +5302,7 @@ body.edition-open {
     display: flex;
   }
   .kanban-board {
-    gap: 0px;
+    gap: 0;
   }
 
   .kanban-col {
@@ -5364,7 +5349,7 @@ body.edition-open {
   .page-body {
     width: 100%;
     max-width: 100%;
-    padding: 0px;
+    padding: 0;
   }
 
   .controls {
@@ -5643,11 +5628,14 @@ body.edition-open {
   .stat-card:nth-child(5) {
     grid-column: span 3;
     border-bottom: 0;
-    border-left: 1px solid var(--border-light);
   }
 
   .stat-card:nth-child(4) {
     border-right: 0;
+  }
+
+  .stat-card:nth-child(5) {
+    border-left: 1px solid var(--border-light);
   }
 
   .stat-card-title {
@@ -5677,9 +5665,9 @@ body.edition-open {
     border: 0;
   }
 
-  .summary-label,
-  .summary-date,
-  .summary-footer {
+  .summary-card .summary-label,
+  .summary-card .summary-date,
+  .summary-card .summary-footer {
     display: none;
   }
 
@@ -5693,7 +5681,7 @@ body.edition-open {
     padding: 0px 6px 14px;
   }
 
-  .status-list li:nth-child(2) {
+  .summary-card .status-list li:nth-child(2) {
     display: none;
   }
 
@@ -5707,7 +5695,7 @@ body.edition-open {
     white-space: nowrap;
   }
 
-  .status-list li strong {
+  .summary-card .status-list li strong {
     display: none;
   }
 
@@ -6151,117 +6139,120 @@ body.mobile-menu-open .menu-btn span {
   background-color: var(--text-main);
 }
 
-/* 모바일 신문칸 */
+/*    모바일 신문칸 */
 @media (max-width: 767px) {
-  #report.edition-card-container.is-open {
-    position: fixed;
+  /* 모바일 신문칸 */
+  @media (max-width: 767px) {
+    #report.edition-card-container.is-open {
+      position: fixed;
 
-    top: 50%;
-    left: 50%;
-    right: auto;
-    bottom: auto;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
 
-    width: calc(100vw - 20px);
-    max-width: 620px;
+      width: calc(100vw - 20px);
+      max-width: 620px;
 
-    height: min(88dvh, 860px);
-    max-height: calc(100dvh - 20px);
+      height: min(88dvh, 860px);
+      max-height: calc(100dvh - 20px);
 
-    display: flex;
-    flex-direction: column;
+      display: flex;
+      flex-direction: column;
 
-    margin: 0;
-    padding: 0 8px 8px;
-    transform: translate(-50%, -50%);
-    overflow: hidden;
-  }
+      margin: 0;
+      padding: 0 8px 8px;
+      transform: translate(-50%, -50%);
+      overflow: hidden;
+    }
 
-  #report.edition-card-container.is-open > .card-header {
-    flex: 0 0 auto;
-  }
+    #report.edition-card-container.is-open > .card-header {
+      flex: 0 0 auto;
+    }
 
-  #report.edition-card-container.is-open .content-box {
-    display: flex;
-    flex-direction: column;
+    #report.edition-card-container.is-open .content-box {
+      display: flex;
+      flex-direction: column;
 
-    flex: 1;
-    min-height: 0;
+      flex: 1;
+      min-height: 0;
 
-    padding: clamp(10px, 2.5vw, 16px);
-    overflow-y: auto;
-  }
+      padding: clamp(10px, 2.5vw, 16px);
+      overflow-y: auto;
+    }
 
-  #report.edition-card-container.is-open .content-header {
-    flex: 0 0 auto;
-    width: 100%;
-  }
+    #report.edition-card-container.is-open .content-header {
+      flex: 0 0 auto;
+      width: 100%;
+    }
 
-  #report.edition-card-container.is-open .double-divider {
-    flex: 0 0 auto;
-    width: 100%;
-    margin: 10px 0;
-  }
+    #report.edition-card-container.is-open .double-divider {
+      flex: 0 0 auto;
+      width: 100%;
+      margin: 10px 0;
+    }
 
-  #report.edition-card-container.is-open .layout-grid {
-    flex: 0 0 auto;
-    width: 100%;
-  }
+    #report.edition-card-container.is-open .layout-grid {
+      flex: 0 0 auto;
+      width: 100%;
+    }
 
-  /* 가로 크기에 비례하여 신문 미리보기 확대 */
-  #report.edition-card-container.is-open .edition-preview {
-    width: 100%;
-    height: clamp(230px, 62vw, 300px);
-    min-height: clamp(230px, 62vw, 300px);
+    /* 가로 크기에 비례하여 신문 미리보기 확대 */
+    #report.edition-card-container.is-open .edition-preview {
+      width: 100%;
+      height: clamp(230px, 62vw, 300px);
+      min-height: clamp(230px, 62vw, 300px);
 
-    margin-bottom: 14px;
-  }
+      margin-bottom: 14px;
+    }
 
-  #report.edition-card-container.is-open .status-message {
-    flex: 0 0 auto;
+    #report.edition-card-container.is-open .status-message {
+      flex: 0 0 auto;
 
-    width: 100%;
-    margin: 0 0 6px;
-    padding: 0;
-  }
+      width: 100%;
+      margin: 0 0 6px;
+      padding: 0;
+    }
 
-  #report.edition-card-container.is-open .status-message h3 {
-    margin: 0 0 6px;
-  }
+    #report.edition-card-container.is-open .status-message h3 {
+      margin: 0 0 6px;
+    }
 
-  #report.edition-card-container.is-open .status-message p {
-    margin: 0;
-  }
+    #report.edition-card-container.is-open .status-message p {
+      margin: 0;
+    }
 
-  #report.edition-card-container.is-open .data-list {
-    flex: 0 0 auto;
-    display: block;
+    #report.edition-card-container.is-open .data-list {
+      flex: 0 0 auto;
+      display: block;
 
-    width: 100%;
-    margin-top: auto;
-    padding: 18px 0 0;
-  }
+      width: 100%;
+      margin-top: auto;
+      padding: 18px 0 0;
+    }
 
-  #report.edition-card-container.is-open .data-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    #report.edition-card-container.is-open .data-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    width: 100%;
-    padding: 5px 0;
-  }
+      width: 100%;
+      padding: 5px 0;
+    }
 
-  #report.edition-card-container.is-open > .card-footer {
-    flex: 0 0 auto;
-    margin-top: 10px;
-  }
+    #report.edition-card-container.is-open > .card-footer {
+      flex: 0 0 auto;
+      margin-top: 10px;
+    }
 
-  #report.edition-card-container.is-open .view-newspaper-btn {
-    width: 100%;
-    padding: 15px 0;
-  }
+    #report.edition-card-container.is-open .view-newspaper-btn {
+      width: 100%;
+      padding: 15px 0;
+    }
 
-  .edition-card-container .badge {
-    display: none;
+    .edition-card-container .badge {
+      display: none;
+    }
   }
 }
 /* 햄버거 메뉴가 열리면 신문 버튼 숨김 */
@@ -7033,12 +7024,10 @@ body.edition-open .tablet-newspaper-btn {
 }
 
 /* 실제로 보이는 X 도형 축소 */
+/* 기존 축소 효과 제거 */
 #taskModal .modal-header #closeModal > svg polygon {
-  transform: scale(0.82);
-  transform-origin: center;
-  transform-box: fill-box;
+  transform: none;
 }
-
 /* ==================================================
    모바일 필터 팝업
 ================================================== */
@@ -7142,5 +7131,833 @@ body.edition-open .tablet-newspaper-btn {
     height: 56px;
     font-size: 14px;
     white-space: nowrap;
+  }
+}
+
+/* =========================================================
+   등록 기간별 일정 필터
+========================================================= */
+
+/* 캘린더 제목 오른쪽 버튼 */
+.calendar-period-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.calendar-period-button svg {
+  width: 25px;
+  height: 25px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.calendar-period-button:hover,
+.calendar-period-button[aria-expanded="true"] {
+  border-color: var(--point-red);
+  background-color: var(--bg-inner);
+  color: var(--point-red);
+}
+
+.calendar-period-button:focus-visible,
+.period-modal-close:focus-visible,
+.period-filter-option:focus-visible,
+.period-detail-filter-reset:focus-visible,
+.period-detail-filter-field .custom-select-trigger:focus-visible,
+.period-task-item:focus-visible {
+  outline: 2px solid var(--point-red);
+  outline-offset: 3px;
+}
+
+/* 모바일에서 기간 필터 버튼이 들어갈 상태 범례 슬롯 */
+.period-filter-mobile-slot {
+  display: none;
+}
+
+.period-modal-backdrop {
+  background-color: var(--filter-overlay);
+}
+
+.period-modal-container {
+  width: min(720px, calc(100vw - 48px));
+  max-height: calc(100dvh - 48px);
+  padding: 36px 40px 40px;
+  overflow: hidden;
+
+  border: 1px solid var(--filter-border);
+  border-radius: 10px;
+
+  background-color: var(--filter-modal-bg);
+  color: var(--filter-text);
+
+  box-shadow: 0 22px 64px rgba(0, 0, 0, 0.2);
+}
+
+.period-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.period-modal-kicker {
+  margin: 0 0 5px;
+  color: var(--point-red);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.period-modal-header h2 {
+  margin: 0;
+  color: var(--filter-text);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1.2px;
+}
+
+.period-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  color: var(--filter-text);
+}
+
+.period-modal-close svg {
+  width: 22px;
+  height: 22px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.period-modal-divider {
+  height: 4px;
+  margin: 22px 0 18px;
+
+  border-top: 1px solid var(--filter-divider);
+  border-bottom: 1px solid var(--filter-divider);
+}
+
+.period-modal-description {
+  margin: 0 0 22px;
+  color: var(--text-light);
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.period-filter-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.period-filter-option {
+  min-height: 50px;
+  padding: 0 14px;
+
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+
+  background-color: var(--filter-control-bg);
+  color: var(--filter-text);
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.period-filter-option:hover {
+  background-color: var(--filter-control-hover);
+}
+
+.period-filter-option.is-active {
+  border-color: var(--filter-active-bg);
+  background-color: var(--filter-active-bg);
+  color: var(--filter-active-text);
+}
+
+/* 기간 목록 안에서 사용하는 독립 상세 필터 */
+.period-detail-filter {
+  margin-top: 18px;
+  padding: 17px 18px 18px;
+
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+
+  background-color: var(--bg-inner);
+}
+
+.period-detail-filter-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.period-task-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+  height: 42px;
+  padding: 0 13px;
+
+  border: 1px solid var(--border-light);
+  border-radius: 5px;
+
+  background-color: var(--filter-control-bg);
+  color: var(--text-light);
+}
+
+.period-task-search:focus-within {
+  border-color: var(--border-light);
+  outline: none;
+  box-shadow: none;
+  color: var(--filter-text);
+}
+
+.period-task-search svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.period-task-search input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+
+  border: 0;
+  outline: 0;
+  background: transparent;
+
+  color: var(--filter-text);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.period-task-search input::placeholder {
+  color: var(--text-light);
+}
+
+.period-task-search input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.period-task-search-clear {
+  flex: 0 0 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 26px;
+  height: 26px;
+  padding: 0;
+
+  border-radius: 50%;
+
+  color: var(--filter-text);
+}
+
+.period-task-search-clear:hover {
+  background-color: var(--filter-control-hover);
+}
+
+.period-task-search-clear svg {
+  width: 14px;
+  height: 14px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.period-task-search-clear[hidden] {
+  display: none;
+}
+
+.period-detail-filter-reset {
+  min-height: 42px;
+  padding: 0 14px;
+
+  border: 1px solid #000000;
+  border-radius: 5px;
+
+  background-color: #000000;
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.period-detail-filter-reset:hover {
+  border-color: #222222;
+  background-color: #222222;
+  color: #ffffff;
+}
+
+body.dark-mode .period-detail-filter-reset {
+  border-color: #ffffff;
+  background-color: #ffffff;
+  color: #111111;
+}
+
+body.dark-mode .period-detail-filter-reset:hover {
+  border-color: #e8e8e8;
+  background-color: #e8e8e8;
+  color: #111111;
+}
+
+.period-detail-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  gap: 10px;
+}
+
+.period-detail-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.period-detail-filter-field > span {
+  color: var(--filter-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.period-detail-filter-field .period-custom-select {
+  --select-border: var(--border-light);
+}
+
+.period-detail-filter-field .custom-select-trigger {
+  height: 42px;
+  padding: 0 36px 0 12px;
+
+  border-radius: 5px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.period-detail-filter-field .custom-select-arrow {
+  right: 14px;
+  width: 7px;
+  height: 7px;
+}
+
+.period-detail-filter-field .custom-select-list {
+  padding-inline: 5px;
+}
+
+.period-detail-filter-field .custom-select.is-open .custom-select-list {
+  max-height: 300px;
+  padding: 5px;
+}
+
+.period-detail-filter-field .custom-select-option {
+  min-height: 39px;
+  padding: 0 11px;
+
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.period-result-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-top: 26px;
+  padding: 0 2px 12px;
+
+  border-bottom: 2px solid var(--border-dark);
+
+  color: var(--filter-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.period-result-summary strong {
+  color: var(--point-red);
+  font-size: 15px;
+}
+
+.period-task-list {
+  max-height: min(360px, 40dvh);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.period-task-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.period-task-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.period-task-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background-color: var(--border-divider);
+}
+
+/* 일정 날짜별 그룹 */
+.period-task-date-group {
+  margin: 0;
+  padding: 0;
+
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+
+  background-color: var(--filter-modal-bg);
+  overflow: hidden;
+}
+
+.period-task-date-group + .period-task-date-group {
+  margin-top: 14px;
+}
+
+/* 일정 날짜 구분 바 */
+.period-task-date-divider {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin: 0;
+  padding: 13px 14px;
+
+  border-bottom: 2px solid var(--border-dark);
+
+  background-color: var(--bg-inner);
+  color: var(--filter-text);
+}
+
+.period-task-date-title {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+}
+
+.period-task-date-count {
+  color: var(--point-red);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.period-task-date-items {
+  margin: 0;
+  padding: 0;
+}
+
+.period-task-date-items .period-task-list-item + .period-task-list-item {
+  border-top: 1px solid var(--border-light);
+}
+
+.period-task-item {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  row-gap: 7px;
+  column-gap: 16px;
+
+  width: 100%;
+  padding: 18px 8px;
+
+  color: var(--filter-text);
+  text-align: left;
+}
+
+.period-task-item:hover {
+  background-color: var(--filter-control-hover);
+}
+
+.period-task-heading {
+  grid-column: 1;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.period-task-title {
+  min-width: 0;
+  overflow: hidden;
+
+  color: var(--filter-text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.35;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.period-task-status,
+.period-task-priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+
+  min-width: 50px;
+  height: 26px;
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.period-task-status.is-todo {
+  background-color: #ef9417;
+}
+
+.period-task-status.is-progress {
+  background-color: #c25b4d;
+}
+
+.period-task-status.is-done {
+  background-color: #3d5f98;
+}
+
+.period-task-priority.is-high {
+  background-color: #bd3131;
+}
+
+.period-task-priority.is-normal {
+  background-color: #5c7faf;
+}
+
+.period-task-priority.is-low {
+  background-color: #b58d00;
+  color: #111111;
+}
+
+.period-task-schedule,
+.period-task-created {
+  grid-column: 1;
+
+  color: var(--text-light);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.period-task-arrow {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  align-self: center;
+
+  width: 9px;
+  height: 9px;
+
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+
+  color: var(--text-light);
+  transform: rotate(45deg);
+}
+
+.period-task-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 210px;
+  padding: 32px 20px;
+
+  color: var(--text-light);
+  text-align: center;
+}
+
+.period-task-empty strong {
+  color: var(--filter-text);
+  font-size: 16px;
+}
+
+.period-task-empty p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* 기간 목록에서 이동한 일정 강조 */
+.kanban-board .task-card.is-period-target {
+  animation: period-target-highlight 1.6s ease;
+}
+
+@keyframes period-target-highlight {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+
+  20%,
+  70% {
+    box-shadow:
+      0 0 0 3px var(--point-red),
+      0 12px 30px rgba(177, 42, 34, 0.18);
+  }
+}
+
+@media (max-width: 767px) {
+  /* 모바일에서는 기간 필터 버튼을 달력 하단 상태 범례로 이동 */
+  .period-filter-mobile-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .period-filter-mobile-slot .calendar-period-button {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background-color: transparent;
+    color: var(--text-main);
+  }
+
+  .period-filter-mobile-slot .calendar-period-button svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.8;
+  }
+
+  .period-filter-mobile-slot .calendar-period-button:hover,
+  .period-filter-mobile-slot .calendar-period-button[aria-expanded="true"] {
+    background-color: var(--filter-control-hover);
+    color: var(--point-red);
+  }
+
+  .period-modal-backdrop {
+    padding: 10px;
+  }
+
+  .period-modal-container {
+    width: calc(100vw - 20px);
+    max-height: calc(100dvh - 20px);
+    padding: 26px 20px 24px;
+  }
+
+  .period-modal-header h2 {
+    font-size: 25px;
+  }
+
+  .period-modal-kicker {
+    font-size: 10px;
+  }
+
+  .period-modal-description {
+    margin-bottom: 18px;
+    font-size: 13px;
+  }
+
+  .period-filter-options {
+    gap: 7px;
+  }
+
+  .period-filter-option {
+    min-height: 44px;
+    padding: 0 7px;
+    font-size: 13px;
+  }
+
+  .period-detail-filter {
+    margin-top: 14px;
+    padding: 14px;
+  }
+
+  .period-detail-filter-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .period-task-search {
+    height: 40px;
+    padding: 0 10px;
+  }
+
+  .period-task-search input {
+    font-size: 12px;
+  }
+
+  .period-detail-filter-reset {
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .period-detail-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .period-detail-filter-field .custom-select-trigger {
+    height: 42px;
+    padding-right: 34px;
+    font-size: 12px;
+  }
+
+  .period-detail-filter-field .custom-select-option {
+    min-height: 38px;
+    font-size: 12px;
+  }
+
+  .period-result-summary {
+    margin-top: 21px;
+  }
+
+  .period-task-list {
+    max-height: 48dvh;
+  }
+
+  .period-task-item {
+    padding: 16px 4px;
+  }
+
+  .period-task-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .period-task-title {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .period-task-status,
+  .period-task-priority {
+    min-width: 45px;
+    height: 23px;
+  }
+
+  .period-task-schedule,
+  .period-task-created {
+    font-size: 12px;
+  }
+}
+
+/* ==================================================
+   태블릿·모바일 사용자 이름 수정
+================================================== */
+@media (max-width: 1199px) {
+  .greeting-user-name {
+    border-bottom-color: currentColor;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .greeting-name-input {
+    width: auto;
+    max-width: min(20ch, 72vw);
+    text-align: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .period-task-date-divider {
+    padding: 12px 4px 9px;
+  }
+
+  .period-task-date-title {
+    font-size: 13px;
+  }
+
+  .period-task-date-count {
+    font-size: 12px;
+  }
+}
+
+/* ==================================================
+   모바일 기간 필터 아이콘 오른쪽 끝 고정
+================================================== */
+@media (max-width: 767px) {
+  .summary-card .status-list {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .summary-card .status-list > .period-filter-mobile-slot {
+    display: flex;
+    flex: 0 0 28px;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: 28px;
+    margin: 0 0 0 auto;
+    padding: 0;
+  }
+
+  .summary-card
+    .status-list
+    > .period-filter-mobile-slot
+    .calendar-period-button {
+    width: 28px;
+    height: 28px;
+    margin: 0;
   }
 }
