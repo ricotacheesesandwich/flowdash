@@ -4,24 +4,48 @@ const bodyElement = document.body;
 const darkButtons = document.querySelectorAll(".circle1");
 const lightButtons = document.querySelectorAll(".circle2");
 
+/* 테마를 바꾸는 순간에만 색상 전환 애니메이션 적용 */
+const THEME_TRANSITION_DURATION = 500;
+let themeTransitionTimer = null;
+
+function applyTheme(theme, { save = true, animate = true } = {}) {
+  const isDarkMode = theme === "dark";
+
+  if (animate) {
+    bodyElement.classList.add("is-theme-changing");
+    window.clearTimeout(themeTransitionTimer);
+
+    themeTransitionTimer = window.setTimeout(() => {
+      bodyElement.classList.remove("is-theme-changing");
+    }, THEME_TRANSITION_DURATION);
+  }
+
+  bodyElement.classList.toggle("dark-mode", isDarkMode);
+
+  if (save) {
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }
+}
+
 darkButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    bodyElement.classList.add("dark-mode");
-    localStorage.setItem("theme", "dark");
+    applyTheme("dark");
   });
 });
 
 lightButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    bodyElement.classList.remove("dark-mode");
-    localStorage.setItem("theme", "light");
+    applyTheme("light");
   });
 });
 
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
-  bodyElement.classList.add("dark-mode");
+  applyTheme("dark", {
+    save: false,
+    animate: false,
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -132,6 +156,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const dateGrid = document.querySelector("#dateGrid");
   const calendarAll = document.querySelector(".calendar-all");
   const calendarMobileToggle = document.querySelector("#calendarMobileToggle");
+  const calendarCardHeader = document.querySelector("#calendar > .card-header");
+  const periodFilterMobileSlot = document.querySelector(
+    "#periodFilterMobileSlot",
+  );
+  const periodFilterMobileMedia = window.matchMedia("(max-width: 767px)");
+
+  // 등록 기간별 일정
+  const periodFilterButton = document.querySelector("#periodFilterButton");
+  const periodModal = document.querySelector("#periodModal");
+  const closePeriodModal = document.querySelector("#closePeriodModal");
+  const periodFilterButtons = document.querySelectorAll(
+    ".period-filter-option",
+  );
+  const periodResultLabel = document.querySelector("#periodResultLabel");
+  const periodResultCount = document.querySelector("#periodResultCount");
+  const periodTaskList = document.querySelector("#periodTaskList");
+  const periodCategoryFilter = document.querySelector("#periodCategoryFilter");
+  const periodPriorityFilter = document.querySelector("#periodPriorityFilter");
+  const periodStatusFilter = document.querySelector("#periodStatusFilter");
+  const periodSortFilter = document.querySelector("#periodSortFilter");
+  const periodTaskSearchInput = document.querySelector(
+    "#periodTaskSearchInput",
+  );
+  const clearPeriodTaskSearch = document.querySelector(
+    "#clearPeriodTaskSearch",
+  );
+  const resetPeriodDetailFilters = document.querySelector(
+    "#resetPeriodDetailFilters",
+  );
 
   // 연도·월 선택창
   const calendarPickerButton = document.querySelector("#calendarPickerButton");
@@ -342,6 +395,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const activeFilterText = document.querySelector("#activeFilterText");
 
+  const controls = document.querySelector(".controls");
+
+  const filterTagMedia = window.matchMedia("(max-width: 1199px)");
+
   // 오름차순·내림차순
   const sortDirectionButton = document.querySelector("#sortDirectionButton");
 
@@ -366,6 +423,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 모든 커스텀 선택창
   const customSelects = document.querySelectorAll("[data-custom-select]");
+  const periodCustomSelects = document.querySelectorAll(
+    "#periodModal [data-custom-select]",
+  );
 
   const CUSTOM_SELECT_DURATION = 240;
   const MESSAGE_MODAL_DURATION = 180;
@@ -444,8 +504,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let isMobileCalendarExpanded = false;
 
+  /* 기간 필터는 Todo 상태와 분리된 UI 상태값입니다. */
+  let activePeriodFilter = "all";
+
+  /* 메인 검색 필터와 분리된 기간 목록 전용 상세 필터 */
+  const DEFAULT_PERIOD_DETAIL_FILTERS = Object.freeze({
+    keyword: "",
+    category: "all",
+    priority: "all",
+    status: "all",
+    sort: "created-desc",
+  });
+
+  const periodDetailFilters = {
+    ...DEFAULT_PERIOD_DETAIL_FILTERS,
+  };
+
   function isMobileViewport() {
     return window.matchMedia("(max-width: 767px)").matches;
+  }
+
+  /* 화면 크기에 따라 기간 필터 버튼 위치 변경 */
+  function syncPeriodFilterButtonPlacement() {
+    if (!periodFilterButton || !calendarCardHeader || !periodFilterMobileSlot) {
+      return;
+    }
+
+    const isMobile = periodFilterMobileMedia.matches;
+    const target = isMobile ? periodFilterMobileSlot : calendarCardHeader;
+
+    if (periodFilterButton.parentElement !== target) {
+      target.append(periodFilterButton);
+    }
+
+    periodFilterButton.classList.toggle("is-mobile-placement", isMobile);
   }
 
   function getActiveCalendarWeekRow() {
@@ -1584,50 +1676,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return item;
   }
 
-  /* 일정이 3개 이상이면 2개 높이까지만 표시하고 스크롤 */
+  /* 일정이 3개 이상이면 칸반 높이는 유지하고 목록 내부만 스크롤 */
   function updateTaskListScroll(list, taskCount) {
     const shouldScroll = taskCount >= 3;
 
     list.classList.toggle("has-scroll", shouldScroll);
-
-    list.style.removeProperty("--task-list-max-height");
-
-    if (!shouldScroll) {
-      return;
-    }
-
-    /*
-    첫 번째와 두 번째 카드 높이까지만
-    목록의 표시 영역으로 사용합니다.
-    세 번째 카드부터는 스크롤로 확인합니다.
-  */
-    const visibleCards = [...list.querySelectorAll(".task-card")].slice(0, 2);
-
-    if (visibleCards.length < 2) {
-      return;
-    }
-
-    const listStyle = window.getComputedStyle(list);
-
-    const gap = Number.parseFloat(listStyle.rowGap || listStyle.gap) || 0;
-
-    const paddingTop = Number.parseFloat(listStyle.paddingTop) || 0;
-
-    const paddingBottom = Number.parseFloat(listStyle.paddingBottom) || 0;
-
-    const cardsHeight = visibleCards.reduce(
-      (totalHeight, card) => totalHeight + card.offsetHeight,
-      0,
-    );
-
-    const gapsHeight = gap * (visibleCards.length - 1);
-
-    const maxHeight = cardsHeight + gapsHeight + paddingTop + paddingBottom;
-
-    list.style.setProperty(
-      "--task-list-max-height",
-      `${Math.ceil(maxHeight)}px`,
-    );
   }
 
   function renderTaskBoard(sourceTasks) {
@@ -2334,6 +2387,487 @@ document.addEventListener("DOMContentLoaded", () => {
     renderSummary(state);
     renderTaskBoard(state.selectedTasks);
     renderEditionCard();
+
+    if (periodModal && !periodModal.hidden) {
+      renderPeriodTaskList();
+    }
+  }
+
+  /* =========================================================
+     등록 기간별 일정
+  ========================================================= */
+
+  function getLocalDayStartTimestamp(date = new Date()) {
+    return new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    ).getTime();
+  }
+
+  function getPeriodTaskCreatedAt(task) {
+    const createdAt = Number(task.createdAt);
+
+    return Number.isFinite(createdAt) ? createdAt : -1;
+  }
+
+  function comparePeriodTasks(firstTask, secondTask) {
+    const firstCreatedAt = getPeriodTaskCreatedAt(firstTask);
+    const secondCreatedAt = getPeriodTaskCreatedAt(secondTask);
+
+    if (periodDetailFilters.sort === "created-asc") {
+      return firstCreatedAt - secondCreatedAt;
+    }
+
+    if (periodDetailFilters.sort === "date-asc") {
+      return (
+        firstTask.date.localeCompare(secondTask.date) ||
+        (firstTask.time || "").localeCompare(secondTask.time || "") ||
+        secondCreatedAt - firstCreatedAt
+      );
+    }
+
+    if (periodDetailFilters.sort === "date-desc") {
+      return (
+        secondTask.date.localeCompare(firstTask.date) ||
+        (secondTask.time || "").localeCompare(firstTask.time || "") ||
+        secondCreatedAt - firstCreatedAt
+      );
+    }
+
+    if (periodDetailFilters.sort === "time-asc") {
+      return (
+        (firstTask.time || "").localeCompare(secondTask.time || "") ||
+        firstTask.date.localeCompare(secondTask.date) ||
+        secondCreatedAt - firstCreatedAt
+      );
+    }
+
+    if (periodDetailFilters.sort === "priority") {
+      return (
+        (priorityOrder[firstTask.priority] ?? 999) -
+          (priorityOrder[secondTask.priority] ?? 999) ||
+        secondCreatedAt - firstCreatedAt
+      );
+    }
+
+    return secondCreatedAt - firstCreatedAt;
+  }
+
+  function getPeriodFilteredTasks(period = activePeriodFilter) {
+    const now = new Date();
+    const todayStart = getLocalDayStartTimestamp(now);
+    const tomorrowStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+    ).getTime();
+    const sevenDayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - 6,
+    ).getTime();
+
+    return tasks
+      .filter((task) => {
+        if (period === "all") {
+          return true;
+        }
+
+        const createdAt = getPeriodTaskCreatedAt(task);
+
+        if (createdAt < 0) {
+          return false;
+        }
+
+        if (period === "today") {
+          return createdAt >= todayStart && createdAt < tomorrowStart;
+        }
+
+        if (period === "7days") {
+          return createdAt >= sevenDayStart && createdAt < tomorrowStart;
+        }
+
+        return true;
+      })
+      .filter((task) => {
+        const normalizedKeyword = periodDetailFilters.keyword
+          .trim()
+          .toLowerCase();
+
+        const matchesKeyword =
+          normalizedKeyword === "" ||
+          task.title.toLowerCase().includes(normalizedKeyword);
+
+        const matchesCategory =
+          periodDetailFilters.category === "all" ||
+          task.category === periodDetailFilters.category;
+
+        const matchesPriority =
+          periodDetailFilters.priority === "all" ||
+          task.priority === periodDetailFilters.priority;
+
+        const matchesStatus =
+          periodDetailFilters.status === "all" ||
+          task.status === periodDetailFilters.status;
+
+        return (
+          matchesKeyword && matchesCategory && matchesPriority && matchesStatus
+        );
+      })
+      .sort(comparePeriodTasks);
+  }
+
+  function updatePeriodSearchClearButton() {
+    clearPeriodTaskSearch.hidden = periodTaskSearchInput.value.length === 0;
+  }
+
+  function syncPeriodDetailFilterControls() {
+    periodTaskSearchInput.value = periodDetailFilters.keyword;
+    updatePeriodSearchClearButton();
+    periodCategoryFilter.value = periodDetailFilters.category;
+    periodPriorityFilter.value = periodDetailFilters.priority;
+    periodStatusFilter.value = periodDetailFilters.status;
+    periodSortFilter.value = periodDetailFilters.sort;
+
+    periodCustomSelects.forEach((customSelect) => {
+      syncCustomSelect(customSelect);
+    });
+  }
+
+  function updatePeriodDetailFilters() {
+    periodDetailFilters.keyword = periodTaskSearchInput.value.trim();
+    periodDetailFilters.category = periodCategoryFilter.value;
+    periodDetailFilters.priority = periodPriorityFilter.value;
+    periodDetailFilters.status = periodStatusFilter.value;
+    periodDetailFilters.sort = periodSortFilter.value;
+
+    renderPeriodTaskList();
+  }
+
+  function resetPeriodDetailFilterValues() {
+    Object.assign(periodDetailFilters, DEFAULT_PERIOD_DETAIL_FILTERS);
+
+    syncPeriodDetailFilterControls();
+    renderPeriodTaskList();
+  }
+
+  function formatPeriodCreatedAt(timestamp) {
+    const createdAt = Number(timestamp);
+
+    if (!Number.isFinite(createdAt)) {
+      return "등록 시간 기록 없음";
+    }
+
+    const date = new Date(createdAt);
+
+    if (Number.isNaN(date.getTime())) {
+      return "등록 시간 기록 없음";
+    }
+
+    return `${toDateString(date).replaceAll("-", ".")} ${pad(
+      date.getHours(),
+    )}:${pad(date.getMinutes())}`;
+  }
+
+  function getPeriodTaskScheduleDateKey(task) {
+    const dateKey = String(task.date || "");
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
+      return "unknown";
+    }
+
+    const scheduleDate = fromDateString(dateKey);
+
+    if (Number.isNaN(scheduleDate.getTime())) {
+      return "unknown";
+    }
+
+    return dateKey;
+  }
+
+  function formatPeriodTaskDateHeading(dateKey) {
+    if (dateKey === "unknown") {
+      return "일정 날짜 기록 없음";
+    }
+
+    const date = fromDateString(dateKey);
+
+    return `${date.getMonth() + 1}월 ${date.getDate()}일 ${
+      koreanWeekdays[date.getDay()]
+    }요일`;
+  }
+
+  function groupPeriodTasksByScheduleDate(targetTasks) {
+    const groups = new Map();
+
+    targetTasks.forEach((task) => {
+      const dateKey = getPeriodTaskScheduleDateKey(task);
+
+      if (!groups.has(dateKey)) {
+        groups.set(dateKey, []);
+      }
+
+      groups.get(dateKey).push(task);
+    });
+
+    const groupedEntries = [...groups.entries()];
+    const isDescendingDate = periodDetailFilters.sort === "date-desc";
+
+    groupedEntries.sort(([firstDate], [secondDate]) => {
+      if (firstDate === "unknown") {
+        return 1;
+      }
+
+      if (secondDate === "unknown") {
+        return -1;
+      }
+
+      const comparison = firstDate.localeCompare(secondDate);
+
+      return isDescendingDate ? -comparison : comparison;
+    });
+
+    return groupedEntries.map(([dateKey, groupedTasks]) => ({
+      dateKey,
+      tasks: groupedTasks,
+    }));
+  }
+
+  function createPeriodTaskDateGroup(dateKey, dateTasks) {
+    const group = document.createElement("li");
+    const divider = document.createElement("div");
+    const title = document.createElement("time");
+    const count = document.createElement("span");
+    const list = document.createElement("ul");
+
+    group.className = "period-task-date-group";
+
+    divider.className = "period-task-date-divider";
+
+    title.className = "period-task-date-title";
+    title.textContent = formatPeriodTaskDateHeading(dateKey);
+
+    if (dateKey !== "unknown") {
+      title.dateTime = dateKey;
+    }
+
+    count.className = "period-task-date-count";
+    count.textContent = `${dateTasks.length}개`;
+
+    list.className = "period-task-date-items";
+    list.setAttribute(
+      "aria-label",
+      `${formatPeriodTaskDateHeading(dateKey)} 일정 목록`,
+    );
+
+    dateTasks.forEach((task) => {
+      list.append(createPeriodTaskItem(task));
+    });
+
+    divider.append(title, count);
+    group.append(divider, list);
+
+    return group;
+  }
+
+  function getPeriodFilterLabel(period = activePeriodFilter) {
+    const labels = {
+      all: "전체 등록 일정",
+      today: "오늘 생성된 일정",
+      "7days": "최근 7일 생성 일정",
+    };
+
+    return labels[period] || labels.all;
+  }
+
+  function createPeriodTaskItem(task) {
+    const item = document.createElement("li");
+    const button = document.createElement("button");
+    const heading = document.createElement("span");
+    const title = document.createElement("strong");
+    const status = document.createElement("span");
+    const priority = document.createElement("span");
+    const schedule = document.createElement("span");
+    const created = document.createElement("span");
+    const arrow = document.createElement("span");
+
+    item.className = "period-task-list-item";
+
+    button.type = "button";
+    button.className = "period-task-item";
+    button.dataset.taskId = task.id;
+    button.setAttribute("aria-label", `${task.title} 일정으로 이동`);
+
+    heading.className = "period-task-heading";
+
+    title.className = "period-task-title";
+    title.textContent = task.title;
+
+    status.className = `period-task-status is-${task.status}`;
+    status.textContent = statusLabels[task.status] || task.status;
+
+    priority.className = `period-task-priority is-${task.priority}`;
+    priority.textContent = priorityLabels[task.priority] || task.priority;
+
+    schedule.className = "period-task-schedule";
+    schedule.textContent = `${categoryLabels[task.category] || task.category} · ${
+      task.date
+    } ${task.time || "시간 미정"}`;
+
+    created.className = "period-task-created";
+    created.textContent = `등록 ${formatPeriodCreatedAt(task.createdAt)}`;
+
+    arrow.className = "period-task-arrow";
+    arrow.setAttribute("aria-hidden", "true");
+
+    heading.append(title, status, priority);
+    button.append(heading, schedule, created, arrow);
+    item.append(button);
+
+    return item;
+  }
+
+  function renderPeriodTaskList() {
+    if (!periodTaskList) {
+      return;
+    }
+
+    const filteredTasks = getPeriodFilteredTasks();
+    const fragment = document.createDocumentFragment();
+
+    periodFilterButtons.forEach((button) => {
+      const isActive = button.dataset.period === activePeriodFilter;
+
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    periodResultLabel.textContent = getPeriodFilterLabel();
+    periodResultCount.textContent = `${filteredTasks.length}개`;
+
+    if (filteredTasks.length === 0) {
+      const emptyItem = document.createElement("li");
+      const emptyTitle = document.createElement("strong");
+      const emptyText = document.createElement("p");
+
+      emptyItem.className = "period-task-empty";
+      emptyTitle.textContent = "해당 기간에 등록된 일정이 없습니다";
+      emptyText.textContent =
+        "다른 기간을 선택하거나 새로운 일정을 등록해보세요.";
+
+      emptyItem.append(emptyTitle, emptyText);
+      fragment.append(emptyItem);
+    } else {
+      const groupedTasks = groupPeriodTasksByScheduleDate(filteredTasks);
+
+      groupedTasks.forEach(({ dateKey, tasks: dateTasks }) => {
+        fragment.append(createPeriodTaskDateGroup(dateKey, dateTasks));
+      });
+    }
+
+    periodTaskList.replaceChildren(fragment);
+  }
+
+  function openPeriodLayer() {
+    syncPeriodDetailFilterControls();
+    renderPeriodTaskList();
+
+    periodFilterButton.setAttribute("aria-expanded", "true");
+
+    openLayer(periodModal, closePeriodModal);
+  }
+
+  function closePeriodLayer({ restoreFocus = true } = {}) {
+    periodFilterButton.setAttribute("aria-expanded", "false");
+
+    periodCustomSelects.forEach((customSelect) => {
+      closeCustomSelect(customSelect, {
+        immediate: true,
+      });
+    });
+
+    closeLayer(periodModal, restoreFocus ? periodFilterButton : null);
+  }
+
+  function activateTaskStatusTab(status) {
+    const statusOrder = ["todo", "progress", "done"];
+    const targetIndex = statusOrder.indexOf(status);
+
+    if (targetIndex < 0 || !tabsHeader || columns.length === 0) {
+      return;
+    }
+
+    const tabs = [...tabsHeader.querySelectorAll(".tab-item")];
+
+    tabs.forEach((tab, index) => {
+      tab.classList.toggle("active", index === targetIndex);
+    });
+
+    columns.forEach((column, index) => {
+      column.classList.toggle("on", index === targetIndex);
+    });
+  }
+
+  function moveToPeriodTask(taskId) {
+    const targetTask = findTask(taskId);
+
+    if (!targetTask) {
+      renderPeriodTaskList();
+      return;
+    }
+
+    closePeriodLayer({
+      restoreFocus: false,
+    });
+
+    /* 기존 검색·분류 필터 때문에 대상 카드가 숨지 않도록 초기화합니다. */
+    resetFilters({
+      render: false,
+    });
+
+    selectedDate = targetTask.date;
+
+    const taskDate = fromDateString(targetTask.date);
+
+    currentMonth = new Date(taskDate.getFullYear(), taskDate.getMonth(), 1);
+
+    closeCalendarPicker();
+    renderAll();
+    activateTaskStatusTab(targetTask.status);
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const targetCard = [...taskBoard.querySelectorAll(".task-card")].find(
+          (card) => card.dataset.taskId === taskId,
+        );
+
+        if (!targetCard) {
+          taskBoard.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          return;
+        }
+
+        targetCard.classList.add("is-period-target");
+        targetCard.setAttribute("tabindex", "-1");
+
+        targetCard.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        targetCard.focus({
+          preventScroll: true,
+        });
+
+        window.setTimeout(() => {
+          targetCard.classList.remove("is-period-target");
+          targetCard.removeAttribute("tabindex");
+        }, 1600);
+      });
+    });
   }
 
   // 팝업 열고 닫기
@@ -2559,27 +3093,52 @@ document.addEventListener("DOMContentLoaded", () => {
       filterDescriptions.push(statusLabels[activeFilters.status]);
     }
 
-    if (activeFilters.priority !== "all") {
-      filterDescriptions.push(priorityLabels[activeFilters.priority]);
-    }
-
     if (activeFilters.category !== "all") {
       filterDescriptions.push(categoryLabels[activeFilters.category]);
     }
 
+    if (activeFilters.priority !== "all") {
+      filterDescriptions.push(priorityLabels[activeFilters.priority]);
+    }
+
     searchInput.placeholder = "일정 검색";
+
+    const isMobileOrTablet = filterTagMedia.matches;
+
+    /*
+    모바일·태블릿:
+    필터 표시 영역을 검색창 밖 controls 아래로 이동
+
+    데스크톱:
+    기존처럼 검색창 안으로 이동
+  */
+    const targetParent = isMobileOrTablet ? controls : searchForm;
+
+    if (activeFilterText.parentElement !== targetParent) {
+      targetParent.append(activeFilterText);
+    }
+
+    activeFilterText.replaceChildren();
 
     const hasVisibleFilter = filterDescriptions.length > 0;
 
     activeFilterText.hidden = !hasVisibleFilter;
 
-    activeFilterText.textContent = hasVisibleFilter
-      ? filterDescriptions.join(", ")
-      : "";
+    if (hasVisibleFilter) {
+      if (isMobileOrTablet) {
+        filterDescriptions.forEach((description) => {
+          const tag = document.createElement("span");
 
-    /*
-    필터 변경 후 X 표시 상태도 다시 확인
-  */
+          tag.className = "active-filter-tag";
+          tag.textContent = description;
+
+          activeFilterText.append(tag);
+        });
+      } else {
+        activeFilterText.textContent = filterDescriptions.join(", ");
+      }
+    }
+
     updateSearchClearButton();
   }
 
@@ -2973,6 +3532,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (!periodModal.hidden) {
+      closePeriodLayer();
+
+      return;
+    }
+
     if (!filterModal.hidden) {
       closeFilterLayer();
     }
@@ -3063,6 +3628,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayUserName.addEventListener("dblclick", startUserNameEdit);
 
+    /* 태블릿·모바일에서는 한 번 눌러 이름 수정 */
+    displayUserName.addEventListener("click", () => {
+      if (!filterTagMedia.matches) {
+        return;
+      }
+
+      startUserNameEdit();
+    });
+
+    filterTagMedia.addEventListener("change", updateSearchPlaceholder);
     // 키보드 Enter 또는 Space로 수정
 
     displayUserName.addEventListener("keydown", (event) => {
@@ -3077,6 +3652,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
     calendarPickerButton.addEventListener("click", () => {
       toggleCalendarPicker();
+    });
+
+    periodFilterButton.addEventListener("click", openPeriodLayer);
+    closePeriodModal.addEventListener("click", closePeriodLayer);
+
+    periodFilterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activePeriodFilter = button.dataset.period || "all";
+        renderPeriodTaskList();
+      });
+    });
+
+    periodTaskSearchInput.addEventListener("input", () => {
+      periodDetailFilters.keyword = periodTaskSearchInput.value.trim();
+      updatePeriodSearchClearButton();
+      renderPeriodTaskList();
+    });
+
+    clearPeriodTaskSearch.addEventListener("click", () => {
+      periodTaskSearchInput.value = "";
+      periodDetailFilters.keyword = "";
+
+      updatePeriodSearchClearButton();
+      renderPeriodTaskList();
+
+      periodTaskSearchInput.focus();
+    });
+
+    [
+      periodCategoryFilter,
+      periodPriorityFilter,
+      periodStatusFilter,
+      periodSortFilter,
+    ].forEach((control) => {
+      control.addEventListener("change", updatePeriodDetailFilters);
+    });
+
+    resetPeriodDetailFilters.addEventListener(
+      "click",
+      resetPeriodDetailFilterValues,
+    );
+
+    periodTaskList.addEventListener("click", (event) => {
+      const targetButton = event.target.closest(".period-task-item");
+
+      if (!targetButton || !periodTaskList.contains(targetButton)) {
+        return;
+      }
+
+      moveToPeriodTask(targetButton.dataset.taskId);
     });
 
     monthGrid.addEventListener("click", handleMonthPickerClick);
@@ -3187,6 +3812,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("resize", () => {
       updateMobileCalendarLayout();
+      syncPeriodFilterButtonPlacement();
 
       if (!isMobileViewport()) {
         closeMobileMenu({
@@ -3525,6 +4151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const layerSettings = new Map([
       [filterModal, closeFilterLayer],
+      [periodModal, closePeriodLayer],
       [taskModal, closeTaskModal],
       [messageModal, closeMessageModal],
       [
@@ -3557,6 +4184,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sortSelect.value = DEFAULT_FILTERS.sort;
 
+    syncPeriodFilterButtonPlacement();
     syncAllCustomSelects();
 
     renderSortDirectionButton();
