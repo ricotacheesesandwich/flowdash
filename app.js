@@ -113,11 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
     priority: "중요도순",
   };
 
-  const directionLabels = {
-    asc: "오름차순",
-    desc: "내림차순",
-  };
-
   const statusEntries = Object.entries(statusLabels);
 
   const priorityOrder = {
@@ -161,7 +156,158 @@ document.addEventListener("DOMContentLoaded", () => {
   const pickerNextDecade = document.querySelector("#pickerNextDecade");
 
   const todayDateLeft = document.querySelector("#todayDateLeft");
-  const todayDateRight = document.querySelector("#todayDateRight");
+  /* 오른쪽 상단 날씨 */
+  const weatherCondition = document.querySelector("#weatherCondition");
+  const weatherTemperature = document.querySelector("#weatherTemperature");
+  const weatherLocation = document.querySelector("#weatherLocation");
+
+  /* 날씨 갱신 간격: 30분 */
+  const WEATHER_REFRESH_INTERVAL = 30 * 60 * 1000;
+
+  /* 위치 권한을 사용할 수 없을 때 서울 날씨 표시 */
+  const DEFAULT_WEATHER_POSITION = Object.freeze({
+    latitude: 37.5665,
+    longitude: 126.978,
+    label: "서울 기준",
+  });
+
+  /* 처음 확인한 위치를 저장 */
+  let currentWeatherPosition = null;
+
+  /* 날씨 코드를 한글로 변경 */
+  function getWeatherLabel(weatherCode) {
+    if (weatherCode === 0) {
+      return "맑음";
+    }
+
+    if ([1, 2].includes(weatherCode)) {
+      return "구름 조금";
+    }
+
+    if (weatherCode === 3) {
+      return "흐림";
+    }
+
+    if ([45, 48].includes(weatherCode)) {
+      return "안개";
+    }
+
+    if ([51, 53, 55, 56, 57].includes(weatherCode)) {
+      return "이슬비";
+    }
+
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
+      return "비";
+    }
+
+    if ([71, 73, 75, 77, 85, 86].includes(weatherCode)) {
+      return "눈";
+    }
+
+    if ([95, 96, 99].includes(weatherCode)) {
+      return "뇌우";
+    }
+
+    return "날씨 정보";
+  }
+
+  /* 지정된 위치의 현재 날씨 가져오기 */
+  async function fetchCurrentWeather(position) {
+    if (!weatherCondition || !weatherTemperature || !weatherLocation) {
+      return;
+    }
+
+    try {
+      const query = new URLSearchParams({
+        latitude: String(position.latitude),
+        longitude: String(position.longitude),
+        current: "temperature_2m,weather_code",
+        timezone: "auto",
+      });
+
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?${query}`,
+      );
+
+      if (!response.ok) {
+        throw new Error(`날씨 요청 실패: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const currentWeather = data.current;
+
+      if (!currentWeather) {
+        throw new Error("현재 날씨 정보가 없습니다.");
+      }
+
+      const temperature = Math.round(currentWeather.temperature_2m);
+
+      const weatherCode = Number(currentWeather.weather_code);
+
+      weatherCondition.textContent = getWeatherLabel(weatherCode);
+
+      weatherTemperature.textContent = `${temperature}°C`;
+
+      weatherLocation.textContent = position.label;
+    } catch (error) {
+      console.warn("날씨를 불러오지 못했습니다.", error);
+
+      weatherCondition.textContent = "확인 불가";
+      weatherTemperature.textContent = "--°C";
+      weatherLocation.textContent = position.label;
+    }
+  }
+
+  /* 현재 위치를 확인한 뒤 날씨 갱신 */
+  function updateWeather() {
+    /*
+    한 번 확인한 위치가 있으면
+    다시 위치 권한을 요청하지 않고 날씨만 갱신합니다.
+  */
+    if (currentWeatherPosition) {
+      fetchCurrentWeather(currentWeatherPosition);
+
+      return;
+    }
+
+    /*
+    위치 기능을 사용할 수 없는 브라우저는
+    서울 날씨를 사용합니다.
+  */
+    if (!navigator.geolocation) {
+      currentWeatherPosition = DEFAULT_WEATHER_POSITION;
+
+      fetchCurrentWeather(currentWeatherPosition);
+
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      /* 위치 권한 허용 */
+      (position) => {
+        currentWeatherPosition = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          label: "현재 위치",
+        };
+
+        fetchCurrentWeather(currentWeatherPosition);
+      },
+
+      /* 위치 권한 거절 또는 위치 확인 실패 */
+      () => {
+        currentWeatherPosition = DEFAULT_WEATHER_POSITION;
+
+        fetchCurrentWeather(currentWeatherPosition);
+      },
+
+      {
+        enableHighAccuracy: false,
+        timeout: 7000,
+        maximumAge: WEATHER_REFRESH_INTERVAL,
+      },
+    );
+  }
 
   // 선택 날짜
   const selectedDateText = document.querySelector("#selectedDateText");
@@ -230,8 +376,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtn = document.querySelector("#closeModal");
 
   const taskForm = document.querySelector("#taskForm");
-  const resetFormBtn = document.querySelector("#resetFormBtn");
-
   const modalTitle = document.querySelector("#modalTitle");
   const taskSubmitBtn = document.querySelector("#taskSubmitBtn");
 
@@ -371,6 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 상태값
   let today = new Date();
   let todayString = toDateString(today);
+
   let selectedDate = todayString;
 
   let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -732,16 +877,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* 헤더의 오늘 날짜 출력 */
   function renderHeaderDate() {
-    const formatted = todayString.replaceAll("-", ".");
+    if (!todayDateLeft) {
+      return;
+    }
 
-    [todayDateLeft, todayDateRight].forEach((element) => {
-      if (!element) {
-        return;
-      }
-
-      element.textContent = formatted;
-      element.dateTime = todayString;
-    });
+    todayDateLeft.textContent = todayString.replaceAll("-", ".");
+    todayDateLeft.dateTime = todayString;
   }
 
   /* 시간대별 인사말 */
@@ -1176,7 +1317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateNameConfirmButton();
 
     window.requestAnimationFrame(() => {
-      mobileMenu.querySelector(".mobile-menu-link")?.focus();
+      nameInput.focus();
     });
   }
 
@@ -1420,9 +1561,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     item.innerHTML = `
   <span class="kanban-empty-icon" aria-hidden="true">
-    <svg id="_레이어_1" data-name="레이어 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 235.2 277.1">
-  <defs>
-  </defs>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 235.2 277.1">
   <path class="cls-1" d="M52.38,76.97c-9.52,0-17.23,7.71-17.23,17.23s7.71,17.22,17.23,17.22,17.22-7.71,17.22-17.22-7.71-17.23-17.22-17.23ZM52.38,100.58c-3.53,0-6.39-2.85-6.39-6.38s2.86-6.39,6.39-6.39,6.38,2.86,6.38,6.39-2.85,6.38-6.38,6.38Z"/>
   <rect class="cls-1" x="89.99" y="85.49" width="98.32" height="12.26" rx="6.13" ry="6.13"/>
   <path class="cls-1" d="M52.38,136.58c-9.52,0-17.23,7.71-17.23,17.23s7.71,17.22,17.23,17.22,17.22-7.71,17.22-17.22-7.71-17.23-17.22-17.23ZM52.38,160.19c-3.53,0-6.39-2.85-6.39-6.38s2.86-6.39,6.39-6.39,6.38,2.86,6.38,6.39-2.85,6.38-6.38,6.38Z"/>
@@ -2185,7 +2324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshCalendarDate(dateString);
     renderSummary(state);
     renderTaskBoard(state.selectedTasks);
-    renderEditionCard(state);
+    renderEditionCard();
   }
 
   function renderAll() {
@@ -2194,11 +2333,21 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendar();
     renderSummary(state);
     renderTaskBoard(state.selectedTasks);
-    renderEditionCard(state);
+    renderEditionCard();
   }
 
   // 팝업 열고 닫기
   function openLayer(layer, focusTarget) {
+    /*
+    모바일 메뉴가 열린 상태에서 팝업을 열면
+    메뉴를 먼저 닫습니다.
+  */
+    if (mobileMenu.classList.contains("is-open")) {
+      closeMobileMenu({
+        restoreFocus: false,
+      });
+    }
+
     layer.hidden = false;
 
     layer.setAttribute("aria-hidden", "false");
@@ -2209,7 +2358,6 @@ document.addEventListener("DOMContentLoaded", () => {
       focusTarget?.focus();
     });
   }
-
   function closeLayer(layer, returnFocusTarget) {
     layer.hidden = true;
 
@@ -2329,7 +2477,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editingTaskId = null;
 
     modalTitle.textContent = "일정 등록";
-    taskSubmitBtn.textContent = "일정 등록하기";
+    taskSubmitBtn.textContent = "일정 등록";
   }
 
   function openTaskModal() {
@@ -3159,7 +3307,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleMemo.addEventListener("input", () => {
       updateCharacterCount(scheduleMemo, memoCharacterCount, MEMO_MAX_LENGTH);
     });
-    resetFormBtn.addEventListener("click", resetTaskForm);
 
     taskForm.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -3414,14 +3561,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderSortDirectionButton();
     updateSearchPlaceholder();
-
     renderHeaderDate();
 
-    /*
-  사이트가 자정에 열려 있지 않았어도
-  실행 시 지난 날짜의 신문을 한 번만 발간합니다.
-*/
-    publishExistingPastEditions();
+    /* 첫 날씨 표시 */
+    updateWeather();
 
     // renderDailyQuote();김상우
     renderAll();
@@ -3429,6 +3572,9 @@ document.addEventListener("DOMContentLoaded", () => {
     bindEvents();
 
     window.setInterval(updateCountdown, 1000);
+
+    /* 30분마다 날씨 갱신 */
+    window.setInterval(updateWeather, WEATHER_REFRESH_INTERVAL);
   }
 
   init();
@@ -3467,35 +3613,34 @@ document.addEventListener("DOMContentLoaded", () => {
   sessionStorage.setItem("previousQuoteIndex", randomIndex);
 });
 
-const tabletNewspaperBtn = document.getElementById("tabletNewspaperBtn");
+const tabletNewspaperBtn = document.querySelector("#tabletNewspaperBtn");
+const closeTabletNewspaper = document.querySelector("#closeTabletNewspaper");
+const editionViewButton = document.querySelector("#viewNewspaperBtn");
+const editionCard = document.querySelector("#report");
 
-const editionCard = document.getElementById("report");
+function closeTabletEdition() {
+  if (!tabletNewspaperBtn || !editionCard) {
+    return;
+  }
 
-tabletNewspaperBtn.addEventListener("click", () => {
-  const isOpen = editionCard.classList.toggle("is-open");
-
-  document.body.classList.toggle("edition-open", isOpen);
-
-  tabletNewspaperBtn.setAttribute("aria-expanded", String(isOpen));
-});
-const closeTabletNewspaper = document.getElementById("closeTabletNewspaper");
-
-closeTabletNewspaper.addEventListener("click", () => {
   editionCard.classList.remove("is-open");
-
   document.body.classList.remove("edition-open");
-
   tabletNewspaperBtn.setAttribute("aria-expanded", "false");
-});
-const editionViewButton = document.getElementById("viewNewspaperBtn");
+}
 
-editionViewButton.addEventListener("click", () => {
-  // 현재 열려 있는 YESTERDAY'S EDITION 신문칸 닫기
-  editionCard.classList.remove("is-open");
+if (
+  tabletNewspaperBtn &&
+  closeTabletNewspaper &&
+  editionViewButton &&
+  editionCard
+) {
+  tabletNewspaperBtn.addEventListener("click", () => {
+    const isOpen = editionCard.classList.toggle("is-open");
 
-  // 신문칸 열림 상태 제거
-  document.body.classList.remove("edition-open");
+    document.body.classList.toggle("edition-open", isOpen);
+    tabletNewspaperBtn.setAttribute("aria-expanded", String(isOpen));
+  });
 
-  // 동그란 버튼의 상태도 닫힘으로 변경
-  tabletNewspaperBtn.setAttribute("aria-expanded", "false");
-});
+  closeTabletNewspaper.addEventListener("click", closeTabletEdition);
+  editionViewButton.addEventListener("click", closeTabletEdition);
+}
