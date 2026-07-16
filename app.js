@@ -133,6 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const calendarAll = document.querySelector(".calendar-all");
   const calendarMobileToggle = document.querySelector("#calendarMobileToggle");
 
+  const mobileViewportMedia = window.matchMedia("(max-width: 767px)");
+
   // 연도·월 선택창
   const calendarPickerButton = document.querySelector("#calendarPickerButton");
 
@@ -342,6 +344,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const activeFilterText = document.querySelector("#activeFilterText");
 
+  const controls = document.querySelector(".controls");
+
+  const filterTagMedia = window.matchMedia("(max-width: 1199px)");
+
   // 오름차순·내림차순
   const sortDirectionButton = document.querySelector("#sortDirectionButton");
 
@@ -439,13 +445,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // 카운트다운
   const countdownText = document.querySelector("#countdownText");
 
-  // 명언
-  const dailyQuote = document.querySelector(".word");
-
   let isMobileCalendarExpanded = false;
 
   function isMobileViewport() {
-    return window.matchMedia("(max-width: 767px)").matches;
+    return mobileViewportMedia.matches;
   }
 
   function getActiveCalendarWeekRow() {
@@ -498,19 +501,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateMobileCalendarToggle();
   }
-
-  // const quotes = [
-  //   "작은 실천이 큰 변화를 만든다.",
-  //   "꾸준함은 가장 강력한 재능이다.",
-  //   "오늘의 한 걸음이 내일의 방향이 된다.",
-  //   "완벽보다 완료가 당신을 앞으로 보낸다.",
-  //   "시작하는 용기가 하루를 바꾼다.",
-  //   "지금의 집중이 미래의 여유를 만든다.",
-  //   "기록하는 사람은 결국 성장의 증거를 가진다.",
-  //   "천천히 가도 멈추지 않으면 도착한다.",
-  //   "오늘 끝낸 일 하나가 자신감을 키운다.",
-  //   "좋은 하루의 기사는 작은 실천에서 시작됩니다.",
-  // ];김상우
 
   // 상태값
   let today = new Date();
@@ -918,34 +908,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /* 큰 메인 문구 */
     mainTimeGreeting.textContent = koreanGreeting;
   }
-
-  // function hashDateString(dateString) {
-  //   let hash = 0;
-
-  //   for (let index = 0; index < dateString.length; index += 1) {
-  //     hash = (hash * 31 + dateString.charCodeAt(index)) >>> 0;
-  //   }
-
-  //   return hash;
-  // }
-
-  // function getDailyQuote(dateString) {
-  //   if (quotes.length === 0) {
-  //     return "";
-  //   }
-
-  //   const quoteIndex = hashDateString(dateString) % quotes.length;
-
-  //   return quotes[quoteIndex];
-  // }
-
-  // function renderDailyQuote() {
-  //   if (!dailyQuote) {
-  //     return;
-  //   }
-
-  //   dailyQuote.textContent = getDailyQuote(todayString);
-  // }김상우
 
   function renderDateDots(button, statuses) {
     button.querySelector(".date-dots")?.remove();
@@ -2559,27 +2521,52 @@ document.addEventListener("DOMContentLoaded", () => {
       filterDescriptions.push(statusLabels[activeFilters.status]);
     }
 
-    if (activeFilters.priority !== "all") {
-      filterDescriptions.push(priorityLabels[activeFilters.priority]);
-    }
-
     if (activeFilters.category !== "all") {
       filterDescriptions.push(categoryLabels[activeFilters.category]);
     }
 
+    if (activeFilters.priority !== "all") {
+      filterDescriptions.push(priorityLabels[activeFilters.priority]);
+    }
+
     searchInput.placeholder = "일정 검색";
+
+    const isMobileOrTablet = filterTagMedia.matches;
+
+    /*
+    모바일·태블릿:
+    필터 표시 영역을 검색창 밖 controls 아래로 이동
+
+    데스크톱:
+    기존처럼 검색창 안으로 이동
+  */
+    const targetParent = isMobileOrTablet ? controls : searchForm;
+
+    if (activeFilterText.parentElement !== targetParent) {
+      targetParent.append(activeFilterText);
+    }
+
+    activeFilterText.replaceChildren();
 
     const hasVisibleFilter = filterDescriptions.length > 0;
 
     activeFilterText.hidden = !hasVisibleFilter;
 
-    activeFilterText.textContent = hasVisibleFilter
-      ? filterDescriptions.join(", ")
-      : "";
+    if (hasVisibleFilter) {
+      if (isMobileOrTablet) {
+        filterDescriptions.forEach((description) => {
+          const tag = document.createElement("span");
 
-    /*
-    필터 변경 후 X 표시 상태도 다시 확인
-  */
+          tag.className = "active-filter-tag";
+          tag.textContent = description;
+
+          activeFilterText.append(tag);
+        });
+      } else {
+        activeFilterText.textContent = filterDescriptions.join(", ");
+      }
+    }
+
     updateSearchClearButton();
   }
 
@@ -3062,7 +3049,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 이름 자리에서 바로 수정
 
     displayUserName.addEventListener("dblclick", startUserNameEdit);
-
+    filterTagMedia.addEventListener("change", updateSearchPlaceholder);
     // 키보드 Enter 또는 Space로 수정
 
     displayUserName.addEventListener("keydown", (event) => {
